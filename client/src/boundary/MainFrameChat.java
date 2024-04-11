@@ -3,10 +3,10 @@ package boundary;
 import javax.swing.*;
 import java.awt.*;
 
-public class MainframeChat extends JFrame{
+public class MainFrameChat extends JFrame{
     private JTextArea chat = new JTextArea();
 
-    public MainframeChat(){
+    public MainFrameChat(){
         super("Chat");
         this.setSize(500, 500);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -21,6 +21,10 @@ public class MainframeChat extends JFrame{
     public void sendChatMessage(String message){
         chat.append(message);
         chat.append("\n");
+    }
+
+    public static void main(String[] args) {
+        MainFrameChat mainFrameChat = new MainFrameChat();
     }
 
 }

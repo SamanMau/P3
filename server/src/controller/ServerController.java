@@ -13,18 +13,13 @@ public class ServerController extends Thread{
     MainframeLogPanel mf = new MainframeLogPanel();
     private ServerSocket serverSocket;
     private ArrayList<ClientConnection> activeUsers = new ArrayList<>();
-    private static Scanner scanner = new Scanner(System.in); //test variabel
-    private Thread thread;
 
     public ServerController() {
         try{
-            this.serverSocket = new ServerSocket(1024);
-            thread = new Thread();
-            thread.start();
+            this.serverSocket = new ServerSocket(1000);
         } catch (IOException e){
 
         }
-
     }
 
     @Override
@@ -32,6 +27,7 @@ public class ServerController extends Thread{
         while(true){
             try {
                 Socket socket = serverSocket.accept();
+                System.out.println("hello");
                 ClientConnection clientClientConnection = new ClientConnection(socket);
                 userConnected(clientClientConnection);
             } catch (IOException e) {
@@ -64,7 +60,6 @@ public class ServerController extends Thread{
                 System.out.println("Hej");
                 ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
                 ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
-                sendLogMessage();
                 oos.flush();
 
             } catch (IOException e){
@@ -72,16 +67,11 @@ public class ServerController extends Thread{
             }
         }
 
-        public void sendLogMessage(){
-            System.out.println("Enter name: ");
-            String name = scanner.next();
-            mf.sendLogMessage(name);
-        }
-
     }
 
     public static void main(String[] args) {
         ServerController sc = new ServerController();
+        sc.start();
     }
 }
 
