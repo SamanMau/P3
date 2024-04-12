@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 public class User {
     private String userName;
-    private Icon userImage;
+    private ImageIcon userImage;
     private ArrayList<User> contacts;
 
-    public User(String userName, Icon userImage){
+    public User(String userName, ImageIcon userImage){
         this.userImage = userImage;
         this.userName = userName;
     }
@@ -21,11 +21,11 @@ public class User {
         contacts.add(user);
     }
 
-    public void setUserImage(Icon image){
+    public void setUserImage(ImageIcon image){
         this.userImage = image;
     }
 
-    public Icon getUserImage() {
+    public ImageIcon getUserImage() {
         return userImage;
     }
 

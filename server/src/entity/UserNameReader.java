@@ -10,11 +10,10 @@ public class UserNameReader {
     private ArrayList<User> allUsers = new ArrayList<>();
 
     public boolean findUserName(String name){
-        for (int i = 0; allUsers.size()> i; i++){
-            if(Objects.equals(allUsers.get(i).getUserName(), name)){
+        for (int i = 0; i < allUsers.size(); i++){
+            if(allUsers.get(i).equals(name)){
                 return true;
             }
-
         }
         return false;
     }
@@ -53,11 +52,18 @@ public class UserNameReader {
         }
     }
 
-    public User getUserFromArray(int index){
-        return allUsers.get(index);
+    public User getUserFromArray(String name){
+        for(int i = 0; i < allUsers.size(); i++){
+            if(allUsers.get(i).getUserName().equals(name)){
+                return allUsers.get(i);
+            }
+        }
+
+        return null;
     }
 
-
-
+    public void newUserAdded(User user){
+        allUsers.add(user);
+    }
 
 }

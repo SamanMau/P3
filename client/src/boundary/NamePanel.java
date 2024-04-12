@@ -1,9 +1,8 @@
 package boundary;
 
-import com.sun.tools.javac.Main;
+import controller.ClientController;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,9 +10,11 @@ public class NamePanel extends JPanel {
     private JLabel title;
     private JTextField enterName;
     private JButton send;
-    private MainFrameStart ms;
+    private StartFrame ms;
+    private ClientController clientController;
 
-    public NamePanel(MainFrameStart ms){
+    public NamePanel(StartFrame ms, ClientController clientController){
+        this.clientController = clientController;
         this.ms = ms;
         title = new JLabel("Name:");
         enterName = new JTextField(15);
@@ -23,7 +24,8 @@ public class NamePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String name = enterName.getText();
-                System.out.println(name + " Klass: Namepanel");
+                clientController.sendName(name);
+                ms.close();
             }
         });
 
@@ -32,5 +34,4 @@ public class NamePanel extends JPanel {
         this.add(send);
         this.setVisible(true);
     }
-
 }
