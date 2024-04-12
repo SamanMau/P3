@@ -19,8 +19,12 @@ public class ServerController extends Thread{
 
     public ServerController() {
         try{
-            userNameReader = new UserNameReader();
+            userNameReader = new UserNameReader(this);
+          //  String file = "AllUsers.txt";
+          //  userNameReader.readFile(file);
+
             this.serverSocket = new ServerSocket(1000);
+
         } catch (IOException e){
         }
     }
@@ -62,7 +66,7 @@ public class ServerController extends Thread{
                 ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
                 ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
                 try {
-                    Object name = ois.readObject();
+                    String name = (String) ois.readObject();
                     checkUser(name);
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
@@ -75,21 +79,20 @@ public class ServerController extends Thread{
         }
     }
 
-    public void checkUser(Object name){
-        String userName = name.toString();
-        boolean exists = userNameReader.findUserName(userName);
+    public void checkUser(String name){
+        boolean exists = userNameReader.findUserName(name, "server/src/AllUsers.txt");
         if(exists){
-            User user = userNameReader.getUserFromArray(userName);
+            //User user = userNameReader.getUserFromArray(userName);
+            System.out.println("I exist!");
         }
+
 
         else if(!exists){
-            ImageIcon imageIcon = new ImageIcon("defaultProfile.png");
-            String personName = userName;
-            User user  = new User(personName, imageIcon);
+            System.out.println("Han finns inte");
+            ImageIcon imageIcon = new ImageIcon("shared_classes/defaultProfile.png");
+            User user  = new User(name, imageIcon);
             userNameReader.newUserAdded(user);
-            System.out.println("Namn: " + user.getUserName());
+            userNameReader.saveToFile("server/src/AllUsers.txt", name);
         }
     }
-
 }
-

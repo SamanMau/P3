@@ -1,5 +1,6 @@
 package entity;
 
+import controller.ServerController;
 import shared_classes.user.User;
 
 import java.io.*;
@@ -8,49 +9,79 @@ import java.util.Objects;
 
 public class UserNameReader {
     private ArrayList<User> allUsers = new ArrayList<>();
+    private ServerController serverController;
 
-    public boolean findUserName(String name){
-        for (int i = 0; i < allUsers.size(); i++){
-            if(allUsers.get(i).equals(name)){
-                return true;
-            }
-        }
-        return false;
+    public UserNameReader(ServerController serverController){
+        this.serverController = serverController;
     }
 
-    public void saveToFile(String filename){
-        try{
-            FileOutputStream fileOut = new FileOutputStream(filename);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            for (User allName : allUsers) {
-                out.writeObject(allName);
+
+    public boolean findUserName(String name, String file){
+        String userName = name;
+        FileReader fileReader;
+
+        String read = "";
+        try {
+            fileReader = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            while ((read = bufferedReader.readLine()) != null){
+                if(read.equals(name)){
+                    return true;
+                }
             }
-            out.close();
-            fileOut.close();
+
+            return false;
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+
+    public void saveToFile(String filename, String user){
+        try{
+            /*
+            booleska värdet "true" i FileOutPutStream gör så att varje ny skrivning
+            går till en ny rad. På så sätts skrivs saker inte över varandra.
+             */
+            FileOutputStream fos = new FileOutputStream(filename, true);
+           // ObjectOutputStream out = new ObjectOutputStream(fos);
+            PrintWriter write = new PrintWriter(fos);
+
+            write.println(user);
+            write.close();
+            fos.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    /*
     public void readFile(String filename){
-        User user = null;
+        User element;
         try {
             FileInputStream fileIn = new FileInputStream(filename);
             ObjectInputStream in = new ObjectInputStream(fileIn);
             while (true){
-                try {
-                    user = (User) in.readObject();
-                    allUsers.add(user);
-                } catch (IOException | ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
+                element = (User) in.readObject();
+               // allUsers.add(element);
+                serverController.names(element);
             }
+
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
+
+     */
 
     public User getUserFromArray(String name){
         for(int i = 0; i < allUsers.size(); i++){

@@ -35,12 +35,13 @@ public class ClientController {
         chatFrame = new ChatFrame(this);
     }
 
+
     /*
     JFileChooser är en klass som används för att öppna och spara en fil lokalt på datorn.
     Metoden "showOpenDialog" öppnar filen .vi har ingen parent component, därför sätter vi null.
     showOpenDialog returnerar en int. Om man väljer en fil, returnerar den 0. Om man inte
     väljer något, returneras 1.
-
+     */
     public void openFileManager(){
         file = new JFileChooser();
         int action = file.showSaveDialog(null);
@@ -67,9 +68,6 @@ public class ClientController {
 
         }
     }
-
-     */
-
 
     public void sendName(String name){
         try {

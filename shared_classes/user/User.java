@@ -1,6 +1,7 @@
 package shared_classes.user;
 
 import javax.swing.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class User {

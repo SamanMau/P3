@@ -24,11 +24,9 @@ public class ChatFrame extends JFrame{
         this.setVisible(true);
     }
 
-    /*
+
     public void sendImage(File message){
         messagePanel.displayImage(message);
     }
-
-     */
 
 }
