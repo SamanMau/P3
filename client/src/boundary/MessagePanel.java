@@ -84,11 +84,19 @@ public class MessagePanel extends JPanel {
     }
 
 
-    //behöver förklaring.
-    public void displayText(JTextPane textPane, String newText) {
-        Document document = textPane.getDocument();
+    /*
+    "textPane.getDocument" hämtar dokument objektet kopplat till vår textPane
+    (outputText). Document klassen används för att lagra text. "document.getLength"
+    hämtar storleken på texten som har lagrats i "document" objektet. message representerar
+    den nya texten och vi skriver "\n" så att de näst kommande texten placeras på en ny rad.
+    "null" har lagts eftersom vi inte vill specifiera någon specifik format på texten,
+    exempelvis "italics".
+     */
+    public void displayText(JTextPane textPane, String message) {
+        Document document;
+        document = textPane.getDocument();
         try {
-            document.insertString(document.getLength(),newText+"\n", null);
+            document.insertString(document.getLength(),message+"\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
@@ -97,8 +105,13 @@ public class MessagePanel extends JPanel {
     public void displayImage(File image){
         System.out.println(image);
         try {
-            ImageIcon imageIcon = new ImageIcon(ImageIO.read(image));
-            outPutText.insertIcon(imageIcon);
+            ImageIcon oldSize = new ImageIcon(ImageIO.read(image));
+            Image thisImage = oldSize.getImage();
+            Image changedSize = thisImage.getScaledInstance(150, 150, Image.SCALE_DEFAULT);
+
+            ImageIcon newSize = new ImageIcon(changedSize);
+
+            outPutText.insertIcon(newSize);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
