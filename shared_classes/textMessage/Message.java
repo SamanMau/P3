@@ -6,8 +6,10 @@ import shared_classes.user.User;
 import javax.swing.*;
 
 
+
 public class Message {
     private User sender;
+    private User reciever;
     private ArrayList<User> recievers;
     private LocalDateTime timesent;
     private Icon imageIcon;

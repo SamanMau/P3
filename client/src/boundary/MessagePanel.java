@@ -21,8 +21,9 @@ public class MessagePanel extends JPanel {
     private JScrollPane scroll;
 
     public MessagePanel(ClientController clientController){
-        this.setBounds(0, 0, 580, 500);
         setLayout(null);
+
+        this.setBounds(0, 60, 580, 500);
         this.controller = clientController;
 
         textInstruction = new JLabel("Type: ");

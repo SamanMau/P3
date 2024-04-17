@@ -20,13 +20,13 @@ public class UserNameReader {
         String userName = name;
         FileReader fileReader;
 
-        String read = "";
+        String line = "";
         try {
             fileReader = new FileReader(file);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-            while ((read = bufferedReader.readLine()) != null){
-                if(read.equals(name)){
+            while ((line = bufferedReader.readLine()) != null){
+                if(line.contains(name)){
                     return true;
                 }
             }
@@ -41,18 +41,18 @@ public class UserNameReader {
     }
 
 
-    public void saveToFile(String filename, String user){
+    public void saveToFile(String filename, User user){
         try{
             /*
             booleska värdet "true" i FileOutPutStream gör så att varje ny skrivning
             går till en ny rad. På så sätts skrivs saker inte över varandra.
              */
             FileOutputStream fos = new FileOutputStream(filename, true);
-           // ObjectOutputStream out = new ObjectOutputStream(fos);
-            PrintWriter write = new PrintWriter(fos);
 
-            write.println(user);
-            write.close();
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(user);
+
+            oos.flush();
             fos.close();
         } catch (IOException e) {
             throw new RuntimeException(e);

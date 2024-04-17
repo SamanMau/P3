@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class User {
+public class User implements Serializable {
     private String userName;
     private ImageIcon userImage;
     private ArrayList<User> contacts;
@@ -12,6 +12,13 @@ public class User {
     public User(String userName, ImageIcon userImage){
         this.userImage = userImage;
         this.userName = userName;
+    }
+
+    public User GetCurrentSender(User user){
+        return null;
+    }
+
+    public void GetCurrentReciever(User user){
     }
 
     public User(String userName){
