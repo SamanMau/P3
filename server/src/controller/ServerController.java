@@ -108,11 +108,11 @@ public class ServerController extends Thread{
 
     public void checkUser(String name){
         boolean exists = userNameReader.findUserName(name, "server/src/AllUsers.dat");
-
             if(exists){
                 User user = userNameReader.readFile("server/src/AllUsers.dat", name);
                 activeUsers.add(user);
-                System.out.println("Sender: " + name); //kommentera bort
+                ImageIcon icon = userNameReader.readImage("server/src/AllUsers.dat", name);
+                System.out.println("User image icon = " + icon);
             }
 
             else {

@@ -3,6 +3,8 @@ package entity;
 import controller.ServerController;
 import shared_classes.user.User;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -60,8 +62,34 @@ public class UserNameReader {
     }
 
 
-//TODO: fixa denna metoden.
+
+//TODO: Emil jobba här!
     public User readFile(String filename, String username){
+        User user;
+        String line = "";
+        FileReader fileReader;
+        try {
+            fileReader = new FileReader(filename);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            while ((line = bufferedReader.readLine()) != null){
+                if(line.contains(username)){
+                   // user = bufferedReader.read();
+                  //  System.out.println("User: " + user);
+                    return null;
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public ImageIcon readImage(String filename, String username){
         User user;
         String line = "";
         try {
@@ -71,10 +99,10 @@ public class UserNameReader {
             while ((line = in.readLine()) != null){
                 if(line.contains(username)){
                     user = (User) in.readObject();
-                    return user;
+                    ImageIcon icon = user.getUserImage();
+                    return icon;
                 }
             }
-
 
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -85,7 +113,10 @@ public class UserNameReader {
         }
 
         return null;
+
     }
+
+
 
 
     public User getUserFromArray(String name){
