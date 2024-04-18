@@ -92,7 +92,7 @@ public class ServerController extends Thread{
             ImageIcon imageIcon = new ImageIcon("shared_classes/defaultProfile.png");
             User user  = new User(name, imageIcon);
             userNameReader.newUserAdded(user);
-            userNameReader.saveToFile("server/src/AllUsers.txt", name);
+            userNameReader.saveToFile("server/src/AllUsers.txt", user);
         }
     }
 }

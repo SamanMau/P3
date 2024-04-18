@@ -41,7 +41,7 @@ public class UserNameReader {
     }
 
 
-    public void saveToFile(String filename, String user){
+    public void saveToFile(String filename, User user){
         try{
             /*
             booleska värdet "true" i FileOutPutStream gör så att varje ny skrivning

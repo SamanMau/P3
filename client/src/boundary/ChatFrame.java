@@ -14,7 +14,7 @@ public class ChatFrame extends JFrame{
         super("Chat");
         this.controller = controller;
         this.setSize(580, 500);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         chat.setEditable(false);
         chat.setPreferredSize(new Dimension(400, 400));
         messagePanel = new MessagePanel(controller);

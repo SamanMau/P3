@@ -9,7 +9,7 @@ public class MainframeLogPanel extends JFrame {
     public MainframeLogPanel(){
         super("Server log");
         this.setSize(500, 500);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         log.setEditable(false);
         log.setPreferredSize(new Dimension(400, 400));
         this.add(log, BorderLayout.CENTER);
