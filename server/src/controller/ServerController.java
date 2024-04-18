@@ -110,9 +110,9 @@ public class ServerController extends Thread{
         boolean exists = userNameReader.findUserName(name, "server/src/AllUsers.dat");
 
             if(exists){
-                User user = userNameReader.getUserFromArray(name);
+                User user = userNameReader.readFile("server/src/AllUsers.dat", name);
                 activeUsers.add(user);
-                System.out.println("Sender: " + user.getUserName()); //kommentera bort
+                System.out.println("Sender: " + name); //kommentera bort
             }
 
             else {

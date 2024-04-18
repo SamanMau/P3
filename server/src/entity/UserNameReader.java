@@ -60,17 +60,21 @@ public class UserNameReader {
     }
 
 
-    /*
-    public void readFile(String filename){
-        User element;
+//TODO: fixa denna metoden.
+    public User readFile(String filename, String username){
+        User user;
+        String line = "";
         try {
             FileInputStream fileIn = new FileInputStream(filename);
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            while (true){
-                element = (User) in.readObject();
-               // allUsers.add(element);
-                serverController.names(element);
+
+            while ((line = in.readLine()) != null){
+                if(line.contains(username)){
+                    user = (User) in.readObject();
+                    return user;
+                }
             }
+
 
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -79,9 +83,10 @@ public class UserNameReader {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+
+        return null;
     }
 
-     */
 
     public User getUserFromArray(String name){
         for(int i = 0; i < allUsers.size(); i++){
