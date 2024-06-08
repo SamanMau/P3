@@ -17,8 +17,8 @@ public class StartFrame extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setBackground(Color.GRAY);
 
-        NamePanel namePanel = new NamePanel(this, controller);
-        this.add(namePanel);
+        StartPanel startPanel = new StartPanel(this, controller);
+        this.add(startPanel);
 
         setVisible(true);
     }

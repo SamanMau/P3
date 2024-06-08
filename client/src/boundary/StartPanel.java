@@ -6,21 +6,21 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class NamePanel extends JPanel {
+public class StartPanel extends JPanel {
     private JLabel title;
     private JTextField enterName;
-    private JButton send;
+    private JButton sendName;
     private StartFrame ms;
     private ClientController clientController;
 
-    public NamePanel(StartFrame ms, ClientController clientController){
+    public StartPanel(StartFrame ms, ClientController clientController){
         this.clientController = clientController;
         this.ms = ms;
         title = new JLabel("Name:");
         enterName = new JTextField(15);
-        send = new JButton("Send");
+        sendName = new JButton("Send");
 
-        send.addActionListener(new ActionListener() {
+        sendName.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String name = enterName.getText();
@@ -31,7 +31,7 @@ public class NamePanel extends JPanel {
 
         this.add(title);
         this.add(enterName);
-        this.add(send);
+        this.add(sendName);
         this.setVisible(true);
     }
 }

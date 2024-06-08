@@ -1,19 +1,16 @@
-package entity;
+package controller;
 
-import controller.ServerController;
 import shared_classes.user.User;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Objects;
 
-public class UserNameReader {
+public class UserManager {
     private ArrayList<User> allUsers = new ArrayList<>();
     private ServerController serverController;
 
-    public UserNameReader(ServerController serverController){
+    public UserManager(ServerController serverController){
         this.serverController = serverController;
     }
 
@@ -28,7 +25,7 @@ public class UserNameReader {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
             while ((line = bufferedReader.readLine()) != null){
-                if(line.contains(name)){
+                if(line.contains(userName)){
                     return true;
                 }
             }
@@ -40,6 +37,32 @@ public class UserNameReader {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    //TODO: Emil jobba här!
+    public User readFile(String filename, String username){
+        User user;
+        String line = "";
+        FileReader fileReader;
+        try {
+            fileReader = new FileReader(filename);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            while ((line = bufferedReader.readLine()) != null){
+                if(line.contains(username)){
+                    // user = bufferedReader.read();
+                    //  System.out.println("User: " + user);
+                    return null;
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 
@@ -59,34 +82,6 @@ public class UserNameReader {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-
-
-//TODO: Emil jobba här!
-    public User readFile(String filename, String username){
-        User user;
-        String line = "";
-        FileReader fileReader;
-        try {
-            fileReader = new FileReader(filename);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-            while ((line = bufferedReader.readLine()) != null){
-                if(line.contains(username)){
-                   // user = bufferedReader.read();
-                  //  System.out.println("User: " + user);
-                    return null;
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
     public ImageIcon readImage(String filename, String username){

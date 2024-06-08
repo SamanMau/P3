@@ -1,7 +1,6 @@
 package controller;
 
 import boundary.MainframeLogPanel;
-import entity.UserNameReader;
 import shared_classes.user.User;
 import javax.swing.*;
 import java.io.*;
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 public class ServerController extends Thread{
     private MainframeLogPanel mf = new MainframeLogPanel();
     private ServerSocket serverSocket;
-    private UserNameReader userNameReader;
+    private UserManager userManager;
     private ArrayList<User> activeUsers = new ArrayList<>();
     private User currentSender;
     private User currentReciever;
@@ -22,7 +21,7 @@ public class ServerController extends Thread{
 
     public ServerController() {
         try{
-            userNameReader = new UserNameReader(this);
+            userManager = new UserManager(this);
           //  String file = "AllUsers.dat";
           //  userNameReader.readFile(file);
 
@@ -95,6 +94,7 @@ public class ServerController extends Thread{
                 try {
                     String name = (String) ois.readObject();
                     checkUser(name);
+
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
@@ -107,21 +107,21 @@ public class ServerController extends Thread{
     }
 
     public void checkUser(String name){
-        boolean exists = userNameReader.findUserName(name, "server/src/AllUsers.dat");
+        boolean exists = userManager.findUserName(name, "server/src/AllUsers.dat");
             if(exists){
-                User user = userNameReader.readFile("server/src/AllUsers.dat", name);
+                System.out.println("han existerar");
+                User user = userManager.readFile("server/src/AllUsers.dat", name);
                 activeUsers.add(user);
-                ImageIcon icon = userNameReader.readImage("server/src/AllUsers.dat", name);
+                ImageIcon icon = userManager.readImage("server/src/AllUsers.dat", name);
                 System.out.println("User image icon = " + icon);
             }
 
             else {
-                System.out.println("Han finns inte");
                 ImageIcon imageIcon = new ImageIcon("shared_classes/defaultPic.jpg");
                 User newUser  = new User(name, imageIcon);
                 System.out.println("ImageIcon: " + imageIcon.toString());
-                userNameReader.newUserAdded(newUser);
-                userNameReader.saveToFile("server/src/AllUsers.dat", newUser);
+                userManager.newUserAdded(newUser);
+                userManager.saveToFile("server/src/AllUsers.dat", newUser);
                 activeUsers.add(newUser);
 
                 currentSender = getCurrentSender(newUser); //kommentera bort
