@@ -110,18 +110,16 @@ public class ServerController extends Thread{
         boolean exists = userManager.findUserName(name, "server/src/AllUsers.dat");
             if(exists){
                 System.out.println("han existerar");
-                User user = userManager.readFile("server/src/AllUsers.dat", name);
+                User user = userManager.readUserFromFile("server/src/AllUsers.dat", name);
+                System.out.println(user.getUserImage().toString());
                 activeUsers.add(user);
-                ImageIcon icon = userManager.readImage("server/src/AllUsers.dat", name);
-                System.out.println("User image icon = " + icon);
             }
 
             else {
                 ImageIcon imageIcon = new ImageIcon("shared_classes/defaultPic.jpg");
                 User newUser  = new User(name, imageIcon);
-                System.out.println("ImageIcon: " + imageIcon.toString());
-                userManager.newUserAdded(newUser);
-                userManager.saveToFile("server/src/AllUsers.dat", newUser);
+            //    System.out.println("ImageIcon: " + imageIcon.toString());
+                userManager.saveUserToFile("server/src/AllUsers.dat", newUser);
                 activeUsers.add(newUser);
 
                 currentSender = getCurrentSender(newUser); //kommentera bort

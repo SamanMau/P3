@@ -1,6 +1,10 @@
 package shared_classes.user;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -39,5 +43,13 @@ public class User implements Serializable {
 
     public String getUserName() {
         return userName;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + this.userName + '\'' +
+                ", imageIcon=" + this.userImage +
+                '}';
     }
 }

@@ -20,10 +20,10 @@ public class MessagePanel extends JPanel {
     private JTextPane outPutText;
     private JScrollPane scroll;
 
-    public MessagePanel(ClientController clientController){
+    public MessagePanel(ClientController clientController, MessageFrame messageFrame){
         setLayout(null);
 
-        this.setBounds(0, 60, 580, 500);
+        this.setBounds(0, 60, 500, 500);
         this.controller = clientController;
 
         textInstruction = new JLabel("Type: ");
@@ -52,14 +52,15 @@ public class MessagePanel extends JPanel {
 
 
         inputText = new JTextField();
-        inputText.setBounds(36, 434, 426, 30);
+        inputText.setBounds(36, 434, 365, 30);
         inputText.setBackground(Color.white);
 
         inputText.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String message = inputText.getText();
-                displayText(outPutText, message);
+                String name = clientController.getUserName();
+                displayText(outPutText, message, name);
                 inputText.setText("");
             }
         });
@@ -74,7 +75,8 @@ public class MessagePanel extends JPanel {
 
     public void createImageButton(){
         enterPic = new JButton("Send image");
-        enterPic.setBounds(460, 433, 101, 30);
+        enterPic.setBackground(Color.WHITE);
+        enterPic.setBounds(400, 433, 101, 30);
 
         enterPic.addActionListener(new ActionListener() {
             @Override
@@ -93,17 +95,17 @@ public class MessagePanel extends JPanel {
     "null" har lagts eftersom vi inte vill specifiera någon specifik format på texten,
     exempelvis "italics".
      */
-    public void displayText(JTextPane textPane, String message) {
+    public void displayText(JTextPane textPane, String message, String username) {
         Document document;
         document = textPane.getDocument();
         try {
-            document.insertString(document.getLength(),message+"\n", null);
+            document.insertString(document.getLength(),username + " : " + message+"\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
     }
 
-    public void displayImage(File image){
+    public void displayImage(File image, String username){
         System.out.println(image);
         try {
             ImageIcon oldSize = new ImageIcon(ImageIO.read(image));
@@ -117,7 +119,8 @@ public class MessagePanel extends JPanel {
             throw new RuntimeException(e);
         }
 
-        displayText(outPutText, "");
+        displayText(outPutText, "", username);
     }
+
 
 }

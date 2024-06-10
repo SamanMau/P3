@@ -39,20 +39,16 @@ public class UserManager {
         }
     }
 
-    //TODO: Emil jobba här!
-    public User readFile(String filename, String username){
-        User user;
-        String line = "";
-        FileReader fileReader;
-        try {
-            fileReader = new FileReader(filename);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
+    public User readUserFromFile(String filename, String username){
+        ObjectInputStream ois;
 
-            while ((line = bufferedReader.readLine()) != null){
-                if(line.contains(username)){
-                    // user = bufferedReader.read();
-                    //  System.out.println("User: " + user);
-                    return null;
+        try {
+            ois = new ObjectInputStream(new FileInputStream(filename));
+
+            while (true){
+                User user = (User) ois.readObject();
+                if(user.toString().contains(username)){
+                    return user;
                 }
             }
 
@@ -60,13 +56,17 @@ public class UserManager {
             throw new RuntimeException(e);
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
 
         return null;
     }
 
 
-    public void saveToFile(String filename, User user){
+
+
+    public void saveUserToFile(String filename, User user){
         try{
             /*
             booleska värdet "true" i FileOutPutStream gör så att varje ny skrivning
@@ -79,6 +79,7 @@ public class UserManager {
 
             oos.flush();
             fos.close();
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -124,8 +125,11 @@ public class UserManager {
         return null;
     }
 
+    /*
     public void newUserAdded(User user){
         allUsers.add(user);
     }
+
+     */
 
 }

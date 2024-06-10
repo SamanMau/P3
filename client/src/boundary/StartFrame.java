@@ -4,6 +4,7 @@ import controller.ClientController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public class StartFrame extends JFrame {
     private JPanel namePanel;
@@ -12,9 +13,11 @@ public class StartFrame extends JFrame {
 
     public StartFrame(ClientController controller) {
         super("Welcome!");
+        setLayout(null);
         this.controller = controller;
-        this.setSize(300, 300); // You can adjust the size as needed
+        this.setSize(350, 300);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(false);
         this.getContentPane().setBackground(Color.GRAY);
 
         StartPanel startPanel = new StartPanel(this, controller);
@@ -23,9 +26,8 @@ public class StartFrame extends JFrame {
         setVisible(true);
     }
 
-    public void close(){
-        this.dispose();
-        controller.ChatFrame();
+    public String chooseProfilePic(){
+        return controller.chooseProfilePic();
     }
 
 }

@@ -1,16 +1,18 @@
 package controller;
 
-import boundary.ChatFrame;
+import boundary.MessageFrame;
 import boundary.StartFrame;
 import entity.WrongFormat;
+import shared_classes.user.User;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 
+/*
+Klassen ansvarar för att acceptera klient förfrågningar.
+Klient förfrågningar hanteras genom klassen ClientHandler.
+ */
 public class ClientController {
     private String ipAdress = "127.0.0.1";
     private int port = 1000;
@@ -18,7 +20,9 @@ public class ClientController {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private JFileChooser file;
-    private ChatFrame chatFrame;
+    private MessageFrame messageFrame;
+
+    private String userName;
 
     public ClientController(){
         startView = new StartFrame(this);
@@ -31,8 +35,8 @@ public class ClientController {
         }
     }
 
-    public void ChatFrame(){
-        chatFrame = new ChatFrame(this);
+    public void openChatFrame(String pictureFile){
+        messageFrame = new MessageFrame(this, pictureFile);
     }
 
 
@@ -60,7 +64,7 @@ public class ClientController {
                 }
 
                 else if((name.endsWith("jpg") || (name.endsWith("jpeg")))){
-                    chatFrame.sendImage(chosenFile);
+                    messageFrame.sendImage(chosenFile, userName);
                 }
             } catch (WrongFormat e){
                 JOptionPane.showMessageDialog(null, e.getMessage());
@@ -69,13 +73,51 @@ public class ClientController {
         }
     }
 
-    public void sendName(String name){
+    public String chooseProfilePic(){
+        file = new JFileChooser();
+        int action = file.showSaveDialog(null);
+
+
+        //  Hämtar den valda filen och dess absoluta sökväg, alltså den sökvägen som finns
+        //  lokalt på ens dator.
+
+        if(action == 0){
+            File chosenFile = new File(file.getSelectedFile().getAbsolutePath());
+            String name = chosenFile.getName();
+
+
+            try{
+                if(!(name.endsWith("jpg") || (name.endsWith("jpeg")))){
+                    throw new WrongFormat("You need to either choose a JPEG or PNG picture.");
+                }
+
+                else if((name.endsWith("jpg") || (name.endsWith("jpeg")))){
+                    return name;
+                }
+            } catch (WrongFormat e){
+                JOptionPane.showMessageDialog(null, e.getMessage());
+                chooseProfilePic();
+            }
+
+        }
+
+        return null;
+    }
+
+    public void sendName(String name, String pictureFile){
         try {
+
+            this.userName = name;
+
             oos.writeObject(name);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String getUserName(){
+        return this.userName;
     }
 
 

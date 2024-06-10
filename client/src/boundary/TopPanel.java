@@ -4,6 +4,9 @@ import controller.ClientController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 
 public class TopPanel extends JPanel {
@@ -11,38 +14,39 @@ public class TopPanel extends JPanel {
     private JLabel recieverIcon;
     private JLabel senderIcon;
 
-    public TopPanel(ClientController clientController){
+    private String pictureFile;
+
+    private MessageFrame messageFrame;
+
+    public TopPanel(ClientController clientController, String pictureFile, MessageFrame messageFrame){
         setLayout(null);
         this.controller = clientController;
-        this.setBounds(0, 0, 580, 120);
+        this.pictureFile = pictureFile;
+        this.messageFrame = messageFrame;
+        this.setBounds(0, 0, 500, 120);
+
+        recieverIcon = new JLabel();
         this.setBackground(Color.LIGHT_GRAY);
 
-        displayUserImage("shared_classes/defaultPic.jpg", "shared_classes/defaultPic.jpg");
+        displayUserImage(pictureFile);
 
         this.setVisible(true);
     }
 
-    public void displayUserImage(String recieverPic, String picture){
-        ImageIcon recieverOldSize = new ImageIcon(recieverPic);
-        Image recieverImage = recieverOldSize.getImage();
-        Image recieverChangedSize = recieverImage.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+    public void displayUserImage(String recieverPic){
+        ImageIcon imageIcon = new ImageIcon(recieverPic);
 
-        ImageIcon reciever = new ImageIcon(recieverChangedSize);
+        Image imge = imageIcon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+        imageIcon.setImage(imge);
 
-        recieverIcon = new JLabel(reciever);
-        recieverIcon.setBounds(25, 0, 60, 60);
+        recieverIcon.setIcon(imageIcon);
+        recieverIcon.setBounds(20, 0, 60, 60);
 
-        ImageIcon senderOldSize = new ImageIcon(picture);
-        Image senderImage = senderOldSize.getImage();
-        Image SenderChangedSize = senderImage.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+        SwingUtilities.invokeLater(() -> {
+            this.add(recieverIcon);
+            this.repaint();
+        });
 
-        ImageIcon sender = new ImageIcon(SenderChangedSize);
-
-        senderIcon = new JLabel(sender);
-        senderIcon.setBounds(480, 0, 60, 60);
-
-        this.add(recieverIcon);
-        this.add(senderIcon);
     }
 
 }
