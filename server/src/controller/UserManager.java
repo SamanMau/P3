@@ -2,134 +2,67 @@ package controller;
 
 import shared_classes.user.User;
 
-import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 
 public class UserManager {
-    private ArrayList<User> allUsers = new ArrayList<>();
-    private ServerController serverController;
+    private String filePath;
 
-    public UserManager(ServerController serverController){
-        this.serverController = serverController;
+    ArrayList<User> users;
+
+    public UserManager(String filePath){
+        this.filePath = filePath;
     }
 
-
-    public boolean findUserName(String name, String file){
-        String userName = name;
-        FileReader fileReader;
-
-        String line = "";
-        try {
-            fileReader = new FileReader(file);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-            while ((line = bufferedReader.readLine()) != null){
-                if(line.contains(userName)){
-                    return true;
-                }
-            }
-
-            return false;
-
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public User readUserFromFile(String filename, String username){
-        ObjectInputStream ois;
-
-        try {
-            ois = new ObjectInputStream(new FileInputStream(filename));
-
-            while (true){
-                User user = (User) ois.readObject();
-                if(user.toString().contains(username)){
-                    return user;
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return null;
-    }
-
-
-
-
-    public void saveUserToFile(String filename, User user){
+    public void addUser(User user) {
         try{
-            /*
-            booleska värdet "true" i FileOutPutStream gör så att varje ny skrivning
-            går till en ny rad. På så sätts skrivs saker inte över varandra.
-             */
-            FileOutputStream fos = new FileOutputStream(filename, true);
-
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(user);
-
-            oos.flush();
-            fos.close();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            users = readEveryUserFromFile();
+            users.add(user);
+            overwriteAllUsers(users);
+        } catch (IOException e){
+            e.printStackTrace();
         }
     }
 
-    public ImageIcon readImage(String filename, String username){
-        User user;
-        String line = "";
+    private ArrayList<User> readEveryUserFromFile() {
         try {
-            FileInputStream fileIn = new FileInputStream(filename);
-            ObjectInputStream in = new ObjectInputStream(fileIn);
+            ArrayList<User> users;
 
-            while ((line = in.readLine()) != null){
-                if(line.contains(username)){
-                    user = (User) in.readObject();
-                    ImageIcon icon = user.getUserImage();
-                    return icon;
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filePath));
+
+            users = (ArrayList<User>) ois.readObject();
+
+            return users;
+
+        } catch (FileNotFoundException ex) {
+            throw new RuntimeException(ex);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        } catch (ClassNotFoundException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public void overwriteAllUsers(ArrayList<User> users) throws IOException {
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath));
+            oos.writeObject(users);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public User readUserFromFile(String username) {
+            ArrayList<User> users = readEveryUserFromFile();
+
+            for(int i = 0; i < users.size(); i++){
+                if(users.get(i).getUserName().equals(username)){
+                    return users.get(i);
                 }
             }
 
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return null;
-
+            return null;
     }
-
-
-
-
-    public User getUserFromArray(String name){
-        for(int i = 0; i < allUsers.size(); i++){
-            if(allUsers.get(i).getUserName().equals(name)){
-                return allUsers.get(i);
-            }
-        }
-
-        return null;
-    }
-
-    /*
-    public void newUserAdded(User user){
-        allUsers.add(user);
-    }
-
-     */
 
 }

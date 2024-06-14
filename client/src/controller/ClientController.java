@@ -6,6 +6,7 @@ import entity.WrongFormat;
 import shared_classes.user.User;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 
@@ -24,6 +25,8 @@ public class ClientController {
 
     private String userName;
 
+    private User user;
+
     public ClientController(){
         startView = new StartFrame(this);
         try {
@@ -35,7 +38,7 @@ public class ClientController {
         }
     }
 
-    public void openChatFrame(String pictureFile){
+    public void openChatFrame(ImageIcon pictureFile){
         messageFrame = new MessageFrame(this, pictureFile);
     }
 
@@ -73,7 +76,7 @@ public class ClientController {
         }
     }
 
-    public String chooseProfilePic(){
+    public ImageIcon chooseProfilePic(){
         file = new JFileChooser();
         int action = file.showSaveDialog(null);
 
@@ -83,7 +86,8 @@ public class ClientController {
 
         if(action == 0){
             File chosenFile = new File(file.getSelectedFile().getAbsolutePath());
-            String name = chosenFile.getName();
+            String name = chosenFile.getAbsolutePath();
+        //    String name = chosenFile.getName();
 
 
             try{
@@ -92,7 +96,8 @@ public class ClientController {
                 }
 
                 else if((name.endsWith("jpg") || (name.endsWith("jpeg")))){
-                    return name;
+                    ImageIcon imageIcon = new ImageIcon(name);
+                    return imageIcon;
                 }
             } catch (WrongFormat e){
                 JOptionPane.showMessageDialog(null, e.getMessage());
@@ -118,6 +123,31 @@ public class ClientController {
 
     public String getUserName(){
         return this.userName;
+    }
+
+    public void createAccount(String name, ImageIcon imageIcon) {
+        User user = new User(name, imageIcon);
+        this.userName = name;
+        try {
+            oos.writeObject(user);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void logIn(String userName){
+        User user = new User(userName, null);
+        this.userName = userName;
+
+        try {
+            oos.writeObject(user);
+            ImageIcon userImage = (ImageIcon) ois.readObject();
+            openChatFrame(userImage);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

@@ -4,21 +4,17 @@ import controller.ClientController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-
 
 public class TopPanel extends JPanel {
     private ClientController controller;
     private JLabel recieverIcon;
     private JLabel senderIcon;
 
-    private String pictureFile;
+    private ImageIcon pictureFile;
 
     private MessageFrame messageFrame;
 
-    public TopPanel(ClientController clientController, String pictureFile, MessageFrame messageFrame){
+    public TopPanel(ClientController clientController, ImageIcon pictureFile, MessageFrame messageFrame){
         setLayout(null);
         this.controller = clientController;
         this.pictureFile = pictureFile;
@@ -33,8 +29,8 @@ public class TopPanel extends JPanel {
         this.setVisible(true);
     }
 
-    public void displayUserImage(String recieverPic){
-        ImageIcon imageIcon = new ImageIcon(recieverPic);
+    public void displayUserImage(ImageIcon recieverPic){
+        ImageIcon imageIcon = recieverPic;
 
         Image imge = imageIcon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
         imageIcon.setImage(imge);

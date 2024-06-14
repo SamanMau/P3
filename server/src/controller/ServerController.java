@@ -12,16 +12,18 @@ import java.util.ArrayList;
 public class ServerController extends Thread{
     private MainframeLogPanel mf = new MainframeLogPanel();
     private ServerSocket serverSocket;
-    private UserManager userManager;
     private ArrayList<User> activeUsers = new ArrayList<>();
     private User currentSender;
     private User currentReciever;
     boolean testVariable = true;
 
+    private UserManager userManager;
+
 
     public ServerController() {
         try{
-            userManager = new UserManager(this);
+
+            userManager = new UserManager("server/src/AllUsers.dat");
           //  String file = "AllUsers.dat";
           //  userNameReader.readFile(file);
 
@@ -79,6 +81,8 @@ public class ServerController extends Thread{
        // private LinkedBlockingQueue<Message>
 
         private Socket clientSocket;
+        private ObjectOutputStream oos;
+        private ObjectInputStream ois;
 
         public ClientConnection(Socket clientSocket) {
             this.clientSocket = clientSocket;
@@ -89,44 +93,43 @@ public class ServerController extends Thread{
         @Override
         public void run(){
             try{
-                ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
-                ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
+                oos = new ObjectOutputStream(clientSocket.getOutputStream());
+                ois = new ObjectInputStream(clientSocket.getInputStream());
                 try {
-                    String name = (String) ois.readObject();
-                    checkUser(name);
+                    User user = (User) ois.readObject();
+
+                    ImageIcon imageIcon = user.getUserImage();
+
+                    if(imageIcon != null){
+                        registerUser(user);
+                    } else {
+                        String name = user.getUserName();
+                        logInUser(name);
+                    }
 
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
-                oos.flush();
-
             } catch (IOException e){
-
             }
+        }
+
+        public void logInUser(String name){
+                User user = userManager.readUserFromFile(name);
+
+                if(user != null){
+                    try {
+                        oos.writeObject(user.getUserImage());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+        }
+
+        public void registerUser(User user){
+            userManager.addUser(user);
         }
     }
 
-    public void checkUser(String name){
-        boolean exists = userManager.findUserName(name, "server/src/AllUsers.dat");
-            if(exists){
-                System.out.println("han existerar");
-                User user = userManager.readUserFromFile("server/src/AllUsers.dat", name);
-                System.out.println(user.getUserImage().toString());
-                activeUsers.add(user);
-            }
-
-            else {
-                ImageIcon imageIcon = new ImageIcon("shared_classes/defaultPic.jpg");
-                User newUser  = new User(name, imageIcon);
-            //    System.out.println("ImageIcon: " + imageIcon.toString());
-                userManager.saveUserToFile("server/src/AllUsers.dat", newUser);
-                activeUsers.add(newUser);
-
-                currentSender = getCurrentSender(newUser); //kommentera bort
-
-                System.out.println("Sender: " + newUser.getUserName()); //kommentera bort
-
-            }
-
-    }
 }

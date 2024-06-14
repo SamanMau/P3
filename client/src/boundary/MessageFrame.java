@@ -16,7 +16,7 @@ public class MessageFrame extends JFrame{
 
     private AddFriendFrame addFriendFrame;
 
-    public MessageFrame(ClientController controller, String pictureFile){
+    public MessageFrame(ClientController controller, ImageIcon pictureFile){
         super("Chat");
         this.controller = controller;
         this.setLayout(null);
@@ -47,9 +47,12 @@ public class MessageFrame extends JFrame{
         messagePanel.displayImage(message, name);
     }
 
+    /*
     public String chooseProfilePic(){
         return controller.chooseProfilePic();
     }
+
+     */
 
 
 }

@@ -3,9 +3,9 @@ package boundary;
 import controller.ClientController;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 public class StartPanel extends JPanel {
     private JLabel title;
@@ -18,32 +18,37 @@ public class StartPanel extends JPanel {
     private JButton button;
     private ClientController clientController;
 
+    private JButton login;
+    private JButton register;
+
     public StartPanel(StartFrame startFrame, ClientController clientController){
         setLayout(null);
         this.setBounds(0, 0, 350, 300);
         this.clientController = clientController;
         this.startFrame = startFrame;
-        title = new JLabel("Name:");
-        title.setBounds(10, 80, 60, 20);
 
-        enterName = new JTextField(15);
-        enterName.setBounds(60, 80, 200, 25);
-
-        sendName = new JButton("Send");
-        sendName.setBounds(140, 130, 70, 25);
-
-        button = new JButton("Choose image");
-        button.setBounds(120, 30, 120, 25);
+        setUp();
 
         addActionListener();
 
-        this.add(title);
-        this.add(enterName);
-        this.add(sendName);
-        this.add(button);
+        this.add(login);
+        this.add(register);
+    }
+
+    public void setUp(){
+
+        login = new JButton("Log in");
+        login.setBounds(95, 80, 120, 20);
+        login.setBackground(Color.WHITE);
+
+        register = new JButton("Register");
+        register.setBounds(95, 140, 120, 20);
+        register.setBackground(Color.WHITE);
+
     }
 
     public void addActionListener(){
+        /*
         sendName.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -62,6 +67,22 @@ public class StartPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 pictureFile = startFrame.chooseProfilePic();
+            }
+        });
+
+         */
+
+        login.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startFrame.openLoginFrame();
+            }
+        });
+
+        register.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startFrame.openRegisterFrame();
             }
         });
     }
