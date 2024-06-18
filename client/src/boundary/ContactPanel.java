@@ -51,8 +51,16 @@ public class ContactPanel extends JPanel {
 
         for(int i = 0; i < amount; i++){
             JButton button = new JButton(list.get(i));
-            button.setBounds(0, i * 40, 100, 20);
+            if(i == 0){
+                button.setBounds(20, 70, 120, 20);
+            } else {
+                button.setBounds(20, (i + 1) * 50, 120, 20);
+            }
+
+            button.setBackground(Color.WHITE);
+
             this.add(button);
+            repaint();
         }
 
 

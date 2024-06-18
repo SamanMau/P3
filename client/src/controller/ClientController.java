@@ -48,19 +48,8 @@ public class ClientController {
             throw new RuntimeException(e);
         }
 
-        test(); // funkar inte
-
     }
 
-    public void test(){
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("client/src/contacts.txt"));
-            writer.write("hello");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 
     public void openChatFrame(ImageIcon pictureFile){
         messageFrame = new MessageFrame(this, pictureFile);
@@ -69,29 +58,29 @@ public class ClientController {
     public void updateContacts() {
 
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("client/src/contacts.txt"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("client/src/contacts.txt", true));
             for(String person : contactList.keySet()){
                 writer.write(person + ": ");
 
-                /*
+
                 ArrayList<String> friendContacts = contactList.get(person);
 
 
                 for(String friend : friendContacts){
                     writer.write(friend);
-                    //writer.write(", ");
+                    writer.write(", ");
                 }
                 writer.newLine();
 
-
-                 */
             }
+
+            writer.close();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-      //  readContacts();
+        readContacts();
 
     }
 
@@ -119,7 +108,6 @@ public class ClientController {
             while (!((row = reader.readLine()) == null)){
                 String[] splitRow = row.split(": ");
                 String personName = splitRow[0];
-                System.out.print("Person: " + personName);
 
                 String[] friendList = splitRow[1].split(", ");
 

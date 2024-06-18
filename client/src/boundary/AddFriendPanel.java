@@ -32,7 +32,6 @@ public class AddFriendPanel extends JPanel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     addFriendFrame.addFriendToList(button.getText());
-                    System.out.println("En vän tillagd");
                 }
             });
 
@@ -46,7 +45,6 @@ public class AddFriendPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 addFriendFrame.updateContacts();
-                System.out.println("Saved changes");
             }
         });
 
