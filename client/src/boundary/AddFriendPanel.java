@@ -25,13 +25,14 @@ public class AddFriendPanel extends JPanel {
 
         for(int i = 0; i < onlineUsers.size(); i++){
             JButton button = new JButton(onlineUsers.get(i));
-                button.setBounds(90, i * 40, 150, 20);
+            button.setBounds(90, i * 40, 150, 20);
 
 
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     addFriendFrame.addFriendToList(button.getText());
+                    System.out.println("En vän tillagd");
                 }
             });
 
@@ -45,6 +46,7 @@ public class AddFriendPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 addFriendFrame.updateContacts();
+                System.out.println("Saved changes");
             }
         });
 

@@ -22,6 +22,8 @@ public class ContactPanel extends JPanel {
 
         setUpContacts();
         setActionListeners();
+        this.add(contactText);
+        this.add(addnewFriend);
     }
 
     public void setUpContacts(){
@@ -33,8 +35,6 @@ public class ContactPanel extends JPanel {
         contactText.setBounds(5, 50, 60, 20);
         contactText.setForeground(Color.WHITE);
 
-        this.add(contactText);
-        this.add(addnewFriend);
     }
 
     public void setActionListeners(){

@@ -48,7 +48,17 @@ public class ClientController {
             throw new RuntimeException(e);
         }
 
-        readContacts();
+        test(); // funkar inte
+
+    }
+
+    public void test(){
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("client/src/contacts.txt"));
+            writer.write("hello");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -59,18 +69,22 @@ public class ClientController {
     public void updateContacts() {
 
         try {
-            FileWriter writer = new FileWriter("client/src/Contacts.txt");
+            BufferedWriter writer = new BufferedWriter(new FileWriter("client/src/contacts.txt"));
             for(String person : contactList.keySet()){
                 writer.write(person + ": ");
 
+                /*
                 ArrayList<String> friendContacts = contactList.get(person);
+
 
                 for(String friend : friendContacts){
                     writer.write(friend);
-                    writer.write(", ");
-                    writer.write("\n");
+                    //writer.write(", ");
                 }
+                writer.newLine();
 
+
+                 */
             }
 
         } catch (IOException e) {
