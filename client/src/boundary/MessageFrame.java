@@ -4,6 +4,7 @@ import controller.ClientController;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
 
 public class MessageFrame extends JFrame{
     private JTextArea chat = new JTextArea();
@@ -41,18 +42,37 @@ public class MessageFrame extends JFrame{
         addFriendFrame = new AddFriendFrame(this);
     }
 
+    public ArrayList<String> getOnlineUsers(){
+        return controller.getOnlineUsers();
+    }
+
 
 
     public void sendImage(File message, String name){
         messagePanel.displayImage(message, name);
     }
 
-    /*
-    public String chooseProfilePic(){
-        return controller.chooseProfilePic();
+    public void displayText(String text, String sender){
+        messagePanel.displayText(messagePanel.getTextPane(), text, sender);
     }
 
-     */
+    public String getUserName(){
+        return controller.getUserName();
+    }
 
+    public void updateContacts() {
+        controller.updateContacts();
+    }
 
+    public String getCurrentUser() {
+        return controller.getUserName();
+    }
+
+    public void addFriendToList(String friend) {
+        controller.addFriendToList(friend);
+    }
+
+    public void displayContacts(ArrayList<String> list) {
+        contactPanel.displayContacts(list);
+    }
 }

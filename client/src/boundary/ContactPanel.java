@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class ContactPanel extends JPanel {
     private MessageFrame messageFrame;
@@ -45,4 +46,15 @@ public class ContactPanel extends JPanel {
         });
     }
 
+    public void displayContacts(ArrayList<String> list) {
+        int amount = list.size();
+
+        for(int i = 0; i < amount; i++){
+            JButton button = new JButton(list.get(i));
+            button.setBounds(0, i * 40, 100, 20);
+            this.add(button);
+        }
+
+
+    }
 }

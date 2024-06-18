@@ -48,4 +48,8 @@ public class StartFrame extends JFrame {
     public void logIn(String name){
         controller.logIn(name);
     }
+
+    public void newConnection(){
+        controller.newConnection();
+    }
 }

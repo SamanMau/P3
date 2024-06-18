@@ -62,6 +62,7 @@ public class MessagePanel extends JPanel {
                 String name = clientController.getUserName();
                 displayText(outPutText, message, name);
                 inputText.setText("");
+                clientController.manageMessage(message);
             }
         });
 
@@ -84,6 +85,10 @@ public class MessagePanel extends JPanel {
                 controller.openFileManager();
             }
         });
+    }
+
+    public JTextPane getTextPane(){
+        return outPutText;
     }
 
 

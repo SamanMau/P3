@@ -1,11 +1,7 @@
 package shared_classes.user;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 
 public class User implements Serializable {
@@ -14,9 +10,30 @@ public class User implements Serializable {
     private ArrayList<User> contacts;
     private static final long serialVersionUID = 1L;
 
+    private byte[] imageByteArray;
+
     public User(String userName, ImageIcon userImage){
-        this.userImage = userImage;
+        convertImageToByte(userImage);
+
         this.userName = userName;
+    }
+
+    public void convertImageToByte(ImageIcon imageIcon){
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(imageIcon);
+
+            this.imageByteArray = baos.toByteArray();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public byte[] getImageByteArray(){
+        return imageByteArray;
     }
 
     public int hashCode() {
@@ -48,8 +65,26 @@ public class User implements Serializable {
         this.userImage = image;
     }
 
+    /*
     public ImageIcon getUserImage() {
         return userImage;
+    }
+
+     */
+
+    //deserialiserar bilden så att man kan läsa den.
+    public ImageIcon getUserImage() {
+        try {
+
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(imageByteArray));
+            ImageIcon imageIcon = (ImageIcon) ois.readObject();
+            return imageIcon;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getUserName() {

@@ -1,21 +1,20 @@
 package controller;
 
 import boundary.MainframeLogPanel;
+import entity.Client;
+import shared_classes.textMessage.Message;
 import shared_classes.user.User;
-import javax.swing.*;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class ServerController extends Thread{
-    private MainframeLogPanel mf = new MainframeLogPanel();
     private ServerSocket serverSocket;
     private ArrayList<User> activeUsers = new ArrayList<>();
-    private User currentSender;
-    private User currentReciever;
-    boolean testVariable = true;
 
     private UserManager userManager;
 
@@ -97,15 +96,41 @@ public class ServerController extends Thread{
                 ois = new ObjectInputStream(clientSocket.getInputStream());
                 try {
                     User user = (User) ois.readObject();
+                    Client client = new Client(user, clientSocket, oos, ois);
+                    client.put(user, client);
 
-                    ImageIcon imageIcon = user.getUserImage();
+                    boolean created = userManager.checkIfExists(user.getUserName());
 
-                    if(imageIcon != null){
+                    if(!created){
                         registerUser(user);
                     } else {
                         String name = user.getUserName();
                         logInUser(name);
                     }
+
+                    updateUserList();
+
+
+                    while (true){
+                      //  Message message = (Message) ois.readObject();
+                      //  handleMessage(message);
+
+
+                        Object obj = ois.readObject();
+
+                        if(obj instanceof Message){
+                            Message message = (Message) obj;
+                            handleMessage(message);
+                        }
+
+
+                   //     else {
+                     //       oos.writeObject(obj);
+                      //  }
+
+                    }
+
+
 
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
@@ -114,10 +139,29 @@ public class ServerController extends Thread{
             }
         }
 
-        public void logInUser(String name){
-                User user = userManager.readUserFromFile(name);
+        public void handleMessage(Message message){
+            User userReciever = message.getReciever();
+            String name = userReciever.getUserName();
 
-                if(user != null){
+            User reciever = userManager.readUserFromFile(name);
+
+            Client clientReciever = Client.get(reciever);
+            ObjectOutputStream oos = clientReciever.getOos();
+
+            if(clientReciever.online()){
+                try {
+                    oos.writeObject(message);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        }
+
+        public void logInUser(String name){
+            User user = userManager.readUserFromFile(name);
+
+            if(user != null){
                     try {
                         oos.writeObject(user.getUserImage());
                     } catch (IOException e) {
@@ -129,6 +173,28 @@ public class ServerController extends Thread{
 
         public void registerUser(User user){
             userManager.addUser(user);
+
+        }
+
+        /*
+        "clients.keySet()" returnerar alla keys som finns i
+        en hashmap.
+         */
+        public void updateUserList(){
+            ArrayList<String> userList = new ArrayList<>();
+            HashMap<User,Client> clients = Client.getHashMap();
+
+            for(User user : clients.keySet()){
+                userList.add(user.getUserName());
+            }
+
+            try {
+                oos.writeObject(userList);
+                oos.flush();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
         }
     }
 

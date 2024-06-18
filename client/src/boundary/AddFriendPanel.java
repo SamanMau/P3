@@ -1,11 +1,18 @@
 package boundary;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class AddFriendPanel extends JPanel {
     private AddFriendFrame addFriendFrame;
+    private ArrayList<String> onlineUsers;
+
+    private JButton save;
 
     public AddFriendPanel(AddFriendFrame addFriendFrame){
+        this.setLayout(null);
         this.addFriendFrame = addFriendFrame;
 
         this.setBounds(0, 0, 400, 400);
@@ -14,18 +21,34 @@ public class AddFriendPanel extends JPanel {
     }
 
     public void setUp(){
+        onlineUsers = addFriendFrame.getOnlineUsers();
 
-        JLabel jLabel = new JLabel("TODO: Visa alla aktiva kontakter i form av jbuttons");
-        JLabel jLabel1 = new JLabel("Man ska kunna trycka på en knapp, alltså en person, ");
-        JLabel jLabel2 = new JLabel("och lägga till denna person som vän i kontakter.");
+        for(int i = 0; i < onlineUsers.size(); i++){
+            JButton button = new JButton(onlineUsers.get(i));
+                button.setBounds(90, i * 40, 150, 20);
 
-        jLabel.setBounds(30, 20, 200, 30);
-        jLabel1.setBounds(30, 60, 200, 30);
-        jLabel2.setBounds(30, 120, 200, 30);
 
-        this.add(jLabel);
-        this.add(jLabel1);
-        this.add(jLabel2);
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    addFriendFrame.addFriendToList(button.getText());
+                }
+            });
+
+            this.add(button);
+        }
+
+        this.save = new JButton("Save changes");
+        save.setBounds(260, 20, 120, 20);
+
+        save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addFriendFrame.updateContacts();
+            }
+        });
+
+        this.add(save);
     }
 
 }

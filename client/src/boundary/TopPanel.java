@@ -14,6 +14,10 @@ public class TopPanel extends JPanel {
 
     private MessageFrame messageFrame;
 
+    private JLabel userName;
+
+    private String name;
+
     public TopPanel(ClientController clientController, ImageIcon pictureFile, MessageFrame messageFrame){
         setLayout(null);
         this.controller = clientController;
@@ -25,6 +29,9 @@ public class TopPanel extends JPanel {
         this.setBackground(Color.LIGHT_GRAY);
 
         displayUserImage(pictureFile);
+
+        this.add(recieverIcon);
+        this.add(userName);
 
         this.setVisible(true);
     }
@@ -38,10 +45,13 @@ public class TopPanel extends JPanel {
         recieverIcon.setIcon(imageIcon);
         recieverIcon.setBounds(20, 0, 60, 60);
 
-        SwingUtilities.invokeLater(() -> {
-            this.add(recieverIcon);
-            this.repaint();
-        });
+        String name = messageFrame.getUserName();
+
+        userName = new JLabel(name);
+        userName.setBounds(90, 35, 100, 20);
+
+
+
 
     }
 

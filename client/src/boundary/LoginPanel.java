@@ -12,13 +12,20 @@ public class LoginPanel extends JPanel {
 
     private JLabel enterNameInstruction;
 
-
     public LoginPanel(StartFrame startFrame, LoginFrame loginFrame){
         this.setLayout(null);
         this.setBounds(0, 0, 350, 300);
         this.startFrame = startFrame;
         this.loginFrame = loginFrame;
 
+        setUp();
+
+        this.add(enterName);
+        this.add(enterNameInstruction);
+
+    }
+
+    public void setUp(){
         enterNameInstruction = new JLabel("Enter name: ");
         enterNameInstruction.setBounds(15, 80, 100, 20);
 
@@ -32,11 +39,5 @@ public class LoginPanel extends JPanel {
                 loginFrame.logIn(name);
             }
         });
-
-        this.add(enterName);
-        this.add(enterNameInstruction);
-
-
-
     }
 }

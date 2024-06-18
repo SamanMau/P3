@@ -21,6 +21,8 @@ public class StartPanel extends JPanel {
     private JButton login;
     private JButton register;
 
+    private JButton newUser;
+
     public StartPanel(StartFrame startFrame, ClientController clientController){
         setLayout(null);
         this.setBounds(0, 0, 350, 300);
@@ -33,6 +35,7 @@ public class StartPanel extends JPanel {
 
         this.add(login);
         this.add(register);
+        this.add(newUser);
     }
 
     public void setUp(){
@@ -45,32 +48,13 @@ public class StartPanel extends JPanel {
         register.setBounds(95, 140, 120, 20);
         register.setBackground(Color.WHITE);
 
+        newUser = new JButton("Create new connection");
+        newUser.setBounds(75, 180, 170, 20);
+        newUser.setBackground(Color.WHITE);
+
     }
 
     public void addActionListener(){
-        /*
-        sendName.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String name = enterName.getText();
-                if(pictureFile != null){
-                    clientController.sendName(name, pictureFile);
-                    clientController.openChatFrame(pictureFile);
-                } else {
-                    JOptionPane.showMessageDialog(null, "You need to choose an image");
-                }
-
-            }
-        });
-
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                pictureFile = startFrame.chooseProfilePic();
-            }
-        });
-
-         */
 
         login.addActionListener(new ActionListener() {
             @Override
@@ -83,6 +67,13 @@ public class StartPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 startFrame.openRegisterFrame();
+            }
+        });
+
+        newUser.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startFrame.newConnection();
             }
         });
     }
