@@ -4,8 +4,7 @@ import controller.ClientController;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +18,7 @@ public class MessagePanel extends JPanel {
     private JLabel textInstruction;
     private JButton enterPic;
     private JTextPane outPutText;
+    private StyledDocument document;
     private JScrollPane scroll;
 
     private MessageFrame messageFrame;
@@ -48,6 +48,15 @@ public class MessagePanel extends JPanel {
         outPutText.setBounds(0, 0, 485, 433);
         outPutText.setBackground(Color.white);
         this.add(outPutText);
+
+        /*StyledDocument är ett interface som kan ge mer
+        kontroll över ens textpane. Varje textPane har en
+        styledDocument kopplat till den som default.
+        Det som händer i denna rad är att vi hämtar styleDocumentet
+        som är associerat med vår textPane.
+
+         */
+        document = outPutText.getStyledDocument();
 
         this.scroll = new JScrollPane(outPutText);
         scroll.setBackground(Color.red);
@@ -148,4 +157,17 @@ public class MessagePanel extends JPanel {
     }
 
 
+    public void displayFormattedImage(Icon imageIcon, String userName, String receiverTime) {
+        JLabel label = new JLabel(imageIcon);
+
+        displayText(outPutText, "", userName, messageFrame.getReceiverTime());
+        Style style = document.addStyle("style", null);
+        StyleConstants.setComponent(style, label);
+
+        try {
+            document.insertString(document.getLength(), "", style);
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
