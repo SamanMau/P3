@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MessagePanel extends JPanel {
     private JTextField inputText;
@@ -20,17 +21,20 @@ public class MessagePanel extends JPanel {
     private JTextPane outPutText;
     private JScrollPane scroll;
 
+    private MessageFrame messageFrame;
+
     public MessagePanel(ClientController clientController, MessageFrame messageFrame){
         setLayout(null);
 
         this.setBounds(0, 60, 500, 500);
         this.controller = clientController;
+        this.messageFrame = messageFrame;
 
         textInstruction = new JLabel("Type: ");
         textInstruction.setBounds(3, 433, 40, 30);
         this.add(textInstruction);
 
-        createImageButton();
+        createButtons();
         this.add(enterPic);
 
         /*
@@ -58,11 +62,18 @@ public class MessagePanel extends JPanel {
         inputText.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String message = inputText.getText();
-                String name = clientController.getUserName();
-                displayText(outPutText, message, name);
-                inputText.setText("");
-                clientController.manageMessage(message);
+                ArrayList<String> contacts = messageFrame.getFriends();
+
+                if(contacts != null){
+                    String message = inputText.getText();
+                    String name = messageFrame.getUserName();
+                    displayText(outPutText, message, name, messageFrame.getReceiverTime());
+                    inputText.setText("");
+                    messageFrame.manageMessage(message, contacts);
+                }
+
+                messageFrame.removeChosenFriend();
+
             }
         });
 
@@ -74,7 +85,7 @@ public class MessagePanel extends JPanel {
 
 
 
-    public void createImageButton(){
+    public void createButtons(){
         enterPic = new JButton("Send image");
         enterPic.setBackground(Color.WHITE);
         enterPic.setBounds(400, 433, 101, 30);
@@ -82,7 +93,7 @@ public class MessagePanel extends JPanel {
         enterPic.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.openFileManager();
+                messageFrame.openFileManager();
             }
         });
     }
@@ -100,31 +111,40 @@ public class MessagePanel extends JPanel {
     "null" har lagts eftersom vi inte vill specifiera någon specifik format på texten,
     exempelvis "italics".
      */
-    public void displayText(JTextPane textPane, String message, String username) {
+    public void displayText(JTextPane textPane, String message, String username, String receiverTime) {
         Document document;
         document = textPane.getDocument();
         try {
-            document.insertString(document.getLength(),username + " : " + message+"\n", null);
+            document.insertString(document.getLength(),username + " : " + message+ "       " + receiverTime + "\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
     }
 
     public void displayImage(File image, String username){
-        System.out.println(image);
-        try {
-            ImageIcon oldSize = new ImageIcon(ImageIO.read(image));
-            Image thisImage = oldSize.getImage();
-            Image changedSize = thisImage.getScaledInstance(150, 150, Image.SCALE_DEFAULT);
+        ArrayList<String> contacts = messageFrame.getFriends();
 
-            ImageIcon newSize = new ImageIcon(changedSize);
+        if(contacts != null){
+            try {
+                ImageIcon oldSize = new ImageIcon(ImageIO.read(image));
+                Image thisImage = oldSize.getImage();
+                Image changedSize = thisImage.getScaledInstance(150, 150, Image.SCALE_DEFAULT);
 
-            outPutText.insertIcon(newSize);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+                ImageIcon newSize = new ImageIcon(changedSize);
+
+                displayText(outPutText, "", username, messageFrame.getReceiverTime());
+                outPutText.insertIcon(newSize);
+                displayText(outPutText, "", "", "");
+
+                 messageFrame.managePicture(newSize, contacts);
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
         }
 
-        displayText(outPutText, "", username);
+        messageFrame.removeChosenFriend();
     }
 
 

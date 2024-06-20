@@ -4,6 +4,8 @@ import controller.ClientController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class TopPanel extends JPanel {
     private ClientController controller;
@@ -18,6 +20,8 @@ public class TopPanel extends JPanel {
 
     private String name;
 
+    private JButton logOut;
+
     public TopPanel(ClientController clientController, ImageIcon pictureFile, MessageFrame messageFrame){
         setLayout(null);
         this.controller = clientController;
@@ -28,15 +32,16 @@ public class TopPanel extends JPanel {
         recieverIcon = new JLabel();
         this.setBackground(Color.LIGHT_GRAY);
 
-        displayUserImage(pictureFile);
+        setUp(pictureFile);
 
         this.add(recieverIcon);
         this.add(userName);
+        this.add(logOut);
 
         this.setVisible(true);
     }
 
-    public void displayUserImage(ImageIcon recieverPic){
+    public void setUp(ImageIcon recieverPic){
         ImageIcon imageIcon = recieverPic;
 
         Image imge = imageIcon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
@@ -50,8 +55,17 @@ public class TopPanel extends JPanel {
         userName = new JLabel(name);
         userName.setBounds(90, 35, 100, 20);
 
+        logOut = new JButton("Log out");
+        logOut.setBackground(Color.WHITE);
+        logOut.setBounds(400, 0, 100, 20);
+        logOut.setFocusPainted(false);
 
-
+        logOut.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                messageFrame.logOut();
+            }
+        });
 
     }
 

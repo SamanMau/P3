@@ -47,22 +47,33 @@ public class ContactPanel extends JPanel {
     }
 
     public void displayContacts(ArrayList<String> list) {
-        int amount = list.size();
+        if(list != null){
+            int amount = list.size();
 
-        for(int i = 0; i < amount; i++){
-            JButton button = new JButton(list.get(i));
-            if(i == 0){
-                button.setBounds(20, 70, 120, 20);
-            } else {
-                button.setBounds(20, (i + 1) * 50, 120, 20);
+            for(int i = 0; i < amount; i++){
+                JButton button = new JButton(list.get(i));
+                if(i == 0){
+                    button.setBounds(20, 70, 120, 20);
+                } else {
+                    button.setBounds(20, (i + 1) * 50, 120, 20);
+                }
+
+                button.setBackground(Color.WHITE);
+
+                button.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String user = button.getText();
+                        messageFrame.collectFriends(user);
+                    }
+                });
+
+                this.add(button);
+                repaint();
             }
-
-            button.setBackground(Color.WHITE);
-
-            this.add(button);
-            repaint();
         }
 
 
     }
+
 }

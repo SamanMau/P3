@@ -10,6 +10,9 @@ import shared_classes.user.User;
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
+import java.sql.SQLOutput;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,11 +40,13 @@ public class ClientController {
 
     private HashMap<String, ArrayList<String>> contactList;
 
+    private Socket socket;
+
     public ClientController(){
         startView = new StartFrame(this);
         contactList = new HashMap<>();
         try {
-            Socket socket = new Socket(ipAdress, port);
+            socket = new Socket(ipAdress, port);
             this.ois = new ObjectInputStream(socket.getInputStream());
             this.oos = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
@@ -53,6 +58,7 @@ public class ClientController {
 
     public void openChatFrame(ImageIcon pictureFile){
         messageFrame = new MessageFrame(this, pictureFile);
+        readContacts();
     }
 
     public void updateContacts() {
@@ -130,8 +136,6 @@ public class ClientController {
         ArrayList<String> list = contactList.get(userName);
         
         messageFrame.displayContacts(list);
-
-
     }
 
     /*
@@ -172,6 +176,21 @@ public class ClientController {
         return monitorMessage.getOnlineUsers();
     }
 
+    public String getReceiverTime(){
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        //"ofPattern" används för att skapa en specifik tidsformat.
+        DateTimeFormatter formatCurrentTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+
+            /*Vi formaterar den nuvarande tiden "currentTime" genom att använda mönstret vi skapade i
+             objektet formatCurrentTime.
+            */
+        String formattedTime = currentTime.format(formatCurrentTime);
+
+        return formattedTime;
+    }
+
     public String getName(){
         return this.userName;
     }
@@ -209,6 +228,24 @@ public class ClientController {
         return null;
     }
 
+    public void managePicture(ImageIcon newSize, ArrayList<String> contacts) {
+        ArrayList<User> receivers = new ArrayList<>();
+
+        for(String contact : contacts){
+            User user1 = new User(contact, null);
+            receivers.add(user1);
+        }
+
+        Message image = new Message(user, receivers, null, newSize);
+
+        try {
+            oos.writeObject(image);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public void newConnection(){
         MainClient.main(new String[0]);
     }
@@ -238,8 +275,18 @@ public class ClientController {
             throw new RuntimeException(e);
         }
 
-        monitorMessage = new MonitorMessage();
+        monitorMessage = new MonitorMessage(socket, true);
         monitorMessage.start();
+    }
+
+    public void logOut(){
+        Message logOut = new Message(user, "Log out request");
+        try {
+            oos.writeObject(logOut);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void logIn(String userName){
@@ -249,11 +296,18 @@ public class ClientController {
         try {
             oos.writeObject(user);
 
-            ImageIcon userImage = (ImageIcon) ois.readObject();
-            openChatFrame(userImage);
+            Object obj = ois.readObject();
 
-            monitorMessage = new MonitorMessage();
-            monitorMessage.start();
+            if(obj instanceof ImageIcon){
+                ImageIcon userImage = (ImageIcon) obj;
+                openChatFrame(userImage);
+
+                monitorMessage = new MonitorMessage(socket, true);
+                monitorMessage.start();
+            } else {
+                JOptionPane.showMessageDialog(null, "Account does not exist");
+
+            }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -263,16 +317,34 @@ public class ClientController {
     }
 
 
-    public void manageMessage(String text){
-        User reciever = new User("LELA", null);
-        Message message = new Message(user, reciever, text, null);
+    public void manageMessage(String text, ArrayList<String> contacts){
+        ArrayList<User> receivers = new ArrayList<>();
 
+        for(String contact : contacts){
+            User user1 = new User(contact, null);
+            receivers.add(user1);
+        }
+
+        Message message = new Message(user, receivers, text, null);
         try {
             oos.writeObject(message);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+        /*
+        for(int i = 0; i < contacts.size(); i++){
+            String name = contacts.get(i);
+            User reciever = new User(name, null);
+            Message message = new Message(user, reciever, text, null);
+            try {
+                oos.writeObject(message);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+         */
 
     }
 
@@ -295,29 +367,71 @@ public class ClientController {
 
     private class MonitorMessage extends Thread{
         private static ArrayList<String> onlineUsers;
+        private Socket socket;
+        private boolean isRunning;
 
-        public MonitorMessage(){
-            System.out.println("ggg");
+        public MonitorMessage(Socket socket, boolean isRunning){
+            this.socket = socket;
+            this.isRunning = true;
+        }
+
+        public void setRunning(){
+            this.isRunning = false;
         }
 
         @Override
         public void run(){
                 try {
-                    while (true) {
+                    while (isRunning) {
                         Object obj = ois.readObject();
 
                         if(obj instanceof Message){
                             Message message = (Message) obj;
+                            String textContent = message.getTextMessage();
 
-                            if (message != null) {
-                                String name = user.getUserName();
-                                User reciever = message.getReciever();
+                            if (textContent != null) {
+                                String name = message.getSender().getUserName();
 
-                                if(name.equals(reciever.getUserName())){
-                                    messageFrame.displayText(message.getTextMessage(), message.getSender().getUserName());
+                                if(name.equals(userName)){
+                                    String text = message.getTextMessage();
+
+                                    if(text.equals("Accepted")){
+                                        socket.close();
+                                        break;
+                                    }
+                                }
+
+                                else {
+                                    String user = getUserName();
+                                    ArrayList<User> recievers = message.getRecievers();
+
+                                    for(User receiver : recievers){
+                                        if(user.equals(receiver.getUserName())){
+                                            String formattedTime = getReceiverTime();
+                                            message.setReceiverTime(formattedTime);
+
+                                            messageFrame.displayText(message.getTextMessage(), message.getSender().getUserName(), message.getReceiverTime());
+                                        }
+                                    }
+                                }
+
+                            } else if((textContent == null) && message.getImageIcon() != null) {
+                                String user = getUserName();
+                                ArrayList<User> recievers = message.getRecievers();
+
+                                for(User receiver : recievers){
+                                    if(user.equals(receiver.getUserName())){
+                                        String formattedTime = getReceiverTime();
+                                        message.setReceiverTime(formattedTime);
+
+                                        messageFrame.displayImage(message.getImageIcon(), message.getSender().getUserName(), message.getReceiverTime());
+                                    }
                                 }
                             }
+
                         } else if(obj instanceof ArrayList<?>){
+                            Message message1 = new Message(null, "Safe close");
+                            oos.writeObject(message1);
                             onlineUsers = (ArrayList<String>) obj;
                         }
 
@@ -334,6 +448,7 @@ public class ClientController {
         public ArrayList<String> getOnlineUsers(){
             return onlineUsers;
         }
+
     }
 
 

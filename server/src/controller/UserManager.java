@@ -57,7 +57,7 @@ public class UserManager {
             ArrayList<User> users = readEveryUserFromFile();
 
             for(int i = 0; i < users.size(); i++){
-                if(users.get(i).getUserName().contains(username)){
+                if(users.get(i).getUserName().equals(username)){
                     return users.get(i);
                 }
             }

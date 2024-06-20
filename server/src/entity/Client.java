@@ -29,6 +29,14 @@ public class Client {
         this.ois = ois;
     }
 
+    public Client(){
+
+    }
+
+    public void remove(User user){
+        clients.remove(user);
+    }
+
     public static HashMap<User,Client> getHashMap(){
         return clients;
     }

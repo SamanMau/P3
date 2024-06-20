@@ -1,13 +1,14 @@
 package boundary;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class AddFriendPanel extends JPanel {
     private AddFriendFrame addFriendFrame;
-    private ArrayList<String> onlineUsers;
+    private static ArrayList<String> onlineUsers;
 
     private JButton save;
 
@@ -21,11 +22,14 @@ public class AddFriendPanel extends JPanel {
     }
 
     public void setUp(){
+        onlineUsers = new ArrayList<>();
         onlineUsers = addFriendFrame.getOnlineUsers();
 
         for(int i = 0; i < onlineUsers.size(); i++){
             JButton button = new JButton(onlineUsers.get(i));
+
             button.setBounds(90, i * 40, 150, 20);
+            button.setBackground(Color.WHITE);
 
 
             button.addActionListener(new ActionListener() {
@@ -39,6 +43,7 @@ public class AddFriendPanel extends JPanel {
         }
 
         this.save = new JButton("Save changes");
+        save.setBackground(Color.WHITE);
         save.setBounds(260, 20, 120, 20);
 
         save.addActionListener(new ActionListener() {

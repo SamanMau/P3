@@ -5,9 +5,13 @@ import entity.Client;
 import shared_classes.textMessage.Message;
 import shared_classes.user.User;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.chrono.MinguoEra;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,6 +21,7 @@ public class ServerController extends Thread{
     private ArrayList<User> activeUsers = new ArrayList<>();
 
     private UserManager userManager;
+    private Client client;
 
 
     public ServerController() {
@@ -27,6 +32,7 @@ public class ServerController extends Thread{
           //  userNameReader.readFile(file);
 
             this.serverSocket = new ServerSocket(1000);
+            this.client = new Client();
 
         } catch (IOException e){
         }
@@ -96,37 +102,43 @@ public class ServerController extends Thread{
                 ois = new ObjectInputStream(clientSocket.getInputStream());
                 try {
                     User user = (User) ois.readObject();
-                    Client client = new Client(user, clientSocket, oos, ois);
-                    client.put(user, client);
 
-                    boolean created = userManager.checkIfExists(user.getUserName());
+                    ImageIcon imageIcon = user.getUserImage();
 
-                    if(!created){
+                    if(imageIcon != null){
                         registerUser(user);
+                        Client client1 = new Client(user, clientSocket, oos, ois);
+                        client.put(user, client1);
+
                     } else {
-                        String name = user.getUserName();
-                        logInUser(name);
+                        boolean created = userManager.checkIfExists(user.getUserName());
+                        if(!created){
+                            Message message = new Message(user, "Can't log in");
+                            oos.writeObject(message);
+                        } else {
+                            String name = user.getUserName();
+                            logInUser(name);
+                            Client client1 = new Client(user, clientSocket, oos, ois);
+                            client.put(user, client1);
+                        }
+
                     }
 
                     updateUserList();
 
 
                     while (true){
-                      //  Message message = (Message) ois.readObject();
-                      //  handleMessage(message);
-
-
                         Object obj = ois.readObject();
 
                         if(obj instanceof Message){
                             Message message = (Message) obj;
-                            handleMessage(message);
+
+                            User user1 = message.getSender();
+
+                            if(user1 != null){
+                                handleMessage(message);
+                            }
                         }
-
-
-                   //     else {
-                     //       oos.writeObject(obj);
-                      //  }
 
                     }
 
@@ -140,20 +152,69 @@ public class ServerController extends Thread{
         }
 
         public void handleMessage(Message message){
-            User userReciever = message.getReciever();
-            String name = userReciever.getUserName();
+            String textMessage = message.getTextMessage();
+            ImageIcon imageIcon = (ImageIcon) message.getImageIcon();
 
-            User reciever = userManager.readUserFromFile(name);
 
-            Client clientReciever = Client.get(reciever);
-            ObjectOutputStream oos = clientReciever.getOos();
+            if((textMessage != null) && textMessage.equals("Log out request")){
+                User user = message.getSender();
 
-            if(clientReciever.online()){
                 try {
-                    oos.writeObject(message);
+                    client.remove(user);
+                    updateUserList();
+                    oos.writeObject(new Message(user, "Accepted"));
+                    Message message1 = (Message) ois.readObject();
+
+
+                    if(message1.getTextMessage().equals("Safe close")){
+                        clientSocket.close();
+                    }
+
+
+
                 } catch (IOException e) {
                     throw new RuntimeException(e);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
                 }
+
+            }
+
+            else {
+                LocalDateTime currentTime = LocalDateTime.now(); //hämtar nuvarande datumet
+
+
+                //"ofPattern" används för att skapa en specifik tidsformat.
+                DateTimeFormatter formatCurrentTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+                 /*Vi formaterar den nuvarande tiden "currentTime" genom att använda mönstret vi skapade i
+                 objektet formatCurrentTime.
+                */
+                String formattedTime = currentTime.format(formatCurrentTime);
+                message.setServerReceivedTime(formattedTime);
+
+
+                ArrayList<User> receivers = message.getRecievers();
+
+                for(int i = 0; i < receivers.size(); i++){
+                    String name = receivers.get(i).getUserName();
+
+                    User reciever = userManager.readUserFromFile(name);
+
+                    Client clientReciever = Client.get(reciever);
+                    ObjectOutputStream oos = clientReciever.getOos();
+
+                    if(clientReciever.online()){
+                        try {
+                            oos.writeObject(message);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+
+                // User user = message.getReciever();
+                //   String name = user.getUserName();
             }
 
         }
