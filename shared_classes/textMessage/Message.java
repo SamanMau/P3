@@ -1,9 +1,12 @@
 package shared_classes.textMessage;
 
-import java.io.Serializable;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.ArrayList;
 
 import shared_classes.user.User;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 
@@ -11,18 +14,74 @@ import javax.swing.*;
 public class Message implements Serializable {
     private User sender;
     private ArrayList<User> recievers;
-    private Icon imageIcon;
+    private ImageIcon imageIcon;
     private String text;
     private String serverReceivedTime;
     private String receiverTime;
 
+    private byte[] imageByteArray;
 
-    public Message(User sender, ArrayList<User> recievers, String text, Icon imageIcon){
+
+    public Message(User sender, ArrayList<User> recievers, String text, ImageIcon imageIcon){
         this.recievers = recievers;
         this.sender = sender;
         this.text = text;
+       // convertImageToByte(imageIcon);
         this.imageIcon = imageIcon;
     }
+
+    /*
+    public void convertImageToByte(ImageIcon imageIcon){
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(imageIcon);
+            this.imageByteArray = baos.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+     */
+
+    public void convertImageToByte(ImageIcon imageIcon){
+        try {
+            BufferedImage bufferedImage = new BufferedImage(
+                    imageIcon.getIconWidth(),
+                    imageIcon.getIconHeight(),
+                    BufferedImage.TYPE_INT_ARGB
+            );
+            imageIcon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "jpeg", baos);
+            baos.flush();
+            this.imageByteArray = baos.toByteArray();
+            baos.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public byte[] getImageByteArray(){
+        return imageByteArray;
+    }
+
+    /*
+    public void getImageMessage() {
+        try {
+
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(imageByteArray));
+            ImageIcon imageIconn = (ImageIcon) ois.readObject();
+            this.imageIcon = imageIconn;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+     */
 
     public Message(User user, String message){
         this.sender = user;

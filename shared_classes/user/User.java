@@ -46,25 +46,6 @@ public class User implements Serializable {
         return false;
     }
 
-    public User GetCurrentSender(User user){
-        return null;
-    }
-
-    public void GetCurrentReciever(User user){
-    }
-
-    public User(String userName){
-        this.userName = userName;
-    }
-
-    public void addFriend(User user){
-        contacts.add(user);
-    }
-
-    public void setUserImage(ImageIcon image){
-        this.userImage = image;
-    }
-
     /*
     public ImageIcon getUserImage() {
         return userImage;

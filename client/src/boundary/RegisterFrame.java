@@ -2,6 +2,7 @@ package boundary;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public class RegisterFrame extends JFrame {
     private StartFrame startFrame;
@@ -20,6 +21,7 @@ public class RegisterFrame extends JFrame {
         this.add(registerPanel);
         setVisible(true);
     }
+
 
     public void createAccount(String name, ImageIcon imageIcon){
         startFrame.createAccount(name, imageIcon);

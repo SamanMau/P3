@@ -10,12 +10,10 @@ import shared_classes.user.User;
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
-import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /*
 Klassen ansvarar för att acceptera klient förfrågningar.
@@ -228,7 +226,7 @@ public class ClientController {
         return null;
     }
 
-    public void managePicture(ImageIcon newSize, ArrayList<String> contacts) {
+    public void manageImage(ImageIcon newSize, ArrayList<String> contacts) {
         ArrayList<User> receivers = new ArrayList<>();
 
         for(String contact : contacts){
@@ -266,6 +264,7 @@ public class ClientController {
         return this.userName;
     }
 
+
     public void createAccount(String name, ImageIcon imageIcon) {
         this.user = new User(name, imageIcon);
         this.userName = name;
@@ -278,6 +277,7 @@ public class ClientController {
         monitorMessage = new MonitorMessage(socket, true);
         monitorMessage.start();
     }
+
 
     public void logOut(){
         Message logOut = new Message(user, "Log out request");
@@ -306,6 +306,8 @@ public class ClientController {
                 monitorMessage.start();
             } else {
                 JOptionPane.showMessageDialog(null, "Account does not exist");
+                startView.closeInterface();
+                MainClient.main(new String[0]);
 
             }
 
@@ -416,8 +418,11 @@ public class ClientController {
                                 }
 
                             } else if((textContent == null) && message.getImageIcon() != null) {
+                                System.out.println("ClientController: sant");
                                 String user = getUserName();
                                 ArrayList<User> recievers = message.getRecievers();
+
+                              //  message.getImageMessage();
 
                                 for(User receiver : recievers){
                                     if(user.equals(receiver.getUserName())){

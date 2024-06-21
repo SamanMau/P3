@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public class RegisterPanel extends JPanel {
     private StartFrame startFrame;
@@ -19,6 +20,8 @@ public class RegisterPanel extends JPanel {
     private JButton createAcc;
 
     private ImageIcon userImage;
+
+    private File file;
 
     public RegisterPanel(StartFrame startFrame, RegisterFrame registerFrame){
         this.setLayout(null);

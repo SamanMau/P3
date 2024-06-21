@@ -4,11 +4,14 @@ import controller.ClientController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public class StartFrame extends JFrame {
     private JPanel namePanel;
     private JLabel title;
     private ClientController controller;
+    private StartPanel startPanel;
+    private LoginFrame loginFrame;
 
     public StartFrame(ClientController controller) {
         super("Welcome!");
@@ -19,7 +22,7 @@ public class StartFrame extends JFrame {
         this.setResizable(false);
         this.getContentPane().setBackground(Color.GRAY);
 
-        StartPanel startPanel = new StartPanel(this, controller);
+        startPanel = new StartPanel(this, controller);
         this.add(startPanel);
 
         setVisible(true);
@@ -30,12 +33,13 @@ public class StartFrame extends JFrame {
     }
 
     public void openLoginFrame(){
-        LoginFrame loginFrame = new LoginFrame(this);
+        loginFrame = new LoginFrame(this);
     }
 
     public void openRegisterFrame() {
         RegisterFrame registerFrame = new RegisterFrame(this);
     }
+
 
     public void createAccount(String name, ImageIcon imageIcon){
         controller.createAccount(name, imageIcon);
@@ -51,5 +55,10 @@ public class StartFrame extends JFrame {
 
     public void newConnection(){
         controller.newConnection();
+    }
+
+    public void closeInterface() {
+        loginFrame.dispose();
+        this.dispose();
     }
 }

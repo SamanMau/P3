@@ -141,11 +141,11 @@ public class MessagePanel extends JPanel {
 
                 ImageIcon newSize = new ImageIcon(changedSize);
 
+                messageFrame.managePicture(newSize, contacts);
+
                 displayText(outPutText, "", username, messageFrame.getReceiverTime());
                 outPutText.insertIcon(newSize);
                 displayText(outPutText, "", "", "");
-
-                 messageFrame.managePicture(newSize, contacts);
 
             } catch (IOException e) {
                 throw new RuntimeException(e);

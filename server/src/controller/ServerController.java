@@ -195,6 +195,7 @@ public class ServerController extends Thread{
 
 
                 ArrayList<User> receivers = message.getRecievers();
+             //   message.getImageMessage();
 
                 for(int i = 0; i < receivers.size(); i++){
                     String name = receivers.get(i).getUserName();

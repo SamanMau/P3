@@ -2,7 +2,6 @@ package boundary;
 
 import controller.ClientController;
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -108,7 +107,7 @@ public class MessageFrame extends JFrame{
 
 
     public void managePicture(ImageIcon newSize, ArrayList<String> contacts) {
-        controller.managePicture(newSize, contacts);
+        controller.manageImage(newSize, contacts);
     }
 
     public void displayImage(Icon imageIcon, String userName, String receiverTime) {
