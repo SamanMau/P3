@@ -139,7 +139,6 @@ public class ServerController extends Thread{
                                 handleMessage(message);
                             }
                         }
-
                     }
 
 

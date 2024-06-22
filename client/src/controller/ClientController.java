@@ -439,7 +439,6 @@ public class ClientController {
                             oos.writeObject(message1);
                             onlineUsers = (ArrayList<String>) obj;
                         }
-
                     }
 
                 } catch (IOException e) {
@@ -447,7 +446,6 @@ public class ClientController {
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
-
         }
 
         public ArrayList<String> getOnlineUsers(){
