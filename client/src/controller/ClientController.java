@@ -226,7 +226,7 @@ public class ClientController {
         return null;
     }
 
-    public void manageImage(ImageIcon newSize, ArrayList<String> contacts) {
+    public void manageImage(ImageIcon imageIcon, ArrayList<String> contacts) {
         ArrayList<User> receivers = new ArrayList<>();
 
         for(String contact : contacts){
@@ -234,10 +234,11 @@ public class ClientController {
             receivers.add(user1);
         }
 
-        Message image = new Message(user, receivers, null, newSize);
+        Message image = new Message(user, receivers, null, imageIcon);
 
         try {
             oos.writeObject(image);
+            oos.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -418,7 +419,8 @@ public class ClientController {
                                 }
 
                             } else if((textContent == null) && message.getImageIcon() != null) {
-                                System.out.println("ClientController: sant");
+                                System.out.println("sant");
+
                                 String user = getUserName();
                                 ArrayList<User> recievers = message.getRecievers();
 

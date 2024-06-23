@@ -179,7 +179,7 @@ public class ServerController extends Thread{
 
             }
 
-            else {
+            else{
                 LocalDateTime currentTime = LocalDateTime.now(); //hämtar nuvarande datumet
 
 
@@ -194,7 +194,6 @@ public class ServerController extends Thread{
 
 
                 ArrayList<User> receivers = message.getRecievers();
-             //   message.getImageMessage();
 
                 for(int i = 0; i < receivers.size(); i++){
                     String name = receivers.get(i).getUserName();
@@ -206,7 +205,12 @@ public class ServerController extends Thread{
 
                     if(clientReciever.online()){
                         try {
+
+                          //  Message message3 = new Message(message.getSender(), receivers, message.getTextMessage(), message.getImage(), true);
+
+                         //   oos.writeObject(message3);
                             oos.writeObject(message);
+                            oos.flush();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }

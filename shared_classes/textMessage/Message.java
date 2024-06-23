@@ -18,6 +18,7 @@ public class Message implements Serializable {
     private String text;
     private String serverReceivedTime;
     private String receiverTime;
+    private static final long serialVersionUID = 1L;
 
     private byte[] imageByteArray;
 
@@ -26,11 +27,21 @@ public class Message implements Serializable {
         this.recievers = recievers;
         this.sender = sender;
         this.text = text;
-       // convertImageToByte(imageIcon);
+    //    convertImageToByte(imageIcon);
         this.imageIcon = imageIcon;
     }
 
     /*
+    public Message(User sender, ArrayList<User> recievers, String text, ImageIcon imageIcon, boolean sent){
+        this.recievers = recievers;
+        this.sender = sender;
+        this.text = text;
+        this.imageIcon = imageIcon;
+    }
+
+     */
+
+
     public void convertImageToByte(ImageIcon imageIcon){
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -41,26 +52,24 @@ public class Message implements Serializable {
             throw new RuntimeException(e);
         }
     }
-     */
 
-    public void convertImageToByte(ImageIcon imageIcon){
+    public ImageIcon getImage() {
         try {
-            BufferedImage bufferedImage = new BufferedImage(
-                    imageIcon.getIconWidth(),
-                    imageIcon.getIconHeight(),
-                    BufferedImage.TYPE_INT_ARGB
-            );
-            imageIcon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(bufferedImage, "jpeg", baos);
-            baos.flush();
-            this.imageByteArray = baos.toByteArray();
-            baos.close();
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(imageByteArray));
+            ImageIcon imageIconn = (ImageIcon) ois.readObject();
+            this.imageIcon = imageIconn;
+            return imageIcon;
+
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
+
+
+
 
     public byte[] getImageByteArray(){
         return imageByteArray;
@@ -116,7 +125,7 @@ public class Message implements Serializable {
         return recievers;
     }
 
-    public Icon getImageIcon() {
+    public ImageIcon getImageIcon() {
         return imageIcon;
     }
 

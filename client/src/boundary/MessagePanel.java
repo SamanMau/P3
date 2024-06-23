@@ -5,6 +5,8 @@ import controller.ClientController;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.*;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,7 +20,6 @@ public class MessagePanel extends JPanel {
     private JLabel textInstruction;
     private JButton enterPic;
     private JTextPane outPutText;
-    private StyledDocument document;
     private JScrollPane scroll;
 
     private MessageFrame messageFrame;
@@ -48,15 +49,6 @@ public class MessagePanel extends JPanel {
         outPutText.setBounds(0, 0, 485, 433);
         outPutText.setBackground(Color.white);
         this.add(outPutText);
-
-        /*StyledDocument är ett interface som kan ge mer
-        kontroll över ens textpane. Varje textPane har en
-        styledDocument kopplat till den som default.
-        Det som händer i denna rad är att vi hämtar styleDocumentet
-        som är associerat med vår textPane.
-
-         */
-        document = outPutText.getStyledDocument();
 
         this.scroll = new JScrollPane(outPutText);
         scroll.setBackground(Color.red);
@@ -124,12 +116,15 @@ public class MessagePanel extends JPanel {
         Document document;
         document = textPane.getDocument();
         try {
-            document.insertString(document.getLength(),username + " : " + message+ "       " + receiverTime + "\n", null);
+            String formattedText = username + " : " + message + " " + receiverTime + "\n";
+
+            document.insertString(document.getLength(),formattedText, null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
     }
 
+    /*
     public void displayImage(File image, String username){
         ArrayList<String> contacts = messageFrame.getFriends();
 
@@ -145,7 +140,7 @@ public class MessagePanel extends JPanel {
 
                 displayText(outPutText, "", username, messageFrame.getReceiverTime());
                 outPutText.insertIcon(newSize);
-                displayText(outPutText, "", "", "");
+            //    displayText(outPutText, "", "", "");
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -156,8 +151,40 @@ public class MessagePanel extends JPanel {
         messageFrame.removeChosenFriend();
     }
 
+     */
 
-    public void displayFormattedImage(Icon imageIcon, String userName, String receiverTime) {
+    public void displayImage(File image, String username){
+        ArrayList<String> contacts = messageFrame.getFriends();
+
+        if(contacts != null){
+            try {
+                ImageIcon oldSize = new ImageIcon(ImageIO.read(image));
+                Image thisImage = oldSize.getImage();
+                Image changedSize = thisImage.getScaledInstance(150, 150, Image.SCALE_DEFAULT);
+
+                ImageIcon newSize = new ImageIcon(changedSize);
+
+                messageFrame.managePicture(newSize, contacts);
+
+                outPutText.insertIcon(newSize);
+                displayText(outPutText, "", username, messageFrame.getReceiverTime());
+            //    displayText(outPutText, "", "", "");
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        messageFrame.removeChosenFriend();
+    }
+
+
+    public void displayFormattedImage(ImageIcon imageIcon, String userName, String receiverTime) {
+
+        outPutText.insertIcon(imageIcon);
+        displayText(outPutText, "\n", userName, receiverTime);
+
+        /*
         JLabel label = new JLabel(imageIcon);
 
         displayText(outPutText, "", userName, messageFrame.getReceiverTime());
@@ -169,5 +196,9 @@ public class MessagePanel extends JPanel {
         } catch (BadLocationException e) {
             throw new RuntimeException(e);
         }
+
+         */
     }
+
 }
+

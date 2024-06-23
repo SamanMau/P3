@@ -56,10 +56,6 @@ public class MessageFrame extends JFrame{
         messagePanel.displayImage(message, name);
     }
 
-    public void displayText(String text, String sender, String receiverTime){
-        messagePanel.displayText(messagePanel.getTextPane(), text, sender, receiverTime);
-    }
-
     public String getUserName(){
         return controller.getUserName();
     }
@@ -110,7 +106,12 @@ public class MessageFrame extends JFrame{
         controller.manageImage(newSize, contacts);
     }
 
-    public void displayImage(Icon imageIcon, String userName, String receiverTime) {
+    public void displayImage(ImageIcon imageIcon, String userName, String receiverTime) {
         messagePanel.displayFormattedImage(imageIcon, userName, receiverTime);
+
+    }
+
+    public void displayText(String text, String sender, String receiverTime){
+        messagePanel.displayText(messagePanel.getTextPane(), text, sender, receiverTime);
     }
 }
