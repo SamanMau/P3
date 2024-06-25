@@ -77,7 +77,10 @@ public class MessageFrame extends JFrame{
     }
 
     public void collectFriends(String name){
-        friends.add(name);
+        if(!friends.contains(name)){
+            friends.add(name);
+        }
+
     }
 
     public ArrayList<String> getFriends(){
@@ -112,6 +115,6 @@ public class MessageFrame extends JFrame{
     }
 
     public void displayText(String text, String sender, String receiverTime){
-        messagePanel.displayText(messagePanel.getTextPane(), text, sender, receiverTime);
+        messagePanel.displayText(text, sender, receiverTime);
     }
 }

@@ -155,11 +155,11 @@ public class ClientController {
             String name = chosenFile.getName();
 
             try{
-                if(!(name.endsWith("jpg") || (name.endsWith("jpeg")))){
-                    throw new WrongFormat("You need to either choose a JPEG or PNG picture.");
+                if(!(name.endsWith("jpg"))){
+                    throw new WrongFormat("You need to choose a PNG picture.");
                 }
 
-                else if((name.endsWith("jpg") || (name.endsWith("jpeg")))){
+                else {
                     messageFrame.sendImage(chosenFile, userName);
                 }
             } catch (WrongFormat e){
@@ -208,11 +208,11 @@ public class ClientController {
 
 
             try{
-                if(!(name.endsWith("jpg") || (name.endsWith("jpeg")))){
-                    throw new WrongFormat("You need to either choose a JPEG or PNG picture.");
+                if(!(name.endsWith("jpg"))){
+                    throw new WrongFormat("You need to choose a PNG picture.");
                 }
 
-                else if((name.endsWith("jpg") || (name.endsWith("jpeg")))){
+                else{
                     ImageIcon imageIcon = new ImageIcon(name);
                     return imageIcon;
                 }
@@ -281,7 +281,7 @@ public class ClientController {
 
 
     public void logOut(){
-        Message logOut = new Message(user, "Log out request");
+        Message logOut = new Message(user, "Log out request | " + user);
         try {
             oos.writeObject(logOut);
 
@@ -419,8 +419,6 @@ public class ClientController {
                                 }
 
                             } else if((textContent == null) && message.getImageIcon() != null) {
-                                System.out.println("sant");
-
                                 String user = getUserName();
                                 ArrayList<User> recievers = message.getRecievers();
 

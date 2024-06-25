@@ -5,8 +5,6 @@ import controller.ClientController;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.*;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +21,8 @@ public class MessagePanel extends JPanel {
     private JScrollPane scroll;
 
     private MessageFrame messageFrame;
+
+    private StyledDocument document;
 
     public MessagePanel(ClientController clientController, MessageFrame messageFrame){
         setLayout(null);
@@ -48,12 +48,19 @@ public class MessagePanel extends JPanel {
         outPutText.setEditable(false);
         outPutText.setBounds(0, 0, 485, 433);
         outPutText.setBackground(Color.white);
-        this.add(outPutText);
 
+        this.add(outPutText);
         this.scroll = new JScrollPane(outPutText);
         scroll.setBackground(Color.red);
         scroll.setBounds(0, 0, 550, 400);
         this.add(scroll);
+
+        /*
+        Den hämtar styleddocument objektet kopplat till vår textpane.
+        styleddocument låter en ha större kontroll över ens GUI.
+         */
+        document = outPutText.getStyledDocument();
+
 
 
         inputText = new JTextField();
@@ -68,7 +75,7 @@ public class MessagePanel extends JPanel {
                 if(contacts != null){
                     String message = inputText.getText();
                     String name = messageFrame.getUserName();
-                    displayText(outPutText, message, name, messageFrame.getReceiverTime());
+                    displayText(message, name, messageFrame.getReceiverTime());
                     inputText.setText("");
                     messageFrame.manageMessage(message, contacts);
                 }
@@ -105,100 +112,66 @@ public class MessagePanel extends JPanel {
 
 
     /*
-    "textPane.getDocument" hämtar dokument objektet kopplat till vår textPane
-    (outputText). Document klassen används för att lagra text. "document.getLength"
-    hämtar storleken på texten som har lagrats i "document" objektet. message representerar
-    den nya texten och vi skriver "\n" så att de näst kommande texten placeras på en ny rad.
+    "textPane.getStyledDocument" hämtar dokument objektet kopplat till vår textPane
+    (outputText). StyledDocument interfacet används för att lagra bland annat text.
+    Den ger en större kotrnoll över ens GUI. "doc.getLength" hämtar storleken
+    på innehållet (text eller bild) som har lagrats i "doc" objektet.
     "null" har lagts eftersom vi inte vill specifiera någon specifik format på texten,
     exempelvis "italics".
      */
-    public void displayText(JTextPane textPane, String message, String username, String receiverTime) {
-        Document document;
-        document = textPane.getDocument();
+    public void displayText(String message, String username, String receiverTime) {
         try {
             String formattedText = username + " : " + message + " " + receiverTime + "\n";
 
-            document.insertString(document.getLength(),formattedText, null);
+            document.insertString(document.getLength(), formattedText, null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
     }
 
+    public void displayImage(File image, String username){
+        ArrayList<String> contacts = messageFrame.getFriends();
+
+        if(contacts != null){
+            try {
+                ImageIcon oldSize = new ImageIcon(ImageIO.read(image));
+                Image thisImage = oldSize.getImage();
+                Image changedSize = thisImage.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+
+                ImageIcon newSize = new ImageIcon(changedSize);
+
+                messageFrame.managePicture(newSize, contacts);
+
+                displayFormattedImage(newSize, username, messageFrame.getReceiverTime());
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        messageFrame.removeChosenFriend();
+    }
+
+
     /*
-    public void displayImage(File image, String username){
-        ArrayList<String> contacts = messageFrame.getFriends();
-
-        if(contacts != null){
-            try {
-                ImageIcon oldSize = new ImageIcon(ImageIO.read(image));
-                Image thisImage = oldSize.getImage();
-                Image changedSize = thisImage.getScaledInstance(150, 150, Image.SCALE_DEFAULT);
-
-                ImageIcon newSize = new ImageIcon(changedSize);
-
-                messageFrame.managePicture(newSize, contacts);
-
-                displayText(outPutText, "", username, messageFrame.getReceiverTime());
-                outPutText.insertIcon(newSize);
-            //    displayText(outPutText, "", "", "");
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-        }
-
-        messageFrame.removeChosenFriend();
-    }
-
+    Style används för att bland annat specifiera format på bilder. I detta fall laddar
+    vi upp "jpg" bilder. Vi skapar en style och lägger in det i vår styledDocument objekt.
+    "StyleConstants.setIcon();" associerar vår imageIcon med en specifik format, i detta fall
+    jpg. doc.insertString(doc.getLength(),  "\n", style); lägger till bilden i GUI:t och gör
+    append, alltså ny rad. vi har null på addStyle("jpg", null) eftersom vi ska skapa en ny stil.
      */
-
-    public void displayImage(File image, String username){
-        ArrayList<String> contacts = messageFrame.getFriends();
-
-        if(contacts != null){
-            try {
-                ImageIcon oldSize = new ImageIcon(ImageIO.read(image));
-                Image thisImage = oldSize.getImage();
-                Image changedSize = thisImage.getScaledInstance(150, 150, Image.SCALE_DEFAULT);
-
-                ImageIcon newSize = new ImageIcon(changedSize);
-
-                messageFrame.managePicture(newSize, contacts);
-
-                outPutText.insertIcon(newSize);
-                displayText(outPutText, "", username, messageFrame.getReceiverTime());
-            //    displayText(outPutText, "", "", "");
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        messageFrame.removeChosenFriend();
-    }
-
-
     public void displayFormattedImage(ImageIcon imageIcon, String userName, String receiverTime) {
 
-        outPutText.insertIcon(imageIcon);
-        displayText(outPutText, "\n", userName, receiverTime);
+        try{
+            Style style = document.addStyle("jpg", null);
 
-        /*
-        JLabel label = new JLabel(imageIcon);
-
-        displayText(outPutText, "", userName, messageFrame.getReceiverTime());
-        Style style = document.addStyle("style", null);
-        StyleConstants.setComponent(style, label);
-
-        try {
-            document.insertString(document.getLength(), "", style);
+            StyleConstants.setIcon(style, imageIcon);
+            document.insertString(document.getLength(), userName + " : " + receiverTime + "\n", null);
+            document.insertString(document.getLength(),  "\n", style);
+            document.insertString(document.getLength(), "\n", null); //ger extra mellanrum.
         } catch (BadLocationException e) {
             throw new RuntimeException(e);
         }
-
-         */
     }
-
 }
 

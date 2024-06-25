@@ -3,6 +3,7 @@ package shared_classes.textMessage;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import shared_classes.user.User;
 
