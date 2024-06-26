@@ -1,4 +1,4 @@
-package shared_classes.Messages;
+package shared_classes.textMessage;
 
 import shared_classes.user.User;
 

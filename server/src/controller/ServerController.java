@@ -1,7 +1,7 @@
 package controller;
 
 import entity.Client;
-import shared_classes.Messages.Message;
+import shared_classes.textMessage.Message;
 import shared_classes.user.User;
 
 import javax.swing.*;
@@ -96,6 +96,7 @@ public class ServerController extends Thread{
 
                     updateUserList();
 
+                    newList = new ArrayList<>(); // löser problemet med att oskickade meddelanden visas om och om igen.
                     readOfflineMessages();
 
 
@@ -187,6 +188,7 @@ public class ServerController extends Thread{
                         }
                     } else {
                         addUnsentMessageToFile(message);
+                        break;
                     }
 
                 }
@@ -201,8 +203,8 @@ public class ServerController extends Thread{
         objekten från arrayen till filen igen. Man överskriver de gamla meddelanden
          filen varje gång ett nytt meddelande läggs till.
          */
-        public void addUnsentMessageToFile(Message message) {
-            List<Message> messageList = new ArrayList<>();
+        public synchronized void addUnsentMessageToFile(Message message) {
+            ArrayList<Message> messageList = new ArrayList<>();
 
             File messageFile = new File("server/src/offlineMessages.dat");
 
@@ -243,7 +245,7 @@ public class ServerController extends Thread{
 
         }
 
-        public void readOfflineMessages() throws FileNotFoundException {
+        public synchronized void readOfflineMessages() throws FileNotFoundException {
             ArrayList<Message> list = new ArrayList<>();
 
             ObjectInputStream ois = null;
@@ -274,7 +276,7 @@ public class ServerController extends Thread{
         user objekt i receiver listan, måste vi kontrollera om det user objektet
         finns aktiv i vår hashmap.
          */
-        public void manageOfflineMessages(ArrayList<Message> list){
+        public synchronized void manageOfflineMessages(ArrayList<Message> list){
             ArrayList<Message> messageList = list;
             HashMap<User,Client> clients = Client.getHashMap();
 
@@ -303,7 +305,7 @@ public class ServerController extends Thread{
             }
         }
 
-        public void removeUnsentMessage(Message message, User user, ArrayList<Message> list){
+        public synchronized void removeUnsentMessage(Message message, User user, ArrayList<Message> list){
             for(int i = 0; i < list.size(); i++){
                 Message checkMessage = list.get(i);
 
@@ -315,17 +317,21 @@ public class ServerController extends Thread{
                     ImageIcon imageIcon = checkMessage.getImageIcon();
 
                     Message modififed = new Message(sender, receivers, text, imageIcon);
-                    newList.add(modififed);
-                    break;
+
+                    if(modififed.getRecievers().size() > 0){
+                        newList.add(modififed);
+                        break;
+                    }
                 }
             }
 
             clearOldFile();
 
-            }
+
+        }
 
 
-        public void clearOldFile(){
+        public synchronized void clearOldFile(){
             try {
 
                 // "rw" står för read/write vilket innebär att man kan läsa och skriva till filen.

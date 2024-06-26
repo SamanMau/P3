@@ -51,6 +51,7 @@ public class StartFrame extends JFrame {
     }
 
     public void newConnection(){
+        this.dispose();
         controller.newConnection();
     }
 
@@ -58,4 +59,5 @@ public class StartFrame extends JFrame {
         loginFrame.dispose();
         this.dispose();
     }
+
 }

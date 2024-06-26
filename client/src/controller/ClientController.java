@@ -4,7 +4,7 @@ import boundary.MessageFrame;
 import boundary.StartFrame;
 import entity.MainClient;
 import entity.WrongFormat;
-import shared_classes.Messages.Message;
+import shared_classes.textMessage.Message;
 import shared_classes.user.User;
 
 import javax.swing.*;

@@ -23,7 +23,7 @@ public class MessageFrame extends JFrame{
         this.setLayout(null);
 
         this.setSize(680, 580);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         chat.setEditable(false);
 
         messagePanel = new MessagePanel(this);
