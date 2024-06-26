@@ -1,5 +1,5 @@
 package entity;
-import shared_classes.textMessage.*;
+import shared_classes.Messages.*;
 import shared_classes.user.*;
 import java.util.ArrayList;
 

@@ -1,16 +1,12 @@
 package boundary;
 
-import controller.ClientController;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class TopPanel extends JPanel {
-    private ClientController controller;
     private JLabel recieverIcon;
-    private JLabel senderIcon;
 
     private ImageIcon pictureFile;
 
@@ -18,13 +14,10 @@ public class TopPanel extends JPanel {
 
     private JLabel userName;
 
-    private String name;
-
     private JButton logOut;
 
-    public TopPanel(ClientController clientController, ImageIcon pictureFile, MessageFrame messageFrame){
+    public TopPanel(ImageIcon pictureFile, MessageFrame messageFrame){
         setLayout(null);
-        this.controller = clientController;
         this.pictureFile = pictureFile;
         this.messageFrame = messageFrame;
         this.setBounds(0, 0, 500, 120);

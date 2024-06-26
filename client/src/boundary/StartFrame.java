@@ -4,11 +4,8 @@ import controller.ClientController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 public class StartFrame extends JFrame {
-    private JPanel namePanel;
-    private JLabel title;
     private ClientController controller;
     private StartPanel startPanel;
     private LoginFrame loginFrame;
@@ -22,7 +19,7 @@ public class StartFrame extends JFrame {
         this.setResizable(false);
         this.getContentPane().setBackground(Color.GRAY);
 
-        startPanel = new StartPanel(this, controller);
+        startPanel = new StartPanel(this);
         this.add(startPanel);
 
         setVisible(true);

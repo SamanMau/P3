@@ -2,7 +2,6 @@ package boundary;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 public class RegisterFrame extends JFrame {
     private StartFrame startFrame;

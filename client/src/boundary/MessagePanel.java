@@ -1,7 +1,5 @@
 package boundary;
 
-import controller.ClientController;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.*;
@@ -14,7 +12,6 @@ import java.util.ArrayList;
 
 public class MessagePanel extends JPanel {
     private JTextField inputText;
-    private ClientController controller;
     private JLabel textInstruction;
     private JButton enterPic;
     private JTextPane outPutText;
@@ -26,11 +23,10 @@ public class MessagePanel extends JPanel {
 
     private ImageIcon image;
 
-    public MessagePanel(ClientController clientController, MessageFrame messageFrame){
+    public MessagePanel(MessageFrame messageFrame){
         setLayout(null);
 
         this.setBounds(0, 60, 500, 500);
-        this.controller = clientController;
         this.messageFrame = messageFrame;
 
         textInstruction = new JLabel("Type: ");
@@ -78,6 +74,7 @@ public class MessagePanel extends JPanel {
                 if(message != null && contacts != null && image != null){
                     messageFrame.managePictureWithText(image, contacts, message);
                     displayPictureWithText(image, messageFrame.getUserName(), messageFrame.getReceiverTime(), message);
+                    inputText.setText("");
 
                     image = null;
 
@@ -119,11 +116,6 @@ public class MessagePanel extends JPanel {
         });
     }
 
-    public JTextPane getTextPane(){
-        return outPutText;
-    }
-
-
     /*
     "textPane.getStyledDocument" hämtar dokument objektet kopplat till vår textPane
     (outputText). StyledDocument interfacet används för att lagra bland annat text.
@@ -156,32 +148,6 @@ public class MessagePanel extends JPanel {
             throw new RuntimeException(e);
         }
     }
-
-    /*
-    public void displayImage(File image, String username){
-        ArrayList<String> contacts = messageFrame.getFriends();
-
-        if(contacts != null){
-            try {
-                ImageIcon oldSize = new ImageIcon(ImageIO.read(image));
-                Image thisImage = oldSize.getImage();
-                Image changedSize = thisImage.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-
-                ImageIcon newSize = new ImageIcon(changedSize);
-
-                messageFrame.managePicture(newSize, contacts);
-
-                displayFormattedImage(newSize, username, messageFrame.getReceiverTime());
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        messageFrame.removeChosenFriend();
-    }
-
-     */
 
     public void displayImage(File image, String username){
         ArrayList<String> contacts = messageFrame.getFriends();

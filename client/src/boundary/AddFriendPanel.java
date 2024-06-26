@@ -35,7 +35,9 @@ public class AddFriendPanel extends JPanel {
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    addFriendFrame.addFriendToList(button.getText());
+                    String text = button.getText();
+                    addFriendFrame.addFriendToList(text);
+                    addFriendFrame.collectFriends(text);
                 }
             });
 

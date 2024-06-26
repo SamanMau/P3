@@ -1,7 +1,7 @@
 package controller;
 
 import entity.Client;
-import shared_classes.textMessage.Message;
+import shared_classes.Messages.Message;
 import shared_classes.user.User;
 
 import javax.swing.*;
@@ -20,8 +20,6 @@ public class ServerController extends Thread{
 
     private UserManager userManager;
     private Client client;
-
-    private HashMap<User, ArrayList<Message>> unsentMessages;
 
     private ArrayList<Message> newList;
 

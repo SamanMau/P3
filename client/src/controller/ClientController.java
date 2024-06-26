@@ -4,7 +4,7 @@ import boundary.MessageFrame;
 import boundary.StartFrame;
 import entity.MainClient;
 import entity.WrongFormat;
-import shared_classes.textMessage.Message;
+import shared_classes.Messages.Message;
 import shared_classes.user.User;
 
 import javax.swing.*;
@@ -21,18 +21,22 @@ Klient förfrågningar hanteras genom klassen ClientHandler.
  */
 public class ClientController {
     private String ipAdress = "127.0.0.1";
+
     private int port = 1000;
-    private StartFrame startView;
+
+    private StartFrame startFrame;
+
     private ObjectInputStream ois;
+
     private ObjectOutputStream oos;
+
     private JFileChooser file;
+
     private MessageFrame messageFrame;
 
     private String userName;
 
     private User user;
-
-   // private ArrayList<String> onlineUsers;
 
     private MonitorMessage monitorMessage;
 
@@ -41,7 +45,7 @@ public class ClientController {
     private Socket socket;
 
     public ClientController(){
-        startView = new StartFrame(this);
+        startFrame = new StartFrame(this);
         contactList = new HashMap<>();
         try {
             socket = new Socket(ipAdress, port);
@@ -181,9 +185,9 @@ public class ClientController {
         DateTimeFormatter formatCurrentTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
 
-            /*Vi formaterar den nuvarande tiden "currentTime" genom att använda mönstret vi skapade i
+        /*Vi formaterar den nuvarande tiden "currentTime" genom att använda mönstret vi skapade i
              objektet formatCurrentTime.
-            */
+         */
         String formattedTime = currentTime.format(formatCurrentTime);
 
         return formattedTime;
@@ -325,7 +329,7 @@ public class ClientController {
                 monitorMessage.start();
             } else {
                 JOptionPane.showMessageDialog(null, "Account does not exist");
-                startView.closeInterface();
+                startFrame.closeInterface();
                 MainClient.main(new String[0]);
 
             }
@@ -460,9 +464,7 @@ public class ClientController {
                                         String formattedTime = getReceiverTime();
                                         message.setReceiverTime(formattedTime);
 
-                                        messageFrame.displayImage(message.getImageIcon(), message.getSender().getUserName(), message.getReceiverTime());
-
-                                        
+                                        messageFrame.displayPictureWithText(message.getImageIcon(), message.getSender().getUserName(), message.getReceiverTime(), textContent);
 
                                     }
                                 }

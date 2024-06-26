@@ -2,9 +2,6 @@ package boundary;
 
 import controller.ClientController;
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -29,8 +26,8 @@ public class MessageFrame extends JFrame{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         chat.setEditable(false);
 
-        messagePanel = new MessagePanel(controller, this);
-        topPanel = new TopPanel(controller, pictureFile, this);
+        messagePanel = new MessagePanel(this);
+        topPanel = new TopPanel(pictureFile, this);
         contactPanel = new ContactPanel(this);
 
         this.add(messagePanel);

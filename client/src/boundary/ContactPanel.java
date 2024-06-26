@@ -1,7 +1,5 @@
 package boundary;
 
-import controller.ClientController;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

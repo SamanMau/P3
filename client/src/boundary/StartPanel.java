@@ -1,32 +1,20 @@
 package boundary;
 
-import controller.ClientController;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class StartPanel extends JPanel {
-    private JLabel title;
-    private JTextField enterName;
-    private JButton sendName;
     private StartFrame startFrame;
-
-    private String pictureFile;
-
-    private JButton button;
-    private ClientController clientController;
-
     private JButton login;
     private JButton register;
 
     private JButton newUser;
 
-    public StartPanel(StartFrame startFrame, ClientController clientController){
+    public StartPanel(StartFrame startFrame){
         setLayout(null);
         this.setBounds(0, 0, 350, 300);
-        this.clientController = clientController;
         this.startFrame = startFrame;
 
         setUp();
