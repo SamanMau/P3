@@ -245,6 +245,24 @@ public class ClientController {
 
     }
 
+    public void managePictureWithText(ImageIcon imageIcon, ArrayList<String> contacts, String text){
+        ArrayList<User> receivers = new ArrayList<>();
+
+        for(String contact : contacts){
+            User user1 = new User(contact, null);
+            receivers.add(user1);
+        }
+
+        Message message = new Message(user, receivers, text, imageIcon);
+
+        try {
+            oos.writeObject(message);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public void newConnection(){
         MainClient.main(new String[0]);
     }
@@ -391,8 +409,9 @@ public class ClientController {
                         if(obj instanceof Message){
                             Message message = (Message) obj;
                             String textContent = message.getTextMessage();
+                            ImageIcon imageIcon = message.getImageIcon();
 
-                            if (textContent != null) {
+                            if (textContent != null && imageIcon == null) {
                                 String name = message.getSender().getUserName();
 
                                 if(name.equals(userName)){
@@ -430,6 +449,21 @@ public class ClientController {
                                         message.setReceiverTime(formattedTime);
 
                                         messageFrame.displayImage(message.getImageIcon(), message.getSender().getUserName(), message.getReceiverTime());
+                                    }
+                                }
+                            } else if(textContent != null && imageIcon != null){
+                                String user = getUserName();
+                                ArrayList<User> recievers = message.getRecievers();
+
+                                for(User receiver : recievers){
+                                    if(user.equals(receiver.getUserName())){
+                                        String formattedTime = getReceiverTime();
+                                        message.setReceiverTime(formattedTime);
+
+                                        messageFrame.displayImage(message.getImageIcon(), message.getSender().getUserName(), message.getReceiverTime());
+
+                                        
+
                                     }
                                 }
                             }

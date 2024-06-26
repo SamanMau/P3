@@ -24,6 +24,8 @@ public class MessagePanel extends JPanel {
 
     private StyledDocument document;
 
+    private ImageIcon image;
+
     public MessagePanel(ClientController clientController, MessageFrame messageFrame){
         setLayout(null);
 
@@ -71,9 +73,20 @@ public class MessagePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ArrayList<String> contacts = messageFrame.getFriends();
+                String message = inputText.getText();
 
-                if(contacts != null){
-                    String message = inputText.getText();
+                if(message != null && contacts != null && image != null){
+                    messageFrame.managePictureWithText(image, contacts, message);
+                    displayPictureWithText(image, messageFrame.getUserName(), messageFrame.getReceiverTime(), message);
+
+                    image = null;
+
+                } else if(contacts != null && message == null && image != null){
+                    messageFrame.managePicture(image, contacts);
+                    displayFormattedImage(image, messageFrame.getUserName(), messageFrame.getReceiverTime());
+                    image = null;
+
+                } else if(contacts != null && message != null && image == null){
                     String name = messageFrame.getUserName();
                     displayText(message, name, messageFrame.getReceiverTime());
                     inputText.setText("");
@@ -129,6 +142,22 @@ public class MessagePanel extends JPanel {
         }
     }
 
+    public void displayPictureWithText(ImageIcon imageIcon, String userName, String receiverTime, String message){
+        try{
+            Style style = document.addStyle("jpg", null);
+
+            String formattedText = userName + " : " + message + " " + receiverTime + "\n";
+            document.insertString(document.getLength(), formattedText, null);
+
+            StyleConstants.setIcon(style, imageIcon);
+            document.insertString(document.getLength(),  "\n", style);
+            document.insertString(document.getLength(), "\n", null); //ger extra mellanrum.
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /*
     public void displayImage(File image, String username){
         ArrayList<String> contacts = messageFrame.getFriends();
 
@@ -150,6 +179,28 @@ public class MessagePanel extends JPanel {
         }
 
         messageFrame.removeChosenFriend();
+    }
+
+     */
+
+    public void displayImage(File image, String username){
+        ArrayList<String> contacts = messageFrame.getFriends();
+
+        if(contacts != null){
+            try {
+                ImageIcon oldSize = new ImageIcon(ImageIO.read(image));
+                Image thisImage = oldSize.getImage();
+                Image changedSize = thisImage.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+
+                ImageIcon newSize = new ImageIcon(changedSize);
+
+                this.image = newSize;
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
     }
 
 

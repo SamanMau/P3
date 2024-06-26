@@ -2,6 +2,9 @@ package boundary;
 
 import controller.ClientController;
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -116,5 +119,13 @@ public class MessageFrame extends JFrame{
 
     public void displayText(String text, String sender, String receiverTime){
         messagePanel.displayText(text, sender, receiverTime);
+    }
+
+    public void managePictureWithText(ImageIcon image, ArrayList<String> contacts, String message) {
+        controller.managePictureWithText(image, contacts, message);
+    }
+
+    public void displayPictureWithText(ImageIcon imageIcon, String userName, String receiverTime, String message){
+        messagePanel.displayPictureWithText(imageIcon, userName, receiverTime, message);
     }
 }
