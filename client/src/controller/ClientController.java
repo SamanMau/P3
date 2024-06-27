@@ -66,7 +66,7 @@ public class ClientController {
     public void updateContacts() {
 
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("client/src/contacts.txt", true));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("client/src/contacts.txt"));
             for(String person : contactList.keySet()){
                 writer.write(person + ": ");
 

@@ -9,13 +9,12 @@ import javax.swing.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class ServerController extends Thread{
@@ -57,29 +56,89 @@ public class ServerController extends Thread{
 
 
     /*
-    Pattern klassen används i detta fall för att omvandla vår format "yyyy-mm-dd" till
-    ett mönster. "checkPattern.matcher" används för att kontrollera om datumet "fromTimeText"
-    uppfyller mönstret som skapades i "checkPattern". "matcher.matches()" returnerar
-    ett boolean värde som säger om strängen "fromTimeText" uppfyller mönstret eller inte.
+    En DateTimeFormatter skapas med ett datum mönster. Vi har en try catch för att
+    se om det blir error eller inte, om det är error, innebär det att användaren
+    skrev in fel datum mönster.
      */
     public boolean checkDateValidity(String fromTimeText, String toTimeText, String pattern) {
-        Pattern checkPattern = Pattern.compile(pattern);
-        Matcher matcher = checkPattern.matcher(fromTimeText);
-        Matcher matcher2 = checkPattern.matcher(toTimeText);
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(pattern);
 
-        boolean firstDate = matcher.matches();
-        boolean secondDate = matcher2.matches();
-
-        if(firstDate && secondDate){
+        try{
+            LocalDate.parse(fromTimeText, timeFormatter);
+            LocalDate.parse(toTimeText, timeFormatter);
             return true;
-        } else {
+        } catch (DateTimeParseException e){
             return false;
         }
 
     }
 
-    public void manageTraficLogInterval(String fromTimeText, String toTimeText) {
+    /*
+    DateTimeFormatter formaterar ett mönstrer för datum. LocalDate används för att
+    omvandla vår sträng till en LocalDate objekt så att vi kan hämta året, månaden,
+    och dagen individuellt.
+     */
+    public ArrayList<String> getTraficLogInterval(String fromTimeText, String toTimeText) {
+        ArrayList<String> logList = new ArrayList<>();
 
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        LocalDateTime fromDate = LocalDateTime.parse(fromTimeText, formatDate);
+
+        LocalDateTime toDate = LocalDateTime.parse(toTimeText, formatDate);
+
+        /*
+        int fromYear = fromDate.getYear();
+        int fromMonth = fromDate.getMonthValue();
+        int fromDay = fromDate.getDayOfMonth();
+        int fromHour = fromDate.getHour();
+        int fromMinute = fromDate.getMinute();
+
+
+        int toYear = toDate.getYear();
+        int toMonth = toDate.getMonthValue();
+        int toDay = toDate.getDayOfMonth();
+        int toHour = toDate.getHour();
+        int toMinute = toDate.getMinute();
+
+         */
+
+
+        try {
+            FileReader fr = new FileReader("server/src/loggTrafik.txt");
+            BufferedReader reader = new BufferedReader(fr);
+
+            String row;
+
+            while (!((row = reader.readLine()) == null)){
+                String[] splitRow = row.split(" : ");
+                String log = splitRow[0];
+
+                String time = splitRow[1];
+
+                LocalDateTime logDate = LocalDateTime.parse(time, formatDate);
+
+                if(!logDate.isBefore(fromDate) && !logDate.isAfter(toDate)){
+                    String text = log + "   " + time;
+                    logList.add(text);
+                }
+
+            }
+
+            if(logList.size() > 0){
+                return logList;
+            } else {
+                JOptionPane.showMessageDialog(null, "No log was found during that period");
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+           // return logList;
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     private class ClientConnection extends Thread{ /*Kommer att hantera klient förfrågan. Den inre
@@ -112,7 +171,7 @@ public class ServerController extends Thread{
                         registerUser(user);
                         Client client1 = new Client(user, clientSocket, oos, ois);
                         client.put(user, client1);
-                    //    logTrafic(user.getUserName() + " has registered." , getCurrentTime());
+                        logTrafic(user.getUserName() + " has registered" , getCurrentTime());
 
 
                     } else {
@@ -125,12 +184,12 @@ public class ServerController extends Thread{
                             logInUser(name);
                             Client client1 = new Client(user, clientSocket, oos, ois);
                             client.put(user, client1);
-                           // logTrafic(user.getUserName() + " has logged in." , getCurrentTime());
+                            logTrafic(user.getUserName() + " has logged in" , getCurrentTime());
                         }
                     }
 
                     int amountActive = updateUserList();
-                   // logTrafic("The online user list has been updated. Amount of people active: " + amountActive, getCurrentTime());
+                    logTrafic("The online user list has been updated. " + amountActive + " people active", getCurrentTime());
 
 
                     newList = new ArrayList<>(); // löser problemet med att oskickade meddelanden visas om och om igen.
@@ -146,7 +205,6 @@ public class ServerController extends Thread{
                             User user1 = message.getSender();
 
                             if(user1 != null){
-                           //     logTrafic("The server has read a message", getCurrentTime());
                                 handleMessage(message);
                             }
                         }
@@ -168,7 +226,7 @@ public class ServerController extends Thread{
 
             if((textMessage != null) && textMessage.contains("Log out request")){
                 User user = message.getSender();
-              //  logTrafic(user.getUserName() + " wants to log out", getCurrentTime());
+                logTrafic(user.getUserName() + " wants to log out", getCurrentTime());
 
 
                 try {
@@ -180,7 +238,7 @@ public class ServerController extends Thread{
 
                     if(message1.getTextMessage().equals("Safe close")){
                         clientSocket.close();
-                   //     logTrafic(user.getUserName() + " has disconnected." , getCurrentTime());
+                        logTrafic(user.getUserName() + " has disconnected" , getCurrentTime());
                     }
 
 
@@ -241,7 +299,7 @@ public class ServerController extends Thread{
                     }
                 }
 
-              //  logTrafic("The server has forwarded a message from " + message.getSender().getUserName() + " to " + text, getCurrentTime());
+                logTrafic("The server has forwarded a message from " + message.getSender().getUserName() + " to " + text, getCurrentTime());
 
 
 
@@ -263,46 +321,17 @@ public class ServerController extends Thread{
             return formattedTime;
         }
 
-        public void logTrafic(String message, String time){
+        public void logTrafic(String message, String time) {
             ArrayList<String> logList = new ArrayList<>();
 
-            File logFile = new File("server/src/loggTrafik.txt");
-
-            if(logFile.length() > 0){
-                try {
-                    BufferedReader reader = new BufferedReader(new FileReader(logFile));
-
-                    while (true){
-                        try {
-                            String log = reader.readLine();
-                            logList.add(log);
-                        } catch (EOFException e) {
-                            break;
-                        }
-                    }
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            String log = message + " : " + time;
-            logList.add(log);
-            System.out.println(log);
-
-            try{
-                BufferedWriter writer = new BufferedWriter(new FileWriter(logFile));
-
-                for(int i = 0; i < logList.size(); i++){
-                    writer.write(logList.get(i));
-                }
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter("server/src/loggTrafik.txt", true));
+                writer.write(message + " : " + time);
+                writer.newLine();
+                writer.close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
 
         }
 
