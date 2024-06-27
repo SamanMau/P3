@@ -1,39 +1,65 @@
 package shared_classes.textMessage;
 
+import java.io.*;
 import java.util.ArrayList;
-import java.time.LocalDateTime;
 import shared_classes.user.User;
 import javax.swing.*;
 
-
-public class Message {
+public class Message implements Serializable {
     private User sender;
     private ArrayList<User> recievers;
-    private LocalDateTime timesent;
-    private Icon imageIcon;
+    private ImageIcon imageIcon;
     private String text;
+    private String serverReceivedTime;
+    private String receiverTime;
+    private static final long serialVersionUID = 1L;
 
-    Message(User sender, ArrayList<User> recievers, String text, Icon imageIcon){
+    public Message(User sender, ArrayList<User> recievers, String text, ImageIcon imageIcon){
         this.recievers = recievers;
         this.sender = sender;
         this.text = text;
         this.imageIcon = imageIcon;
-        timesent = LocalDateTime.now();
     }
 
-    public void SendMessage(Message message){
-
+    public Message(User user, String message){
+        this.sender = user;
+        this.text = message;
     }
 
-    public Icon getImageIcon() {
-        return imageIcon;
-    }
-
-    public String getText() {
+    public String getLogOutMessage(){
         return text;
     }
 
-    public LocalDateTime getTimesent() {
-        return timesent;
+    public void setServerReceivedTime(String time){
+        this.serverReceivedTime = time;
     }
+
+    public void setReceiverTime(String time){
+        this.receiverTime = time;
+    }
+
+    public String getReceiverTime(){
+        return receiverTime;
+    }
+
+    public String getServerReceivedTime(){
+        return serverReceivedTime;
+    }
+
+    public User getSender(){
+        return this.sender;
+    }
+
+    public ArrayList<User> getRecievers(){
+        return recievers;
+    }
+
+    public ImageIcon getImageIcon() {
+        return imageIcon;
+    }
+
+    public String getTextMessage() {
+        return text;
+    }
+
 }

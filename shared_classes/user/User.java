@@ -1,35 +1,79 @@
 package shared_classes.user;
 
 import javax.swing.*;
+import java.io.*;
 import java.util.ArrayList;
 
-public class User {
+public class User implements Serializable {
     private String userName;
-    private Icon userImage;
+    private ImageIcon userImage;
     private ArrayList<User> contacts;
+    private static final long serialVersionUID = 1L;
 
-    public User(String userName, Icon userImage){
-        this.userImage = userImage;
+    private byte[] imageByteArray;
+
+    public User(String userName, ImageIcon userImage){
+        convertImageToByte(userImage);
+
         this.userName = userName;
     }
 
-    public User(String userName){
-        this.userName = userName;
+    public void convertImageToByte(ImageIcon imageIcon){
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(imageIcon);
+
+            this.imageByteArray = baos.toByteArray();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
-    public void addFriend(User user){
-        contacts.add(user);
+    public byte[] getImageByteArray(){
+        return imageByteArray;
     }
 
-    public void setUserImage(Icon image){
-        this.userImage = image;
+    public int hashCode() {
+        return userName.hashCode();
     }
 
-    public Icon getUserImage() {
+    public boolean equals(Object obj) {
+        if(obj!=null && obj instanceof User)
+            return userName.equals(((User)obj).getUserName());
+        return false;
+    }
+
+    /*
+    public ImageIcon getUserImage() {
         return userImage;
+    }
+
+     */
+
+    //deserialiserar bilden så att man kan läsa den.
+    public ImageIcon getUserImage() {
+        try {
+
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(imageByteArray));
+            ImageIcon imageIcon = (ImageIcon) ois.readObject();
+            return imageIcon;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getUserName() {
         return userName;
+    }
+
+    @Override
+    public String toString() {
+        return this.userName + this.userImage;
     }
 }

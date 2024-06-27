@@ -1,0 +1,8 @@
+Benzema: Benzema, Greken, 
+Kalle: Benzema, 
+Greken: Benzema, LELA, Adde, Haval, Nines, 
+Einar: Benzema, Einar, Haval, 
+Adde: Greken, 
+Haval: Benzema, Einar, 
+LELA: Greken, Haval, Benzema, 
+Nines: Greken, 
