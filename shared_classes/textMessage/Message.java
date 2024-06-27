@@ -47,7 +47,7 @@ public class Message implements Serializable {
     }
 
     public User getSender(){
-        return sender;
+        return this.sender;
     }
 
     public ArrayList<User> getRecievers(){

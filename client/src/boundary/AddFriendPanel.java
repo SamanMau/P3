@@ -15,6 +15,8 @@ public class AddFriendPanel extends JPanel {
     public AddFriendPanel(AddFriendFrame addFriendFrame){
         this.setLayout(null);
         this.addFriendFrame = addFriendFrame;
+        Color color = new Color(163, 200, 203);
+        this.setBackground(color);
 
         this.setBounds(0, 0, 400, 400);
 

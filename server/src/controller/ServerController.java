@@ -1,5 +1,6 @@
 package controller;
 
+import boundary.MainframeLogPanel;
 import entity.Client;
 import shared_classes.textMessage.Message;
 import shared_classes.user.User;
@@ -13,6 +14,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class ServerController extends Thread{
@@ -22,10 +25,12 @@ public class ServerController extends Thread{
     private Client client;
 
     private ArrayList<Message> newList;
+    private MainframeLogPanel mainframe;
 
     public ServerController() {
         try{
 
+            this.mainframe = new MainframeLogPanel(this);
             userManager = new UserManager("server/src/AllUsers.dat");
           //  String file = "AllUsers.dat";
           //  userNameReader.readFile(file);
@@ -48,6 +53,33 @@ public class ServerController extends Thread{
                 throw new RuntimeException(e);
             }
         }
+    }
+
+
+    /*
+    Pattern klassen används i detta fall för att omvandla vår format "yyyy-mm-dd" till
+    ett mönster. "checkPattern.matcher" används för att kontrollera om datumet "fromTimeText"
+    uppfyller mönstret som skapades i "checkPattern". "matcher.matches()" returnerar
+    ett boolean värde som säger om strängen "fromTimeText" uppfyller mönstret eller inte.
+     */
+    public boolean checkDateValidity(String fromTimeText, String toTimeText, String pattern) {
+        Pattern checkPattern = Pattern.compile(pattern);
+        Matcher matcher = checkPattern.matcher(fromTimeText);
+        Matcher matcher2 = checkPattern.matcher(toTimeText);
+
+        boolean firstDate = matcher.matches();
+        boolean secondDate = matcher2.matches();
+
+        if(firstDate && secondDate){
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    public void manageTraficLogInterval(String fromTimeText, String toTimeText) {
+
     }
 
     private class ClientConnection extends Thread{ /*Kommer att hantera klient förfrågan. Den inre
@@ -80,6 +112,8 @@ public class ServerController extends Thread{
                         registerUser(user);
                         Client client1 = new Client(user, clientSocket, oos, ois);
                         client.put(user, client1);
+                    //    logTrafic(user.getUserName() + " has registered." , getCurrentTime());
+
 
                     } else {
                         boolean created = userManager.checkIfExists(user.getUserName());
@@ -91,10 +125,13 @@ public class ServerController extends Thread{
                             logInUser(name);
                             Client client1 = new Client(user, clientSocket, oos, ois);
                             client.put(user, client1);
+                           // logTrafic(user.getUserName() + " has logged in." , getCurrentTime());
                         }
                     }
 
-                    updateUserList();
+                    int amountActive = updateUserList();
+                   // logTrafic("The online user list has been updated. Amount of people active: " + amountActive, getCurrentTime());
+
 
                     newList = new ArrayList<>(); // löser problemet med att oskickade meddelanden visas om och om igen.
                     readOfflineMessages();
@@ -109,6 +146,7 @@ public class ServerController extends Thread{
                             User user1 = message.getSender();
 
                             if(user1 != null){
+                           //     logTrafic("The server has read a message", getCurrentTime());
                                 handleMessage(message);
                             }
                         }
@@ -130,6 +168,8 @@ public class ServerController extends Thread{
 
             if((textMessage != null) && textMessage.contains("Log out request")){
                 User user = message.getSender();
+              //  logTrafic(user.getUserName() + " wants to log out", getCurrentTime());
+
 
                 try {
                     client.remove(user);
@@ -140,6 +180,7 @@ public class ServerController extends Thread{
 
                     if(message1.getTextMessage().equals("Safe close")){
                         clientSocket.close();
+                   //     logTrafic(user.getUserName() + " has disconnected." , getCurrentTime());
                     }
 
 
@@ -153,20 +194,28 @@ public class ServerController extends Thread{
             }
 
             else{
-                LocalDateTime currentTime = LocalDateTime.now(); //hämtar nuvarande datumet
-
-
-                //"ofPattern" används för att skapa en specifik tidsformat.
-                DateTimeFormatter formatCurrentTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
-                 /*Vi formaterar den nuvarande tiden "currentTime" genom att använda mönstret vi skapade i
-                 objektet formatCurrentTime.
-                */
-                String formattedTime = currentTime.format(formatCurrentTime);
+                String formattedTime = getCurrentTime();
                 message.setServerReceivedTime(formattedTime);
 
 
                 ArrayList<User> receivers = message.getRecievers();
+
+                StringBuilder text = new StringBuilder();
+
+                if(receivers.size() == 1){
+                    text.append(receivers.get(0).getUserName());
+                } else {
+                    for(int i = 0; i < receivers.size(); i++){
+                        if(i + 1 == receivers.size()){
+                            text.append("and " + receivers.get(i).getUserName());
+                        } else {
+                            text.append(receivers.get(i).getUserName()).append(", ");
+                        }
+                    }
+                }
+
+                logTrafic(message.getSender().getUserName() + " has sent a message to " + text , getCurrentTime());
+
 
                 for(int i = 0; i < receivers.size(); i++){
                     String name = receivers.get(i).getUserName();
@@ -190,10 +239,71 @@ public class ServerController extends Thread{
                         addUnsentMessageToFile(message);
                         break;
                     }
-
                 }
 
+              //  logTrafic("The server has forwarded a message from " + message.getSender().getUserName() + " to " + text, getCurrentTime());
+
+
+
             }
+        }
+
+        public String getCurrentTime(){
+            LocalDateTime currentTime = LocalDateTime.now(); //hämtar nuvarande datumet
+
+
+            //"ofPattern" används för att skapa en specifik tidsformat.
+            DateTimeFormatter formatCurrentTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+                 /*Vi formaterar den nuvarande tiden "currentTime" genom att använda mönstret vi skapade i
+                 objektet formatCurrentTime.
+                */
+            String formattedTime = currentTime.format(formatCurrentTime);
+
+            return formattedTime;
+        }
+
+        public void logTrafic(String message, String time){
+            ArrayList<String> logList = new ArrayList<>();
+
+            File logFile = new File("server/src/loggTrafik.txt");
+
+            if(logFile.length() > 0){
+                try {
+                    BufferedReader reader = new BufferedReader(new FileReader(logFile));
+
+                    while (true){
+                        try {
+                            String log = reader.readLine();
+                            logList.add(log);
+                        } catch (EOFException e) {
+                            break;
+                        }
+                    }
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            String log = message + " : " + time;
+            logList.add(log);
+            System.out.println(log);
+
+            try{
+                BufferedWriter writer = new BufferedWriter(new FileWriter(logFile));
+
+                for(int i = 0; i < logList.size(); i++){
+                    writer.write(logList.get(i));
+                }
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+
         }
 
         /*
@@ -376,7 +486,7 @@ public class ServerController extends Thread{
         "clients.keySet()" returnerar alla keys som finns i
         en hashmap.
          */
-        public void updateUserList(){
+        public int  updateUserList(){
             ArrayList<String> userList = new ArrayList<>();
             HashMap<User,Client> clients = Client.getHashMap();
 
@@ -390,6 +500,8 @@ public class ServerController extends Thread{
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+
+            return userList.size();
 
         }
     }

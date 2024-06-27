@@ -23,7 +23,8 @@ public class TopPanel extends JPanel {
         this.setBounds(0, 0, 500, 120);
 
         recieverIcon = new JLabel();
-        this.setBackground(Color.LIGHT_GRAY);
+        Color color = new Color(163, 200, 203);
+        this.setBackground(color);
 
         setUp(pictureFile);
 

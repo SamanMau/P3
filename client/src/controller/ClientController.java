@@ -373,23 +373,6 @@ public class ClientController {
 
     }
 
-    public Message recieveMessageFromClient(){
-        try {
-            Message message = (Message) ois.readObject();
-
-            if(message != null){
-                return message;
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return null;
-    }
-
     private class MonitorMessage extends Thread{
         private static ArrayList<String> onlineUsers;
         private Socket socket;

@@ -14,9 +14,11 @@ public class ContactPanel extends JPanel {
 
     public ContactPanel(MessageFrame messageFrame){
         setLayout(null);
-        this.setBounds(505, 0, 160, 500);
+        this.setBounds(503, 0, 160, 540);
         this.messageFrame = messageFrame;
-        this.setBackground(Color.GRAY);
+        Color color = new Color(163, 200, 203);
+
+        this.setBackground(color);
 
         setUpContacts();
         setActionListeners();

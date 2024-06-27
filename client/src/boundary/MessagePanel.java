@@ -28,6 +28,8 @@ public class MessagePanel extends JPanel {
 
         this.setBounds(0, 60, 500, 500);
         this.messageFrame = messageFrame;
+        Color color = new Color(163, 200, 203);
+        this.setBackground(color);
 
         textInstruction = new JLabel("Type: ");
         textInstruction.setBounds(3, 433, 40, 30);
@@ -45,11 +47,10 @@ public class MessagePanel extends JPanel {
         outPutText.setContentType("text/html");
         outPutText.setEditable(false);
         outPutText.setBounds(0, 0, 485, 433);
-        outPutText.setBackground(Color.white);
+        outPutText.setBackground(color);
 
         this.add(outPutText);
         this.scroll = new JScrollPane(outPutText);
-        scroll.setBackground(Color.red);
         scroll.setBounds(0, 0, 550, 400);
         this.add(scroll);
 
@@ -71,23 +72,27 @@ public class MessagePanel extends JPanel {
                 ArrayList<String> contacts = messageFrame.getFriends();
                 String message = inputText.getText();
 
-                if(message != null && contacts != null && image != null){
-                    messageFrame.managePictureWithText(image, contacts, message);
-                    displayPictureWithText(image, messageFrame.getUserName(), messageFrame.getReceiverTime(), message);
-                    inputText.setText("");
+                if(contacts != null && !(contacts.isEmpty())){
 
-                    image = null;
+                    if((message != null) && (!message.isEmpty()) && image != null){
+                        messageFrame.managePictureWithText(image, contacts, message);
+                        displayPictureWithText(image, messageFrame.getUserName(), messageFrame.getReceiverTime(), message);
+                        inputText.setText("");
 
-                } else if(contacts != null && message == null && image != null){
-                    messageFrame.managePicture(image, contacts);
-                    displayFormattedImage(image, messageFrame.getUserName(), messageFrame.getReceiverTime());
-                    image = null;
+                        image = null;
 
-                } else if(contacts != null && message != null && image == null){
-                    String name = messageFrame.getUserName();
-                    displayText(message, name, messageFrame.getReceiverTime());
-                    inputText.setText("");
-                    messageFrame.manageMessage(message, contacts);
+                    } else if(message != null && (!message.isEmpty()) && image == null){
+                        String name = messageFrame.getUserName();
+                        displayText(message, name, messageFrame.getReceiverTime());
+                        inputText.setText("");
+                        messageFrame.manageMessage(message, contacts);
+                    }
+
+                    else if(image != null){
+                        messageFrame.managePicture(image, contacts);
+                        displayFormattedImage(image, messageFrame.getUserName(), messageFrame.getReceiverTime());
+                        image = null;
+                    }
                 }
 
                 messageFrame.removeChosenFriend();
@@ -125,27 +130,35 @@ public class MessagePanel extends JPanel {
     exempelvis "italics".
      */
     public void displayText(String message, String username, String receiverTime) {
-        try {
-            String formattedText = username + " : " + message + " " + receiverTime + "\n";
+        ArrayList<String> contacts = messageFrame.getFriends();
 
-            document.insertString(document.getLength(), formattedText, null);
-        } catch (BadLocationException e) {
-            e.printStackTrace();
+        if(contacts != null){
+            try {
+                String formattedText = username + " : " + message + " " + receiverTime + "\n";
+
+                document.insertString(document.getLength(), formattedText, null);
+            } catch (BadLocationException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void displayPictureWithText(ImageIcon imageIcon, String userName, String receiverTime, String message){
-        try{
-            Style style = document.addStyle("jpg", null);
+        ArrayList<String> contacts = messageFrame.getFriends();
 
-            String formattedText = userName + " : " + message + " " + receiverTime + "\n";
-            document.insertString(document.getLength(), formattedText, null);
+        if(contacts != null){
+            try{
+                Style style = document.addStyle("jpg", null);
 
-            StyleConstants.setIcon(style, imageIcon);
-            document.insertString(document.getLength(),  "\n", style);
-            document.insertString(document.getLength(), "\n", null); //ger extra mellanrum.
-        } catch (BadLocationException e) {
-            throw new RuntimeException(e);
+                String formattedText = userName + " : " + message + " " + receiverTime + "\n";
+                document.insertString(document.getLength(), formattedText, null);
+
+                StyleConstants.setIcon(style, imageIcon);
+                document.insertString(document.getLength(),  "\n", style);
+                document.insertString(document.getLength(), "\n", null); //ger extra mellanrum.
+            } catch (BadLocationException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
