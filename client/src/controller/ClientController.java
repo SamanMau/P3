@@ -100,7 +100,6 @@ public class ClientController {
     public void addFriendToList(String friend){
         if(!contactList.containsKey(userName)){
             contactList.put(userName, new ArrayList<>());
-            contactList.get(userName).add(friend);
         } else {
             contactList.get(userName).add(friend);
         }
@@ -193,10 +192,6 @@ public class ClientController {
         return formattedTime;
     }
 
-    public String getName(){
-        return this.userName;
-    }
-
     public ImageIcon chooseProfilePic(){
         file = new JFileChooser();
         int action = file.showSaveDialog(null);
@@ -270,7 +265,6 @@ public class ClientController {
     public String getUserName(){
         return this.userName;
     }
-
 
     public void createAccount(String name, ImageIcon imageIcon) {
         this.user = new User(name, imageIcon);
@@ -360,10 +354,6 @@ public class ClientController {
         public MonitorMessage(Socket socket, boolean isRunning){
             this.socket = socket;
             this.isRunning = true;
-        }
-
-        public void setRunning(){
-            this.isRunning = false;
         }
 
         @Override
