@@ -26,10 +26,6 @@ public class Message implements Serializable {
         this.text = message;
     }
 
-    public String getLogOutMessage(){
-        return text;
-    }
-
     public void setServerReceivedTime(String time){
         this.serverReceivedTime = time;
     }
@@ -40,10 +36,6 @@ public class Message implements Serializable {
 
     public String getReceiverTime(){
         return receiverTime;
-    }
-
-    public String getServerReceivedTime(){
-        return serverReceivedTime;
     }
 
     public User getSender(){

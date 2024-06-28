@@ -32,10 +32,6 @@ public class User implements Serializable {
 
     }
 
-    public byte[] getImageByteArray(){
-        return imageByteArray;
-    }
-
     public int hashCode() {
         return userName.hashCode();
     }
@@ -45,13 +41,6 @@ public class User implements Serializable {
             return userName.equals(((User)obj).getUserName());
         return false;
     }
-
-    /*
-    public ImageIcon getUserImage() {
-        return userImage;
-    }
-
-     */
 
     //deserialiserar bilden så att man kan läsa den.
     public ImageIcon getUserImage() {
