@@ -1,3 +1,5 @@
+package entity;
+
 import controller.ServerController;
 
 public class MainServer {

@@ -267,22 +267,6 @@ public class ClientController {
 
     }
 
-    public void newConnection(){
-        MainClient.main(new String[0]);
-    }
-
-    public void sendName(String name, String pictureFile){
-        try {
-
-            this.userName = name;
-
-            oos.writeObject(name);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public String getUserName(){
         return this.userName;
     }
@@ -299,6 +283,9 @@ public class ClientController {
 
         monitorMessage = new MonitorMessage(socket, true);
         monitorMessage.start();
+
+        startFrame.closeInterface();
+        MainClient.main(new String[0]);
     }
 
 
@@ -327,6 +314,11 @@ public class ClientController {
 
                 monitorMessage = new MonitorMessage(socket, true);
                 monitorMessage.start();
+
+
+                startFrame.closeInterface();
+                MainClient.main(new String[0]);
+
             } else {
                 JOptionPane.showMessageDialog(null, "Account does not exist");
                 startFrame.closeInterface();

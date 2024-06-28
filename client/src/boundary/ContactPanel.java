@@ -28,12 +28,12 @@ public class ContactPanel extends JPanel {
 
     public void setUpContacts(){
         addnewFriend = new JButton("Add a new friend");
-        addnewFriend.setBounds(5, 10, 130, 25);
+        addnewFriend.setBounds(5, 10, 150, 25);
         addnewFriend.setBackground(Color.WHITE);
 
         contactText = new JLabel("Contacts:");
         contactText.setBounds(5, 50, 60, 20);
-        contactText.setForeground(Color.WHITE);
+        contactText.setForeground(Color.BLACK);
 
     }
 

@@ -23,5 +23,6 @@ public class LoginFrame extends JFrame {
 
     public void logIn(String name){
         startFrame.logIn(name);
+        this.dispose();
     }
 }

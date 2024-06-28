@@ -9,6 +9,7 @@ public class StartFrame extends JFrame {
     private ClientController controller;
     private StartPanel startPanel;
     private LoginFrame loginFrame;
+    private RegisterFrame registerFrame;
 
     public StartFrame(ClientController controller) {
         super("Welcome!");
@@ -34,7 +35,7 @@ public class StartFrame extends JFrame {
     }
 
     public void openRegisterFrame() {
-        RegisterFrame registerFrame = new RegisterFrame(this);
+        registerFrame = new RegisterFrame(this);
     }
 
 
@@ -50,13 +51,7 @@ public class StartFrame extends JFrame {
         controller.logIn(name);
     }
 
-    public void newConnection(){
-        this.dispose();
-        controller.newConnection();
-    }
-
     public void closeInterface() {
-        loginFrame.dispose();
         this.dispose();
     }
 
