@@ -21,8 +21,6 @@ public class RegisterPanel extends JPanel {
 
     private ImageIcon userImage;
 
-    private File file;
-
     private JLabel warning;
 
     public RegisterPanel(StartFrame startFrame, RegisterFrame registerFrame){
@@ -30,6 +28,8 @@ public class RegisterPanel extends JPanel {
         this.setBounds(0, 0, 350, 300);
         this.registerFrame = registerFrame;
         this.startFrame = startFrame;
+        Color color = new Color(163, 200, 203);
+        this.setBackground(color);
 
         setUp();
         addActionListeners();

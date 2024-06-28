@@ -31,8 +31,6 @@ public class ServerController extends Thread{
 
             this.mainframe = new MainframeLogPanel(this);
             userManager = new UserManager("server/src/AllUsers.dat");
-          //  String file = "AllUsers.dat";
-          //  userNameReader.readFile(file);
 
             this.serverSocket = new ServerSocket(1000);
             this.client = new Client();
@@ -87,23 +85,6 @@ public class ServerController extends Thread{
 
         LocalDateTime toDate = LocalDateTime.parse(toTimeText, formatDate);
 
-        /*
-        int fromYear = fromDate.getYear();
-        int fromMonth = fromDate.getMonthValue();
-        int fromDay = fromDate.getDayOfMonth();
-        int fromHour = fromDate.getHour();
-        int fromMinute = fromDate.getMinute();
-
-
-        int toYear = toDate.getYear();
-        int toMonth = toDate.getMonthValue();
-        int toDay = toDate.getDayOfMonth();
-        int toHour = toDate.getHour();
-        int toMinute = toDate.getMinute();
-
-         */
-
-
         try {
             FileReader fr = new FileReader("server/src/loggTrafik.txt");
             BufferedReader reader = new BufferedReader(fr);
@@ -144,9 +125,7 @@ public class ServerController extends Thread{
     private class ClientConnection extends Thread{ /*Kommer att hantera klient förfrågan. Den inre
     klassen finns eftersom vi vill hantera flera klienter samtidigt, och det hade varit
     ineffektivt att hantera detta i den yttre klassen. */
-
-       // private LinkedBlockingQueue<Message>
-
+        
         private Socket clientSocket;
         private ObjectOutputStream oos;
         private ObjectInputStream ois;

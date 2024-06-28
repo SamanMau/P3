@@ -14,6 +14,8 @@ public class StartPanel extends JPanel {
         setLayout(null);
         this.setBounds(0, 0, 350, 300);
         this.startFrame = startFrame;
+        Color color = new Color(163, 200, 203);
+        this.setBackground(color);
 
         setUp();
 

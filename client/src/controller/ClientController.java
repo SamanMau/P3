@@ -349,19 +349,6 @@ public class ClientController {
             throw new RuntimeException(e);
         }
 
-        /*
-        for(int i = 0; i < contacts.size(); i++){
-            String name = contacts.get(i);
-            User reciever = new User(name, null);
-            Message message = new Message(user, reciever, text, null);
-            try {
-                oos.writeObject(message);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-         */
 
     }
 

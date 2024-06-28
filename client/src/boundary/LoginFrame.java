@@ -16,7 +16,7 @@ public class LoginFrame extends JFrame {
         this.setResizable(false);
         this.getContentPane().setBackground(Color.GRAY);
 
-        loginPanel = new LoginPanel(startFrame, this);
+        loginPanel = new LoginPanel(this);
         this.add(loginPanel);
         setVisible(true);
     }
