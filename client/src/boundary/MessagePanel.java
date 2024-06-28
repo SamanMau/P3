@@ -46,7 +46,7 @@ public class MessagePanel extends JPanel {
         outPutText = new JTextPane();
         outPutText.setContentType("text/html");
         outPutText.setEditable(false);
-        outPutText.setBounds(0, 0, 485, 433);
+        outPutText.setBounds(0, 0, 480, 433);
         outPutText.setBackground(color);
 
         this.add(outPutText);
@@ -63,7 +63,7 @@ public class MessagePanel extends JPanel {
 
 
         inputText = new JTextField();
-        inputText.setBounds(36, 434, 365, 30);
+        inputText.setBounds(40, 434, 350, 30);
         inputText.setBackground(Color.white);
 
         inputText.addActionListener(new ActionListener() {
@@ -111,7 +111,7 @@ public class MessagePanel extends JPanel {
     public void createButtons(){
         enterPic = new JButton("Send image");
         enterPic.setBackground(Color.WHITE);
-        enterPic.setBounds(400, 433, 101, 30);
+        enterPic.setBounds(390, 433, 116, 30);
 
         enterPic.addActionListener(new ActionListener() {
             @Override

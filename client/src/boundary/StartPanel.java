@@ -10,12 +10,12 @@ public class StartPanel extends JPanel {
     private JButton login;
     private JButton register;
 
-    private JButton newUser;
-
     public StartPanel(StartFrame startFrame){
         setLayout(null);
         this.setBounds(0, 0, 350, 300);
         this.startFrame = startFrame;
+        Color color = new Color(163, 200, 203);
+        this.setBackground(color);
 
         setUp();
 
@@ -23,7 +23,6 @@ public class StartPanel extends JPanel {
 
         this.add(login);
         this.add(register);
-        this.add(newUser);
     }
 
     public void setUp(){
@@ -35,10 +34,6 @@ public class StartPanel extends JPanel {
         register = new JButton("Register");
         register.setBounds(95, 140, 120, 20);
         register.setBackground(Color.WHITE);
-
-        newUser = new JButton("Create new connection");
-        newUser.setBounds(75, 180, 170, 20);
-        newUser.setBackground(Color.WHITE);
 
     }
 
@@ -58,12 +53,6 @@ public class StartPanel extends JPanel {
             }
         });
 
-        newUser.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                startFrame.newConnection();
-            }
-        });
     }
 
 }

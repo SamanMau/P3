@@ -28,5 +28,6 @@ public class RegisterFrame extends JFrame {
 
     public void openChatFrame(ImageIcon userImage) {
         startFrame.openChatFrame(userImage);
+        this.dispose();
     }
 }

@@ -21,13 +21,15 @@ public class RegisterPanel extends JPanel {
 
     private ImageIcon userImage;
 
-    private File file;
+    private JLabel warning;
 
     public RegisterPanel(StartFrame startFrame, RegisterFrame registerFrame){
         this.setLayout(null);
         this.setBounds(0, 0, 350, 300);
         this.registerFrame = registerFrame;
         this.startFrame = startFrame;
+        Color color = new Color(163, 200, 203);
+        this.setBackground(color);
 
         setUp();
         addActionListeners();
@@ -36,6 +38,7 @@ public class RegisterPanel extends JPanel {
         this.add(enterNameInstruction);
         this.add(choosePic);
         this.add(createAcc);
+        this.add(warning);
     }
 
     public void setUp(){
@@ -51,7 +54,10 @@ public class RegisterPanel extends JPanel {
 
         createAcc = new JButton("Create account");
         createAcc.setBackground(Color.WHITE);
-        createAcc.setBounds(120, 120, 120, 20);
+        createAcc.setBounds(110, 120, 150, 20);
+
+        warning = new JLabel("Chosen picture needs to be in jpg format");
+        warning.setBounds(60, 160, 245, 20);
     }
 
     public void addActionListeners(){

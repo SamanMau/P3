@@ -4,19 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class TimePanel extends JPanel {
     private MainframeLogPanel mainframe;
     private JTextField fromTime;
     private JButton display;
     private JTextField toTime;
-
-
-    /*
-    // Anger mönstret med x antal siffror på år, månad, dag
-    private String pattern = "\\d{4} - \\d{2} - \\d{2}";
-     */
 
     public TimePanel(MainframeLogPanel mainframe){
         this.setLayout(null);
