@@ -386,9 +386,9 @@ public class ClientController {
                                     for(User receiver : recievers){
                                         if(user.equals(receiver.getUserName())){
                                             String formattedTime = getReceiverTime();
-                                            message.setReceiverTime(formattedTime);
+                                            message.setUserReceiverTime(formattedTime);
 
-                                            messageFrame.displayText(message.getTextMessage(), message.getSender().getUserName(), message.getReceiverTime());
+                                            messageFrame.displayText(message.getTextMessage(), message.getSender().getUserName(), message.getUserReceiverTime());
                                         }
                                     }
                                 }
@@ -402,9 +402,9 @@ public class ClientController {
                                 for(User receiver : recievers){
                                     if(user.equals(receiver.getUserName())){
                                         String formattedTime = getReceiverTime();
-                                        message.setReceiverTime(formattedTime);
+                                        message.setUserReceiverTime(formattedTime);
 
-                                        messageFrame.displayImage(message.getImageIcon(), message.getSender().getUserName(), message.getReceiverTime());
+                                        messageFrame.displayImage(message.getImageIcon(), message.getSender().getUserName(), message.getUserReceiverTime());
                                     }
                                 }
                             } else if(textContent != null && imageIcon != null){
@@ -414,9 +414,9 @@ public class ClientController {
                                 for(User receiver : recievers){
                                     if(user.equals(receiver.getUserName())){
                                         String formattedTime = getReceiverTime();
-                                        message.setReceiverTime(formattedTime);
+                                        message.setUserReceiverTime(formattedTime);
 
-                                        messageFrame.displayPictureWithText(message.getImageIcon(), message.getSender().getUserName(), message.getReceiverTime(), textContent);
+                                        messageFrame.displayPictureWithText(message.getImageIcon(), message.getSender().getUserName(), message.getUserReceiverTime(), textContent);
 
                                     }
                                 }

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 public class User implements Serializable {
     private String userName;
     private ImageIcon userImage;
-    private ArrayList<User> contacts;
     private static final long serialVersionUID = 1L;
 
     private byte[] imageByteArray;
@@ -35,7 +34,7 @@ public class User implements Serializable {
     public int hashCode() {
         return userName.hashCode();
     }
-
+    
     public boolean equals(Object obj) {
         if(obj!=null && obj instanceof User)
             return userName.equals(((User)obj).getUserName());
