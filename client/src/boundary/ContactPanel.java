@@ -41,7 +41,7 @@ public class ContactPanel extends JPanel {
         addnewFriend.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                messageFrame.openFriendPanel();
+                messageFrame.openFriendFrame();
             }
         });
     }
@@ -64,7 +64,7 @@ public class ContactPanel extends JPanel {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         String user = button.getText();
-                        messageFrame.collectFriends(user);
+                        messageFrame.sendMessageToFriend(user);
                     }
                 });
 

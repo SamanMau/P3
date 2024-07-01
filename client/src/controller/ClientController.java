@@ -97,16 +97,22 @@ public class ClientController {
     har en lista eller inte. Detta hjälper till att förhindra att
     alldeles för många element skapas.
     */
-    public void addFriendToList(String friend){
+    public synchronized void addFriendToList(String friend){
         if(!contactList.containsKey(userName)){
             contactList.put(userName, new ArrayList<>());
-            contactList.get(userName).add(friend);
-        } else {
+        }
+
+        contactList.get(userName).add(friend); //tillagd
+
+        /*
+        else {
             contactList.get(userName).add(friend);
         }
+
+         */
     }
 
-    public void readContacts(){
+    public synchronized void readContacts(){
         try {
             FileReader fr = new FileReader("client/src/Contacts.txt");
             BufferedReader reader = new BufferedReader(fr);
@@ -114,18 +120,22 @@ public class ClientController {
             String row;
 
             while (!((row = reader.readLine()) == null)){
-                String[] splitRow = row.split(": ");
-                String personName = splitRow[0];
 
-                String[] friendList = splitRow[1].split(", ");
+                try {
+                    String[] splitRow = row.split(": ");
+                    String personName = splitRow[0];
 
-                ArrayList<String> updatedList = new ArrayList<>();
+                    String[] friendList = splitRow[1].split(", ");
 
-                for(int i = 0; i < friendList.length; i++){
-                    updatedList.add(friendList[i]);
+                    ArrayList<String> updatedList = new ArrayList<>();
+
+                    for(int i = 0; i < friendList.length; i++){
+                        updatedList.add(friendList[i]);
+                    }
+
+                    contactList.put(personName, updatedList);
+                } catch (ArrayIndexOutOfBoundsException e){
                 }
-
-                contactList.put(personName, updatedList);
 
             }
 
@@ -146,7 +156,7 @@ public class ClientController {
     showOpenDialog returnerar en int. Om man väljer en fil, returnerar den 0. Om man inte
     väljer något, returneras 1.
      */
-    public void openFileManager(){
+    public synchronized void openFileManager(){
         file = new JFileChooser();
         int action = file.showSaveDialog(null);
 
@@ -193,10 +203,6 @@ public class ClientController {
         return formattedTime;
     }
 
-    public String getName(){
-        return this.userName;
-    }
-
     public ImageIcon chooseProfilePic(){
         file = new JFileChooser();
         int action = file.showSaveDialog(null);
@@ -230,7 +236,7 @@ public class ClientController {
         return null;
     }
 
-    public void manageImage(ImageIcon imageIcon, ArrayList<String> contacts) {
+    public synchronized void manageImage(ImageIcon imageIcon, ArrayList<String> contacts) {
         ArrayList<User> receivers = new ArrayList<>();
 
         for(String contact : contacts){
@@ -249,7 +255,7 @@ public class ClientController {
 
     }
 
-    public void managePictureWithText(ImageIcon imageIcon, ArrayList<String> contacts, String text){
+    public synchronized void managePictureWithText(ImageIcon imageIcon, ArrayList<String> contacts, String text){
         ArrayList<User> receivers = new ArrayList<>();
 
         for(String contact : contacts){
@@ -267,12 +273,11 @@ public class ClientController {
 
     }
 
-    public String getUserName(){
+    public synchronized String getUserName(){
         return this.userName;
     }
 
-
-    public void createAccount(String name, ImageIcon imageIcon) {
+    public synchronized void createAccount(String name, ImageIcon imageIcon) {
         this.user = new User(name, imageIcon);
         this.userName = name;
         try {
@@ -289,7 +294,7 @@ public class ClientController {
     }
 
 
-    public void logOut(){
+    public synchronized void logOut(){
         Message logOut = new Message(user, "Log out request | " + user);
         try {
             oos.writeObject(logOut);
@@ -299,7 +304,7 @@ public class ClientController {
         }
     }
 
-    public void logIn(String userName){
+    public synchronized void logIn(String userName){
         this.user = new User(userName, null);
         this.userName = userName;
 
@@ -334,7 +339,7 @@ public class ClientController {
     }
 
 
-    public void manageMessage(String text, ArrayList<String> contacts){
+    public synchronized void manageMessage(String text, ArrayList<String> contacts){
         ArrayList<User> receivers = new ArrayList<>();
 
         for(String contact : contacts){
@@ -348,8 +353,6 @@ public class ClientController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     private class MonitorMessage extends Thread{
@@ -360,10 +363,6 @@ public class ClientController {
         public MonitorMessage(Socket socket, boolean isRunning){
             this.socket = socket;
             this.isRunning = true;
-        }
-
-        public void setRunning(){
-            this.isRunning = false;
         }
 
         @Override
@@ -396,9 +395,9 @@ public class ClientController {
                                     for(User receiver : recievers){
                                         if(user.equals(receiver.getUserName())){
                                             String formattedTime = getReceiverTime();
-                                            message.setReceiverTime(formattedTime);
+                                            message.setUserReceiverTime(formattedTime);
 
-                                            messageFrame.displayText(message.getTextMessage(), message.getSender().getUserName(), message.getReceiverTime());
+                                            messageFrame.displayText(message.getTextMessage(), message.getSender().getUserName(), message.getUserReceiverTime());
                                         }
                                     }
                                 }
@@ -412,9 +411,9 @@ public class ClientController {
                                 for(User receiver : recievers){
                                     if(user.equals(receiver.getUserName())){
                                         String formattedTime = getReceiverTime();
-                                        message.setReceiverTime(formattedTime);
+                                        message.setUserReceiverTime(formattedTime);
 
-                                        messageFrame.displayImage(message.getImageIcon(), message.getSender().getUserName(), message.getReceiverTime());
+                                        messageFrame.displayImage(message.getImageIcon(), message.getSender().getUserName(), message.getUserReceiverTime());
                                     }
                                 }
                             } else if(textContent != null && imageIcon != null){
@@ -424,9 +423,9 @@ public class ClientController {
                                 for(User receiver : recievers){
                                     if(user.equals(receiver.getUserName())){
                                         String formattedTime = getReceiverTime();
-                                        message.setReceiverTime(formattedTime);
+                                        message.setUserReceiverTime(formattedTime);
 
-                                        messageFrame.displayPictureWithText(message.getImageIcon(), message.getSender().getUserName(), message.getReceiverTime(), textContent);
+                                        messageFrame.displayPictureWithText(message.getImageIcon(), message.getSender().getUserName(), message.getUserReceiverTime(), textContent);
 
                                     }
                                 }

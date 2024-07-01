@@ -14,7 +14,7 @@ public class UserManager {
         this.filePath = filePath;
     }
 
-    public void addUser(User user) {
+    public synchronized void addUser(User user) {
         try{
             users = readEveryUserFromFile();
             users.add(user);
@@ -24,7 +24,7 @@ public class UserManager {
         }
     }
 
-    private ArrayList<User> readEveryUserFromFile() {
+    private synchronized ArrayList<User> readEveryUserFromFile() {
         try {
             ArrayList<User> users;
 
@@ -43,7 +43,7 @@ public class UserManager {
         }
     }
 
-    public void overwriteAllUsers(ArrayList<User> users) throws IOException {
+    public synchronized void overwriteAllUsers(ArrayList<User> users) throws IOException {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath));
             oos.writeObject(users);
@@ -53,7 +53,7 @@ public class UserManager {
 
     }
 
-    public User readUserFromFile(String username) {
+    public synchronized User readUserFromFile(String username) {
             ArrayList<User> users = readEveryUserFromFile();
 
             for(int i = 0; i < users.size(); i++){
@@ -65,7 +65,7 @@ public class UserManager {
             return null;
     }
 
-    public boolean checkIfExists(String username){
+    public synchronized boolean checkIfExists(String username){
         ArrayList<User> users = readEveryUserFromFile();
 
         for(int i = 0; i < users.size(); i++){

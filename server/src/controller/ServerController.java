@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class ServerController extends Thread{
+public class ServerController{
     private ServerSocket serverSocket;
 
     private UserManager userManager;
@@ -40,7 +40,6 @@ public class ServerController extends Thread{
         }
     }
 
-    @Override
     public void run(){
         while(true){
             try {
@@ -92,16 +91,20 @@ public class ServerController extends Thread{
             String row;
 
             while (!((row = reader.readLine()) == null)){
-                String[] splitRow = row.split(" : ");
-                String log = splitRow[0];
 
-                String time = splitRow[1];
+                try {
+                    String[] splitRow = row.split(" : ");
+                    String log = splitRow[0];
 
-                LocalDateTime logDate = LocalDateTime.parse(time, formatDate);
+                    String time = splitRow[1];
 
-                if(!logDate.isBefore(fromDate) && !logDate.isAfter(toDate)){
-                    String text = log + "   " + time;
-                    logList.add(text);
+                    LocalDateTime logDate = LocalDateTime.parse(time, formatDate);
+
+                    if(!logDate.isBefore(fromDate) && !logDate.isAfter(toDate)){
+                        String text = log + "   " + time;
+                        logList.add(text);
+                    }
+                } catch (ArrayIndexOutOfBoundsException e){
                 }
 
             }
@@ -189,8 +192,6 @@ public class ServerController extends Thread{
                         }
                     }
 
-
-
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
@@ -198,7 +199,7 @@ public class ServerController extends Thread{
             }
         }
 
-        public void handleMessage(Message message){
+        public synchronized void handleMessage(Message message){
             String textMessage = message.getTextMessage();
             ImageIcon imageIcon = (ImageIcon) message.getImageIcon();
 
@@ -279,9 +280,6 @@ public class ServerController extends Thread{
                 }
 
                 logTrafic("The server has forwarded a message from " + message.getSender().getUserName() + " to " + text, getCurrentTime());
-
-
-
             }
         }
 
@@ -300,7 +298,7 @@ public class ServerController extends Thread{
             return formattedTime;
         }
 
-        public void logTrafic(String message, String time) {
+        public synchronized void logTrafic(String message, String time) {
             ArrayList<String> logList = new ArrayList<>();
 
             try {
@@ -444,8 +442,6 @@ public class ServerController extends Thread{
             }
 
             clearOldFile();
-
-
         }
 
 
@@ -472,7 +468,7 @@ public class ServerController extends Thread{
             }
         }
 
-        public void logInUser(String name){
+        public synchronized void logInUser(String name){
             User user = userManager.readUserFromFile(name);
 
             if(user != null){
@@ -485,16 +481,15 @@ public class ServerController extends Thread{
 
         }
 
-        public void registerUser(User user){
+        public synchronized void registerUser(User user){
             userManager.addUser(user);
-
         }
 
         /*
         "clients.keySet()" returnerar alla keys som finns i
         en hashmap.
          */
-        public int  updateUserList(){
+        public int updateUserList(){
             ArrayList<String> userList = new ArrayList<>();
             HashMap<User,Client> clients = Client.getHashMap();
 
@@ -515,6 +510,3 @@ public class ServerController extends Thread{
     }
 
 }
-
-
-

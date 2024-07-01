@@ -6,7 +6,6 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class MessageFrame extends JFrame{
-    private JTextArea chat = new JTextArea();
     private ClientController controller;
     private MessagePanel messagePanel;
     private TopPanel topPanel;
@@ -24,7 +23,6 @@ public class MessageFrame extends JFrame{
 
         this.setSize(680, 580);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        chat.setEditable(false);
 
         messagePanel = new MessagePanel(this);
         topPanel = new TopPanel(pictureFile, this);
@@ -38,7 +36,7 @@ public class MessageFrame extends JFrame{
         this.setVisible(true);
     }
 
-    public void openFriendPanel(){
+    public void openFriendFrame(){
         addFriendFrame = new AddFriendFrame(this);
     }
 
@@ -50,10 +48,8 @@ public class MessageFrame extends JFrame{
         controller.openFileManager();
     }
 
-
-
-    public void sendImage(File message, String name){
-        messagePanel.displayImage(message, name);
+    public void sendImage(File pictureFile, String userName){
+        messagePanel.displayImage(pictureFile, userName);
     }
 
     public String getUserName(){
@@ -64,10 +60,6 @@ public class MessageFrame extends JFrame{
         controller.updateContacts();
     }
 
-    public String getCurrentUser() {
-        return controller.getUserName();
-    }
-
     public void addFriendToList(String friend) {
         controller.addFriendToList(friend);
     }
@@ -76,7 +68,7 @@ public class MessageFrame extends JFrame{
         contactPanel.displayContacts(list);
     }
 
-    public void collectFriends(String name){
+    public void sendMessageToFriend(String name){
         if(!friends.contains(name)){
             friends.add(name);
         }
@@ -105,8 +97,8 @@ public class MessageFrame extends JFrame{
     }
 
 
-    public void managePicture(ImageIcon newSize, ArrayList<String> contacts) {
-        controller.manageImage(newSize, contacts);
+    public void managePicture(ImageIcon image, ArrayList<String> contacts) {
+        controller.manageImage(image, contacts);
     }
 
     public void displayImage(ImageIcon imageIcon, String userName, String receiverTime) {

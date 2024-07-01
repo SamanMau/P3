@@ -23,15 +23,11 @@ public class AddFriendFrame extends JFrame {
         messageFrame.updateContacts();
     }
 
-    public String getCurrentUser(){
-        return messageFrame.getCurrentUser();
-    }
-
     public void addFriendToList(String friend) {
         messageFrame.addFriendToList(friend);
     }
 
     public void collectFriends(String text) {
-        messageFrame.collectFriends(text);
+        messageFrame.sendMessageToFriend(text);
     }
 }

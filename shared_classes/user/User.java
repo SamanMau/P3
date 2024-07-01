@@ -7,7 +7,6 @@ import java.util.ArrayList;
 public class User implements Serializable {
     private String userName;
     private ImageIcon userImage;
-    private ArrayList<User> contacts;
     private static final long serialVersionUID = 1L;
 
     private byte[] imageByteArray;
@@ -18,7 +17,7 @@ public class User implements Serializable {
         this.userName = userName;
     }
 
-    public void convertImageToByte(ImageIcon imageIcon){
+    public synchronized void convertImageToByte(ImageIcon imageIcon){
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -32,29 +31,18 @@ public class User implements Serializable {
 
     }
 
-    public byte[] getImageByteArray(){
-        return imageByteArray;
-    }
-
     public int hashCode() {
         return userName.hashCode();
     }
-
+    
     public boolean equals(Object obj) {
         if(obj!=null && obj instanceof User)
             return userName.equals(((User)obj).getUserName());
         return false;
     }
 
-    /*
-    public ImageIcon getUserImage() {
-        return userImage;
-    }
-
-     */
-
     //deserialiserar bilden så att man kan läsa den.
-    public ImageIcon getUserImage() {
+    public synchronized ImageIcon getUserImage() {
         try {
 
             ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(imageByteArray));
@@ -68,12 +56,12 @@ public class User implements Serializable {
         }
     }
 
-    public String getUserName() {
+    public synchronized String getUserName() {
         return userName;
     }
 
     @Override
-    public String toString() {
+    public synchronized String toString() {
         return this.userName + this.userImage;
     }
 }
