@@ -7,15 +7,15 @@ import javax.swing.*;
 
 public class Message implements Serializable {
     private User sender;
-    private ArrayList<User> recievers;
+    private ArrayList<User> receivers;
     private ImageIcon imageIcon;
     private String text;
     private String serverReceivedTime;
     private String userReceiverTime;
     private static final long serialVersionUID = 1L;
 
-    public Message(User sender, ArrayList<User> recievers, String text, ImageIcon imageIcon){
-        this.recievers = recievers;
+    public Message(User sender, ArrayList<User> receivers, String text, ImageIcon imageIcon){
+        this.receivers = receivers;
         this.sender = sender;
         this.text = text;
         this.imageIcon = imageIcon;
@@ -42,8 +42,8 @@ public class Message implements Serializable {
         return this.sender;
     }
 
-    public ArrayList<User> getRecievers(){
-        return recievers;
+    public ArrayList<User> getReceivers(){
+        return receivers;
     }
 
     public ImageIcon getImageIcon() {
