@@ -17,7 +17,7 @@ public class User implements Serializable {
         this.userName = userName;
     }
 
-    public void convertImageToByte(ImageIcon imageIcon){
+    public synchronized void convertImageToByte(ImageIcon imageIcon){
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -42,7 +42,7 @@ public class User implements Serializable {
     }
 
     //deserialiserar bilden så att man kan läsa den.
-    public ImageIcon getUserImage() {
+    public synchronized ImageIcon getUserImage() {
         try {
 
             ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(imageByteArray));
@@ -56,12 +56,12 @@ public class User implements Serializable {
         }
     }
 
-    public String getUserName() {
+    public synchronized String getUserName() {
         return userName;
     }
 
     @Override
-    public String toString() {
+    public synchronized String toString() {
         return this.userName + this.userImage;
     }
 }
