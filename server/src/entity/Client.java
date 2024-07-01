@@ -44,7 +44,7 @@ public class Client {
         return oos;
     }
 
-    public static synchronized Client get(User user) {
+    public static synchronized Client getClient(User user) {
         return clients.get(user);
     }
 

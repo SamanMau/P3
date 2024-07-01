@@ -50,7 +50,6 @@ public class UserManager {
         } catch (IOException e){
             e.printStackTrace();
         }
-
     }
 
     public synchronized User readUserFromFile(String username) {

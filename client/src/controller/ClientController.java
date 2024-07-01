@@ -390,7 +390,7 @@ public class ClientController {
 
                                 else {
                                     String user = getUserName();
-                                    ArrayList<User> recievers = message.getRecievers();
+                                    ArrayList<User> recievers = message.getReceivers();
 
                                     for(User receiver : recievers){
                                         if(user.equals(receiver.getUserName())){
@@ -404,7 +404,7 @@ public class ClientController {
 
                             } else if((textContent == null) && message.getImageIcon() != null) {
                                 String user = getUserName();
-                                ArrayList<User> recievers = message.getRecievers();
+                                ArrayList<User> recievers = message.getReceivers();
 
                               //  message.getImageMessage();
 
@@ -418,7 +418,7 @@ public class ClientController {
                                 }
                             } else if(textContent != null && imageIcon != null){
                                 String user = getUserName();
-                                ArrayList<User> recievers = message.getRecievers();
+                                ArrayList<User> recievers = message.getReceivers();
 
                                 for(User receiver : recievers){
                                     if(user.equals(receiver.getUserName())){

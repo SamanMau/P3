@@ -29,7 +29,7 @@ public class MainframeLogPanel extends JFrame {
         return controller.checkDateValidity(fromTimeText, toTimeText, pattern);
     }
 
-    public void manageTraficLogInterval(String fromTimeText, String toTimeText) {
+    public void displayTraficLog(String fromTimeText, String toTimeText) {
         ArrayList<String> logList = controller.getTraficLogInterval(fromTimeText, toTimeText);
 
         if(logList != null){

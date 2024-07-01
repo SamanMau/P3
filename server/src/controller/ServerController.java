@@ -40,7 +40,7 @@ public class ServerController{
         }
     }
 
-    public void run(){
+    public void listenForConnections(){
         while(true){
             try {
                 Socket socket = serverSocket.accept();
@@ -136,7 +136,6 @@ public class ServerController{
         public ClientConnection(Socket clientSocket) {
             this.clientSocket = clientSocket;
             start();
-
         }
 
         @Override
@@ -236,7 +235,7 @@ public class ServerController{
                 message.setServerReceivedTime(formattedTime);
 
 
-                ArrayList<User> receivers = message.getRecievers();
+                ArrayList<User> receivers = message.getReceivers();
 
                 StringBuilder text = new StringBuilder();
 
@@ -252,7 +251,7 @@ public class ServerController{
                     }
                 }
 
-                logTrafic(message.getSender().getUserName() + " has sent a message to " + text , getCurrentTime());
+                logTrafic(message.getSender().getUserName() + " has sent a message to " + text , formattedTime);
 
 
                 for(int i = 0; i < receivers.size(); i++){
@@ -260,7 +259,7 @@ public class ServerController{
 
                     User reciever = userManager.readUserFromFile(name);
 
-                    Client clientReciever = Client.get(reciever);
+                    Client clientReciever = Client.getClient(reciever);
 
                     if(clientReciever != null){
                         ObjectOutputStream oos = clientReciever.getOos();
@@ -398,26 +397,29 @@ public class ServerController{
 
             for(int i = 0; i < messageList.size(); i++){
                 Message currentMessage = messageList.get(i);
-                ArrayList<User> receivers = currentMessage.getRecievers();
+                ArrayList<User> receivers = currentMessage.getReceivers();
 
-                for(int j = 0; j < receivers.size(); j++){
-                    User user = receivers.get(j);
+                if(receivers != null){
+                    for(int j = 0; j < receivers.size(); j++){
+                        User user = receivers.get(j);
 
-                    if(clients.containsKey(user)){
-                        Client clientReciever = Client.get(user);
+                        if(clients.containsKey(user)){
+                            Client clientReciever = Client.getClient(user);
 
-                        ObjectOutputStream oos = clientReciever.getOos();
-                        try {
-                            oos.writeObject(currentMessage);
+                            ObjectOutputStream oos = clientReciever.getOos();
+                            try {
+                                oos.writeObject(currentMessage);
 
-                            removeUnsentMessage(currentMessage, user, messageList);
+                                removeUnsentMessage(currentMessage, user, messageList);
 
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     }
-
                 }
+
+
             }
         }
 
@@ -427,14 +429,14 @@ public class ServerController{
 
                 if(checkMessage.equals(message)){
                     User sender = checkMessage.getSender();
-                    ArrayList<User> receivers = checkMessage.getRecievers();
+                    ArrayList<User> receivers = checkMessage.getReceivers();
                     receivers.remove(user);
                     String text = checkMessage.getTextMessage();
                     ImageIcon imageIcon = checkMessage.getImageIcon();
 
                     Message modififed = new Message(sender, receivers, text, imageIcon);
 
-                    if(modififed.getRecievers().size() > 0){
+                    if(modififed.getReceivers().size() > 0){
                         newList.add(modififed);
                         break;
                     }
@@ -478,7 +480,6 @@ public class ServerController{
                     throw new RuntimeException(e);
                 }
             }
-
         }
 
         public synchronized void registerUser(User user){
