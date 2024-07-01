@@ -63,7 +63,7 @@ public class TimePanel extends JPanel {
                 if(!valid){
                     JOptionPane.showMessageDialog(null, "Invalid date");
                 } else {
-                   mainframe.manageTraficLogInterval(fromTimeText, toTimeText);
+                   mainframe.displayTraficLog(fromTimeText, toTimeText);
                 }
             }
         });
