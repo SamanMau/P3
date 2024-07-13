@@ -1,12 +1,16 @@
-Benzema: Benzema, Greken, 
-Kalle: Benzema, 
-Greken: Benzema, LELA, Adde, Haval, Nines, Capio, 
-ShoBror: Benzema, 
-Einar: Benzema, Einar, Haval,, 
-SistaGG: Nines, 
-ElRaton: ElRaton, Greken, 
-NyPers: Greken, 
-Adde: Greken, LELA, 
-Haval: Benzema, Einar, Nines, 
-LELA: Greken, Haval, Benzema, 
-Nines: Greken, 
+Kalle: Benzema
+Greken: Benzema, LELA, Adde, Haval, Nines, Capio
+Capio: Benzema, Nines
+Einar: Benzema, Einar, Haval
+NyPers: Greken
+Haval: Benzema, Einar, Nines
+LELA: Greken, Haval, Benzema
+Benzema: Benzema, Greken, Capio
+ShoBror: Benzema, SistaGG, ShoBror
+Frida: Emma
+SistaGG: Nines, ShoBror
+ElRaton: ElRaton, Greken
+Adde: Greken, LELA
+Habb: Habibi
+Nines: Greken, Capio, Nines
+Emma: Frida

@@ -39,7 +39,7 @@ public class AddFriendPanel extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     String text = button.getText();
                     addFriendFrame.addFriendToList(text);
-                    addFriendFrame.collectFriends(text);
+                    addFriendFrame.sendMessageToFriend(text);
                 }
             });
 

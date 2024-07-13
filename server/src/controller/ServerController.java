@@ -251,7 +251,7 @@ public class ServerController{
                     }
                 }
 
-                logTrafic(message.getSender().getUserName() + " has sent a message to " + text , formattedTime);
+                logTrafic(message.getSender().getUserName() + " has sent a message to " + text , message.getServerReceiverTime());
 
 
                 for(int i = 0; i < receivers.size(); i++){
@@ -278,7 +278,6 @@ public class ServerController{
                     }
                 }
 
-                logTrafic("The server has forwarded a message from " + message.getSender().getUserName() + " to " + text, getCurrentTime());
             }
         }
 

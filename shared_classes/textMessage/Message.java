@@ -54,4 +54,7 @@ public class Message implements Serializable {
         return text;
     }
 
+    public String getServerReceiverTime() {
+        return serverReceivedTime;
+    }
 }

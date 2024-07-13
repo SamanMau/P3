@@ -27,7 +27,7 @@ public class AddFriendFrame extends JFrame {
         messageFrame.addFriendToList(friend);
     }
 
-    public void collectFriends(String text) {
+    public void sendMessageToFriend(String text) {
         messageFrame.sendMessageToFriend(text);
     }
 }

@@ -40,7 +40,7 @@ public class ClientController {
 
     private MonitorMessage monitorMessage;
 
-    private HashMap<String, ArrayList<String>> contactList;
+    private HashMap<String, ArrayList<String>> contactList; //var static innan
 
     private Socket socket;
 
@@ -63,22 +63,35 @@ public class ClientController {
         readContacts();
     }
 
-    public void updateContacts() {
-
+    public synchronized void updateContacts() {
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("client/src/contacts.txt"));
-            for(String person : contactList.keySet()){
-                writer.write(person + ": ");
+            BufferedWriter writer = new BufferedWriter(new FileWriter("client/src/contacts.txt", true)); //true
 
+            for(String person : contactList.keySet()){
+
+                writer.write(person + ": ");
 
                 ArrayList<String> friendContacts = contactList.get(person);
 
+                for(int i = 0; i < friendContacts.size(); i++){
+                    if(i + 1 == friendContacts.size()){
+                        writer.write(friendContacts.get(i));
+                    } else {
+                        writer.write(friendContacts.get(i));
+                        writer.write(", ");
+                    }
+                }
+                writer.newLine();
 
+
+                /*
                 for(String friend : friendContacts){
                     writer.write(friend);
                     writer.write(", ");
                 }
                 writer.newLine();
+
+                 */
 
             }
 
@@ -102,17 +115,52 @@ public class ClientController {
             contactList.put(userName, new ArrayList<>());
         }
 
-        contactList.get(userName).add(friend); //tillagd
-
-        /*
-        else {
-            contactList.get(userName).add(friend);
-        }
-
-         */
+        contactList.get(userName).add(friend);
     }
 
     public synchronized void readContacts(){
+
+        try {
+            FileReader fr = new FileReader("client/src/contacts.txt");
+            BufferedReader reader = new BufferedReader(fr);
+
+            String row;
+
+            while (!((row = reader.readLine()) == null)){
+
+                try {
+                    String[] splitRow = row.split(":");
+
+                    String friendOwner = splitRow[0].trim();
+
+                    String[] friends = splitRow[1].split(",");
+
+                    ArrayList<String> updatedList = new ArrayList<>();
+
+                    for (String friend : friends) {
+                        updatedList.add(friend.trim());
+                    }
+
+                    contactList.put(friendOwner, updatedList);
+
+                } catch (ArrayIndexOutOfBoundsException e){
+                }
+
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        ArrayList<String> list = contactList.get(userName);
+
+        messageFrame.displayContacts(list);
+
+
+
+        /*
         try {
             FileReader fr = new FileReader("client/src/Contacts.txt");
             BufferedReader reader = new BufferedReader(fr);
@@ -146,9 +194,13 @@ public class ClientController {
         }
 
         ArrayList<String> list = contactList.get(userName);
-        
+
         messageFrame.displayContacts(list);
+
+         */
     }
+
+
 
     /*
     JFileChooser är en klass som används för att öppna och spara en fil lokalt på datorn.
