@@ -6,7 +6,6 @@ import shared_classes.textMessage.Message;
 import shared_classes.user.User;
 
 import javax.swing.*;
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -15,8 +14,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 
 
