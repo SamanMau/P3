@@ -14,7 +14,7 @@ public class MainframeLogPanel extends JFrame {
         super("Server log");
         this.controller = serverController;
         this.setResizable(false);
-        this.setSize(600, 500);
+        this.setSize(610, 520);
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         logPanel = new LogPanel(this);
         panel = new TimePanel(this);

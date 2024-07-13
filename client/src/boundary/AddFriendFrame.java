@@ -30,4 +30,8 @@ public class AddFriendFrame extends JFrame {
     public void sendMessageToFriend(String text) {
         messageFrame.sendMessageToFriend(text);
     }
+
+    public void clearFriends() {
+        messageFrame.clearFriends();
+    }
 }

@@ -6,7 +6,6 @@ import entity.MainClient;
 import entity.WrongFormat;
 import shared_classes.textMessage.Message;
 import shared_classes.user.User;
-
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
@@ -57,21 +56,56 @@ public class ClientController {
 
     }
 
-
     public void openChatFrame(ImageIcon pictureFile){
         messageFrame = new MessageFrame(this, pictureFile);
         readContacts();
     }
 
-    public synchronized void updateContacts() {
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("client/src/contacts.txt", true)); //true
+    public void updateContacts(){
+        HashMap<String, ArrayList<String>> currentContacts = getEveryContact();
 
-            for(String person : contactList.keySet()){
+        ArrayList<String> newFriends = contactList.get(userName);
+
+        if(currentContacts.containsKey(userName)){
+            ArrayList<String> existingFriends = currentContacts.get(userName);
+
+            for(int i = 0; i < newFriends.size(); i++){
+                existingFriends.add(newFriends.get(i));
+            }
+
+          //  currentContacts.put(userName, existingFriends);
+
+        } else {
+            currentContacts.put(userName, newFriends);
+        }
+
+        for(String pp : currentContacts.keySet()){
+
+            ArrayList<String> friendContacts = currentContacts.get(pp);
+
+            for(int i = 0; i < friendContacts.size(); i++){
+                String friend = friendContacts.get(i);
+
+                for(int x = i + 1; x < friendContacts.size(); x++){
+                    if(friend.equals(friendContacts.get(x))){
+                        friendContacts.remove(x);
+
+                        x--; //minskar x eftersom arrayen har minskats.
+                    }
+                }
+
+            }
+
+        }
+
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("client/src/contacts.txt", false)); //true
+
+            for(String person : currentContacts.keySet()){
 
                 writer.write(person + ": ");
 
-                ArrayList<String> friendContacts = contactList.get(person);
+                ArrayList<String> friendContacts = currentContacts.get(person);
 
                 for(int i = 0; i < friendContacts.size(); i++){
                     if(i + 1 == friendContacts.size()){
@@ -79,19 +113,11 @@ public class ClientController {
                     } else {
                         writer.write(friendContacts.get(i));
                         writer.write(", ");
+
                     }
                 }
+
                 writer.newLine();
-
-
-                /*
-                for(String friend : friendContacts){
-                    writer.write(friend);
-                    writer.write(", ");
-                }
-                writer.newLine();
-
-                 */
 
             }
 
@@ -102,6 +128,8 @@ public class ClientController {
         }
 
         readContacts();
+
+        contactList = new HashMap<>();
 
     }
 
@@ -116,6 +144,48 @@ public class ClientController {
         }
 
         contactList.get(userName).add(friend);
+    }
+
+    public HashMap<String, ArrayList<String>> getEveryContact(){
+        HashMap<String, ArrayList<String>> allFriends = new HashMap<>();
+
+        try {
+            FileReader fr = new FileReader("client/src/contacts.txt");
+            BufferedReader reader = new BufferedReader(fr);
+
+            String row;
+
+            while (!((row = reader.readLine()) == null)){
+
+                try {
+                    String[] splitRow = row.split(":");
+
+                    String friendOwner = splitRow[0].trim();
+
+                    String[] friends = splitRow[1].split(",");
+
+                    ArrayList<String> updatedList = new ArrayList<>();
+
+                    for (String friend : friends) {
+                        updatedList.add(friend.trim());
+                    }
+
+                    allFriends.put(friendOwner, updatedList);
+
+                } catch (ArrayIndexOutOfBoundsException e){
+                }
+
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return allFriends;
+
+
     }
 
     public synchronized void readContacts(){
@@ -158,49 +228,7 @@ public class ClientController {
 
         messageFrame.displayContacts(list);
 
-
-
-        /*
-        try {
-            FileReader fr = new FileReader("client/src/Contacts.txt");
-            BufferedReader reader = new BufferedReader(fr);
-
-            String row;
-
-            while (!((row = reader.readLine()) == null)){
-
-                try {
-                    String[] splitRow = row.split(": ");
-                    String personName = splitRow[0];
-
-                    String[] friendList = splitRow[1].split(", ");
-
-                    ArrayList<String> updatedList = new ArrayList<>();
-
-                    for(int i = 0; i < friendList.length; i++){
-                        updatedList.add(friendList[i]);
-                    }
-
-                    contactList.put(personName, updatedList);
-                } catch (ArrayIndexOutOfBoundsException e){
-                }
-
-            }
-
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        ArrayList<String> list = contactList.get(userName);
-
-        messageFrame.displayContacts(list);
-
-         */
     }
-
-
 
     /*
     JFileChooser är en klass som används för att öppna och spara en fil lokalt på datorn.
@@ -392,6 +420,8 @@ public class ClientController {
 
 
     public synchronized void manageMessage(String text, ArrayList<String> contacts){
+        messageFrame.clearFriends();
+
         ArrayList<User> receivers = new ArrayList<>();
 
         for(String contact : contacts){
@@ -405,6 +435,7 @@ public class ClientController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     private class MonitorMessage extends Thread{
@@ -482,6 +513,9 @@ public class ClientController {
                                     }
                                 }
                             }
+
+                          //  Message readMessage = new Message(user, "Message has been read by active user", message);
+                          //  oos.writeObject(readMessage);
 
                         } else if(obj instanceof ArrayList<?>){
                             Message message1 = new Message(null, "Safe close");

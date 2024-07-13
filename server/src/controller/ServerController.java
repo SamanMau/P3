@@ -6,6 +6,7 @@ import shared_classes.textMessage.Message;
 import shared_classes.user.User;
 
 import javax.swing.*;
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,6 +15,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 
@@ -200,7 +203,6 @@ public class ServerController{
 
         public synchronized void handleMessage(Message message){
             String textMessage = message.getTextMessage();
-            ImageIcon imageIcon = (ImageIcon) message.getImageIcon();
 
 
             if((textMessage != null) && textMessage.contains("Log out request")){
@@ -220,42 +222,45 @@ public class ServerController{
                         logTrafic(user.getUserName() + " has disconnected" , getCurrentTime());
                     }
 
-
-
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
 
+            } else if ((textMessage != null) && textMessage.equals("Message has been read by active user")){
+                User user = message.getSender();
+                Message readMessage = message.getMessage();
+              //  removeReceiverFromMessage(user, readMessage);
             }
 
             else{
-                String formattedTime = getCurrentTime();
-                message.setServerReceivedTime(formattedTime);
-
-
                 ArrayList<User> receivers = message.getReceivers();
 
-                StringBuilder text = new StringBuilder();
+                ArrayList<User> sortedReceivers = new ArrayList<>();
 
-                if(receivers.size() == 1){
-                    text.append(receivers.get(0).getUserName());
-                } else {
-                    for(int i = 0; i < receivers.size(); i++){
-                        if(i + 1 == receivers.size()){
-                            text.append("and " + receivers.get(i).getUserName());
-                        } else {
-                            text.append(receivers.get(i).getUserName()).append(", ");
-                        }
+                int offlineAmount = 0;
+
+                for(int i = 0; i < receivers.size(); i++){
+                    Client client = Client.getClient(receivers.get(i));
+                    if(client != null){
+                        sortedReceivers.add(receivers.get(i));
                     }
                 }
 
-                logTrafic(message.getSender().getUserName() + " has sent a message to " + text , message.getServerReceiverTime());
-
-
                 for(int i = 0; i < receivers.size(); i++){
-                    String name = receivers.get(i).getUserName();
+                    Client client = Client.getClient(receivers.get(i));
+                    if(client == null){
+                        sortedReceivers.add(receivers.get(i));
+                        offlineAmount++;
+                    }
+                }
+
+                int canBreak = 0;
+
+                for(int i = 0; i < sortedReceivers.size(); i++){
+
+                    String name = sortedReceivers.get(i).getUserName();
 
                     User reciever = userManager.readUserFromFile(name);
 
@@ -272,11 +277,41 @@ public class ServerController{
                                 throw new RuntimeException(e);
                             }
                         }
-                    } else {
-                        addUnsentMessageToFile(message);
-                        break;
+
+                    }
+
+                    else {
+                       // addUnsentMessageToFile(message);
+                        canBreak++;
+
+
+                        if(canBreak == offlineAmount){
+                            addUnsentMessageToFile(message);
+                            break;
+                        }
+
+                    }
+
+                }
+
+                String formattedTime = getCurrentTime();
+                message.setServerReceivedTime(formattedTime);
+
+                StringBuilder text = new StringBuilder();
+
+                if(receivers.size() == 1){
+                    text.append(receivers.get(0).getUserName());
+                } else {
+                    for(int i = 0; i < receivers.size(); i++){
+                        if(i + 1 == receivers.size()){
+                            text.append("and " + receivers.get(i).getUserName());
+                        } else {
+                            text.append(receivers.get(i).getUserName()).append(", ");
+                        }
                     }
                 }
+
+                logTrafic(message.getSender().getUserName() + " has sent a message to " + text , message.getServerReceiverTime());
 
             }
         }
@@ -340,10 +375,21 @@ public class ServerController{
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-
             }
 
-            messageList.add(message);
+            ArrayList<User> offlineUsers = message.getReceivers();
+
+            ArrayList<User> filtered = filterArray(offlineUsers);
+
+            User sender = message.getSender();
+            String text = message.getTextMessage();
+            ImageIcon imageIcon = message.getImageIcon();
+
+            Message modified = new Message(sender, filtered, text, imageIcon);
+
+
+          //  messageList.add(message);
+            messageList.add(modified);
 
             try{
                 ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(messageFile));
@@ -356,6 +402,83 @@ public class ServerController{
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        public ArrayList<User> filterArray(ArrayList<User> receivers){
+            ArrayList<User> filtered = new ArrayList<>();
+
+            for(int i = 0; i < receivers.size(); i++){
+                Client client1 = Client.getClient(receivers.get(i));
+
+                if(client1 == null){
+                    filtered.add(receivers.get(i));
+                }
+
+            }
+
+            return filtered;
+
+        }
+
+        /*
+        boolean variabeln används för att säkerställa att det är lämpligt att
+        manipulera arrayen "list". Tillfällen då det inte skulle vara lämpligt
+        är om arrayen är tom eller null.
+         */
+        public synchronized void removeReceiverFromMessage(User user, Message message){
+            boolean remove = false;
+            ArrayList<Message> list = new ArrayList<>();
+            ObjectInputStream ois = null;
+            try {
+                ois = new ObjectInputStream(new FileInputStream("server/src/offlineMessages.dat"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            while (true){
+                try {
+                    Message message1 = (Message) ois.readObject();
+                    list.add(message1);
+                }   catch (IOException e) {
+                    if (!list.isEmpty()) {
+                        System.out.println("är inte tom");
+                        remove = true;
+                    }
+                    break;
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            if(remove){
+                int hashCode = message.hashCode();
+
+                for(int i = 0; i < list.size(); i++){
+                    if(list.get(i).hashCode() == hashCode){
+                        System.out.println("hittat meddelande: " + message.getTextMessage());
+                        Message manageMessage = list.get(i);
+
+                        User sender = manageMessage.getSender();
+
+                        ArrayList<User> receivers = manageMessage.getReceivers();
+
+                        receivers.remove(user);
+
+                        String text = manageMessage.getTextMessage();
+                        ImageIcon imageIcon = manageMessage.getImageIcon();
+
+                        Message modified = new Message(sender, receivers, text, imageIcon);
+
+                        list.remove(manageMessage);
+                        list.add(modified);
+                        newList.add(modified);
+                        break;
+
+                    }
+                }
+            }
+
+
 
         }
 
@@ -392,6 +515,7 @@ public class ServerController{
          */
         public synchronized void manageOfflineMessages(ArrayList<Message> list){
             ArrayList<Message> messageList = list;
+
             HashMap<User,Client> clients = Client.getHashMap();
 
             for(int i = 0; i < messageList.size(); i++){
@@ -443,6 +567,10 @@ public class ServerController{
             }
 
             clearOldFile();
+        }
+
+        public synchronized void preventDuplicateMessage(Message message, User user, ArrayList<Message> list){
+
         }
 
 

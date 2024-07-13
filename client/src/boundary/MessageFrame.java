@@ -117,4 +117,8 @@ public class MessageFrame extends JFrame{
     public void displayPictureWithText(ImageIcon imageIcon, String userName, String receiverTime, String message){
         messagePanel.displayPictureWithText(imageIcon, userName, receiverTime, message);
     }
+
+    public void clearFriends() {
+        friends = new ArrayList<>();
+    }
 }

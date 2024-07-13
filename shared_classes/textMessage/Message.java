@@ -14,6 +14,9 @@ public class Message implements Serializable {
     private String userReceiverTime;
     private static final long serialVersionUID = 1L;
 
+    private Message message;
+
+
     public Message(User sender, ArrayList<User> receivers, String text, ImageIcon imageIcon){
         this.receivers = receivers;
         this.sender = sender;
@@ -26,8 +29,26 @@ public class Message implements Serializable {
         this.text = message;
     }
 
+    public Message(User user, String textContent, Message message){
+        this.sender = user;
+        this.text = textContent;
+        this.message = message;
+    }
+
+    public void setReceivers(ArrayList<User> array){
+        this.receivers = array;
+    }
+
+    public Message getMessage(){
+        return this.message;
+    }
+
     public void setServerReceivedTime(String time){
         this.serverReceivedTime = time;
+    }
+
+    public void removeOneReceiver(User user){
+        receivers.remove(user);
     }
 
     public void setUserReceiverTime(String time){
