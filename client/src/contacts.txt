@@ -14,7 +14,7 @@ ShoBror: Benzema, SistaGG, ShoBror
 Frida: Emma
 SistaGG: Nines, ShoBror
 ElRaton: ElRaton, Greken
-Adde: Greken, LELA
+Adde: Greken, LELA, Capio
 Habb: Habibi
 Nines: Greken, Capio, Nines
 Emma: Frida
