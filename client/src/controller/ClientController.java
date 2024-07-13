@@ -61,6 +61,39 @@ public class ClientController {
         readContacts();
     }
 
+    public void saveContacts(){
+        HashMap<String, ArrayList<String>> currentContacts = getEveryContact();
+
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("client/src/contacts.txt", false)); //true
+
+            for(String person : currentContacts.keySet()){
+
+                writer.write(person + ": ");
+
+                ArrayList<String> friendContacts = currentContacts.get(person);
+
+                for(int i = 0; i < friendContacts.size(); i++){
+                    if(i + 1 == friendContacts.size()){
+                        writer.write(friendContacts.get(i));
+                    } else {
+                        writer.write(friendContacts.get(i));
+                        writer.write(", ");
+
+                    }
+                }
+
+                writer.newLine();
+
+            }
+
+            writer.close();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void updateContacts(){
         HashMap<String, ArrayList<String>> currentContacts = getEveryContact();
 
@@ -466,6 +499,7 @@ public class ClientController {
                                     String text = message.getTextMessage();
 
                                     if(text.equals("Accepted")){
+                                        saveContacts();
                                         socket.close();
                                         break;
                                     }
