@@ -49,8 +49,10 @@ public class ClientController {
         contactList = new HashMap<>();
         try {
             socket = new Socket(ipAdress, port);
-            this.ois = new ObjectInputStream(socket.getInputStream());
-            this.oos = new ObjectOutputStream(socket.getOutputStream());
+            InputStream inputStream = socket.getInputStream();
+            this.ois = new ObjectInputStream(inputStream);
+            OutputStream outputStream = socket.getOutputStream();
+            this.oos = new ObjectOutputStream(outputStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
