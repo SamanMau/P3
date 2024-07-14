@@ -9,12 +9,12 @@ Test21: Greken, Test20
 Test22: Test23, Greken
 Test23: Test22, Greken
 Abidas: Greken
-Benzema: Benzema, Greken, Capio
+Benzema: Benzema, Greken, Capio, Test20
 ShoBror: Benzema, SistaGG, ShoBror
 Frida: Emma
 SistaGG: Nines, ShoBror
 ElRaton: ElRaton, Greken
-Adde: Greken, Capio
+Adde: Greken, Capio, Benzema
 Habb: Habibi
 Nines: Greken, Capio, Nines
 Emma: Frida

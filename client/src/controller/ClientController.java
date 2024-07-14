@@ -44,7 +44,8 @@ public class ClientController {
     private Socket socket;
 
     public ClientController(){
-        startFrame = new StartFrame(this);
+       // startFrame = new StartFrame(this);
+      //  System.out.println("etta");
         contactList = new HashMap<>();
         try {
             socket = new Socket(ipAdress, port);
@@ -53,6 +54,9 @@ public class ClientController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        startFrame = new StartFrame(this);
+
 
     }
 
