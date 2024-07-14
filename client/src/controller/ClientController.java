@@ -61,6 +61,10 @@ public class ClientController {
         readContacts();
     }
 
+    public void openChatFrameForRegister(ImageIcon pictureFile){
+        messageFrame = new MessageFrame(this, pictureFile);
+    }
+
     public void saveContacts(){
         HashMap<String, ArrayList<String>> currentContacts = getEveryContact();
 

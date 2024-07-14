@@ -44,7 +44,8 @@ public class StartFrame extends JFrame {
     }
 
     public void openChatFrame(ImageIcon userImage) {
-        controller.openChatFrame(userImage);
+      //  controller.openChatFrame(userImage);
+        controller.openChatFrameForRegister(userImage);
     }
 
     public void logIn(String name){

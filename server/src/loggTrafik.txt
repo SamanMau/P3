@@ -1233,3 +1233,6 @@ Adde has logged in : 2024-07-13 16:22
 The online user list has been updated. 3 people active : 2024-07-13 16:22
 Adde wants to log out : 2024-07-13 16:22
 Adde has disconnected : 2024-07-13 16:22
+Abidas has registered : 2024-07-14 13:57
+The online user list has been updated. 1 people active : 2024-07-14 13:57
+Greken has logged in : 2024-07-14 13:57
