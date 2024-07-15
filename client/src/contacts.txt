@@ -1,6 +1,6 @@
 Kalle: Benzema
-Greken: Benzema, Adde, Haval, Nines, Capio
-Capio: Benzema, Nines, Adde, Greken
+Greken: Benzema, Adde, Haval, Nines, Capio, Fredo
+Capio: Benzema, Nines, Adde, Greken, SAMAN
 Einar: Benzema, Einar, Haval
 NyPers: Greken
 Fredo: Greken, Benzema
@@ -19,5 +19,6 @@ ElRaton: ElRaton, Greken
 YasinByn: Greken
 Adde: Greken, Capio, Benzema
 Habb: Habibi
+SAMAN: Greken, Adde, Capio
 Nines: Greken, Capio, Nines
 Emma: Frida

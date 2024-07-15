@@ -39,14 +39,12 @@ public class ClientController {
 
     private MonitorMessage monitorMessage;
 
-    private HashMap<String, ArrayList<String>> contactList; //var static innan
+    private HashMap<String, ArrayList<String>> contactsMap; //var static innan
 
     private Socket socket;
 
     public ClientController(){
-       // startFrame = new StartFrame(this);
-      //  System.out.println("etta");
-        contactList = new HashMap<>();
+        contactsMap = new HashMap<>();
         try {
             socket = new Socket(ipAdress, port);
             InputStream inputStream = socket.getInputStream();
@@ -62,8 +60,8 @@ public class ClientController {
 
     }
 
-    public void openChatFrame(ImageIcon pictureFile){
-        messageFrame = new MessageFrame(this, pictureFile);
+    public void openChatFrame(ImageIcon picture){
+        messageFrame = new MessageFrame(this, picture);
         readContacts();
     }
 
@@ -107,7 +105,7 @@ public class ClientController {
     public void updateContacts(){
         HashMap<String, ArrayList<String>> currentContacts = getEveryContact();
 
-        ArrayList<String> newFriends = contactList.get(userName);
+        ArrayList<String> newFriends = contactsMap.get(userName);
 
         if(currentContacts.containsKey(userName)){
             ArrayList<String> existingFriends = currentContacts.get(userName);
@@ -182,15 +180,15 @@ public class ClientController {
     alldeles för många element skapas.
     */
     public synchronized void addFriendToList(String friend){
-        if(!contactList.containsKey(userName)){
-            contactList.put(userName, new ArrayList<>());
+        if(!contactsMap.containsKey(userName)){
+            contactsMap.put(userName, new ArrayList<>());
         }
 
-        contactList.get(userName).add(friend);
+        contactsMap.get(userName).add(friend);
     }
 
     public void clearContactList(){
-        contactList = new HashMap<>();
+        contactsMap = new HashMap<>();
     }
 
     public HashMap<String, ArrayList<String>> getEveryContact(){
@@ -232,7 +230,6 @@ public class ClientController {
 
         return allFriends;
 
-
     }
 
     public synchronized void readContacts(){
@@ -252,13 +249,13 @@ public class ClientController {
 
                     String[] friends = splitRow[1].split(",");
 
-                    ArrayList<String> updatedList = new ArrayList<>();
+                    ArrayList<String> updatedContactList = new ArrayList<>();
 
                     for (String friend : friends) {
-                        updatedList.add(friend.trim());
+                        updatedContactList.add(friend.trim());
                     }
 
-                    contactList.put(friendOwner, updatedList);
+                    contactsMap.put(friendOwner, updatedContactList);
 
                 } catch (ArrayIndexOutOfBoundsException e){
                 }
@@ -271,7 +268,7 @@ public class ClientController {
             throw new RuntimeException(e);
         }
 
-        ArrayList<String> list = contactList.get(userName);
+        ArrayList<String> list = contactsMap.get(userName);
 
         messageFrame.displayContacts(list);
 
