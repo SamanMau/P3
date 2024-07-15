@@ -609,6 +609,7 @@ public class ServerController{
         "clients.keySet()" returnerar alla keys som finns i
         en hashmap.
          */
+        /*
         public synchronized int updateUserList(){
             ArrayList<String> userList = new ArrayList<>();
             HashMap<User,Client> clients = Client.getHashMap();
@@ -627,6 +628,74 @@ public class ServerController{
             return userList.size();
 
         }
+
+         */
+
+        public synchronized int updateUserList(){
+            ArrayList<String> userList = new ArrayList<>();
+            HashMap<User,Client> clients = Client.getHashMap();
+
+            for(User user : clients.keySet()){
+                userList.add(user.getUserName());
+            }
+
+            writeOnlineUsersToFile(userList);
+            
+            ArrayList<String> newList;
+            newList = getOnlineUsers();
+
+            try {
+                oos.writeObject(newList);
+                oos.flush();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            return newList.size();
+
+        }
+
+        public ArrayList<String> getOnlineUsers(){
+            ArrayList<String> online = new ArrayList<>();
+            try {
+                FileReader fr = new FileReader("client/src/onlineUsers.txt");
+                BufferedReader reader = new BufferedReader(fr);
+
+                String line = "";
+
+                while ((line = reader.readLine()) != null){
+                    online.add(line);
+                }
+
+                reader.close();
+
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            return online;
+        }
+
+        public void writeOnlineUsersToFile(ArrayList<String> onlineUsers){
+            try {
+                FileWriter fw = new FileWriter("client/src/onlineUsers.txt");
+                BufferedWriter writer = new BufferedWriter(fw);
+
+                for(String online : onlineUsers){
+                    writer.write(online);
+                    writer.newLine();
+                }
+
+                writer.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
+
     }
 
 }
