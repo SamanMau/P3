@@ -1,6 +1,6 @@
 Kalle: Benzema
 Greken: Benzema, Adde, Haval, Nines, Capio
-Capio: Benzema, Nines, Adde
+Capio: Benzema, Nines, Adde, Greken
 Einar: Benzema, Einar, Haval
 NyPers: Greken
 Fredo: Greken, Benzema

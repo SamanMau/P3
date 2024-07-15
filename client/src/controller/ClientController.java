@@ -446,13 +446,12 @@ public class ClientController {
                 MainClient.main(new String[0]);
 
             } else {
+                startFrame.closeInterface();
+                MainClient.main(new String[0]);
+
                 ImageIcon userImage = (ImageIcon) obj;
                 monitorMessage = new MonitorMessage(socket, true);
                 monitorMessage.start();
-
-
-                startFrame.closeInterface();
-                MainClient.main(new String[0]);
 
                 openChatFrame(userImage);
             }
