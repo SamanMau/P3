@@ -640,7 +640,7 @@ public class ServerController{
             }
 
             writeOnlineUsersToFile(userList);
-            
+
             ArrayList<String> newList;
             newList = getOnlineUsers();
 
@@ -658,7 +658,7 @@ public class ServerController{
         public ArrayList<String> getOnlineUsers(){
             ArrayList<String> online = new ArrayList<>();
             try {
-                FileReader fr = new FileReader("client/src/onlineUsers.txt");
+                FileReader fr = new FileReader("server/src/onlineUsers.txt");
                 BufferedReader reader = new BufferedReader(fr);
 
                 String line = "";
@@ -680,7 +680,7 @@ public class ServerController{
 
         public void writeOnlineUsersToFile(ArrayList<String> onlineUsers){
             try {
-                FileWriter fw = new FileWriter("client/src/onlineUsers.txt");
+                FileWriter fw = new FileWriter("server/src/onlineUsers.txt");
                 BufferedWriter writer = new BufferedWriter(fw);
 
                 for(String online : onlineUsers){
