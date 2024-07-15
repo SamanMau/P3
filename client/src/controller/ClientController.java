@@ -19,7 +19,7 @@ Klassen ansvarar för att acceptera klient förfrågningar.
 Klient förfrågningar hanteras genom klassen ClientHandler.
  */
 public class ClientController {
-    private String ipAdress = "192.168.10.216";
+    private String ipAdress = "127.0.0.1";
 
     private int port = 1000;
 
@@ -482,7 +482,7 @@ public class ClientController {
     }
 
     private class MonitorMessage extends Thread{
-        private ArrayList<String> onlineUsers;
+        private static ArrayList<String> onlineUsers;
         private Socket socket;
         private boolean isRunning;
 
