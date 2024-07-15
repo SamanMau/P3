@@ -401,7 +401,7 @@ public class ServerController{
             }
         }
 
-        public ArrayList<User> filterArray(ArrayList<User> receivers){
+        public synchronized ArrayList<User> filterArray(ArrayList<User> receivers){
             ArrayList<User> filtered = new ArrayList<>();
 
             for(int i = 0; i < receivers.size(); i++){
@@ -566,11 +566,6 @@ public class ServerController{
             clearOldFile();
         }
 
-        public synchronized void preventDuplicateMessage(Message message, User user, ArrayList<Message> list){
-
-        }
-
-
         public synchronized void clearOldFile(){
             try {
 
@@ -614,7 +609,7 @@ public class ServerController{
         "clients.keySet()" returnerar alla keys som finns i
         en hashmap.
          */
-        public int updateUserList(){
+        public synchronized int updateUserList(){
             ArrayList<String> userList = new ArrayList<>();
             HashMap<User,Client> clients = Client.getHashMap();
 
