@@ -579,7 +579,7 @@ public class ClientController {
         public ArrayList<String> getOnlineUsers(){
             ArrayList<String> online = new ArrayList<>();
             try {
-                FileReader fr = new FileReader("src/onlineUsers.txt");
+                FileReader fr = new FileReader("client/src/onlineUsers.txt");
                 BufferedReader reader = new BufferedReader(fr);
 
                 String line = "";
@@ -603,7 +603,7 @@ public class ClientController {
 
         public void updateOnlineUsers(ArrayList<String> onlineUsers){
             try {
-                FileWriter fw = new FileWriter("src/onlineUsers.txt");
+                FileWriter fw = new FileWriter("client/src/onlineUsers.txt");
                 BufferedWriter writer = new BufferedWriter(fw);
 
                 for(String online : onlineUsers){
