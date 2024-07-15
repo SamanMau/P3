@@ -19,7 +19,7 @@ Klassen ansvarar för att acceptera klient förfrågningar.
 Klient förfrågningar hanteras genom klassen ClientHandler.
  */
 public class ClientController {
-    private String ipAdress = "127.0.0.1";
+    private String ipAdress = "192.168.10.216";
 
     private int port = 1000;
 
@@ -565,6 +565,7 @@ public class ClientController {
                             Message message1 = new Message(null, "Safe close");
                             oos.writeObject(message1);
                             onlineUsers = (ArrayList<String>) obj;
+                            updateOnlineUsers(onlineUsers);
                         }
                     }
 
@@ -576,7 +577,46 @@ public class ClientController {
         }
 
         public ArrayList<String> getOnlineUsers(){
-            return onlineUsers;
+            ArrayList<String> online = new ArrayList<>();
+            try {
+                FileReader fr = new FileReader("src/onlineUsers.txt");
+                BufferedReader reader = new BufferedReader(fr);
+
+                String line = "";
+
+                while ((line = reader.readLine()) != null){
+                    online.add(line);
+                }
+
+                reader.close();
+
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+
+           // return onlineUsers;
+            return online;
+        }
+
+        public void updateOnlineUsers(ArrayList<String> onlineUsers){
+            try {
+                FileWriter fw = new FileWriter("src/onlineUsers.txt");
+                BufferedWriter writer = new BufferedWriter(fw);
+
+                for(String online : onlineUsers){
+                    writer.write(online);
+                    writer.newLine();
+                }
+
+                writer.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+
         }
 
     }
