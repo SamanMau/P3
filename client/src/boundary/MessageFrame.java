@@ -121,4 +121,8 @@ public class MessageFrame extends JFrame{
     public void clearFriends() {
         friends = new ArrayList<>();
     }
+
+    public void clearContactButtons() {
+        controller.clearContactList();
+    }
 }

@@ -172,7 +172,7 @@ public class ClientController {
 
         readContacts();
 
-        contactList = new HashMap<>();
+        clearContactList();
 
     }
 
@@ -187,6 +187,10 @@ public class ClientController {
         }
 
         contactList.get(userName).add(friend);
+    }
+
+    public void clearContactList(){
+        contactList = new HashMap<>();
     }
 
     public HashMap<String, ArrayList<String>> getEveryContact(){
@@ -436,6 +440,24 @@ public class ClientController {
 
             Object obj = ois.readObject();
 
+            if (!(obj instanceof ImageIcon)) {
+                JOptionPane.showMessageDialog(null, "Account does not exist");
+                startFrame.closeInterface();
+                MainClient.main(new String[0]);
+
+            } else {
+                ImageIcon userImage = (ImageIcon) obj;
+                monitorMessage = new MonitorMessage(socket, true);
+                monitorMessage.start();
+
+
+                startFrame.closeInterface();
+                MainClient.main(new String[0]);
+
+                openChatFrame(userImage);
+            }
+
+            /*
             if(obj instanceof ImageIcon){
                 ImageIcon userImage = (ImageIcon) obj;
                 openChatFrame(userImage);
@@ -453,6 +475,8 @@ public class ClientController {
                 MainClient.main(new String[0]);
 
             }
+
+             */
 
         } catch (IOException e) {
             throw new RuntimeException(e);

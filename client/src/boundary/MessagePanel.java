@@ -141,6 +141,8 @@ public class MessagePanel extends JPanel {
                 e.printStackTrace();
             }
         }
+
+        messageFrame.clearContactButtons();
     }
 
     public void displayPictureWithText(ImageIcon imageIcon, String userName, String receiverTime, String message){
@@ -160,6 +162,9 @@ public class MessagePanel extends JPanel {
                 throw new RuntimeException(e);
             }
         }
+
+        messageFrame.clearContactButtons();
+
     }
 
     public void displayImage(File image, String username){
@@ -180,7 +185,11 @@ public class MessagePanel extends JPanel {
             }
         }
 
+        messageFrame.clearContactButtons();
+
     }
+
+
 
 
     /*
@@ -202,6 +211,8 @@ public class MessagePanel extends JPanel {
         } catch (BadLocationException e) {
             throw new RuntimeException(e);
         }
+
+        messageFrame.clearContactButtons();
     }
 }
 
