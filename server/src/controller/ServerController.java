@@ -36,6 +36,7 @@ public class ServerController{
             this.client = new Client();
             newList = new ArrayList<>();
 
+
         } catch (IOException e){
         }
     }
@@ -225,10 +226,6 @@ public class ServerController{
                     throw new RuntimeException(e);
                 }
 
-            } else if ((textMessage != null) && textMessage.equals("Message has been read by active user")){
-                User user = message.getSender();
-                Message readMessage = message.getMessage();
-              //  removeReceiverFromMessage(user, readMessage);
             }
 
             else{
@@ -417,67 +414,6 @@ public class ServerController{
 
         }
 
-        /*
-        boolean variabeln används för att säkerställa att det är lämpligt att
-        manipulera arrayen "list". Tillfällen då det inte skulle vara lämpligt
-        är om arrayen är tom eller null.
-         */
-        public synchronized void removeReceiverFromMessage(User user, Message message){
-            boolean remove = false;
-            ArrayList<Message> list = new ArrayList<>();
-            ObjectInputStream ois = null;
-            try {
-                ois = new ObjectInputStream(new FileInputStream("server/src/offlineMessages.dat"));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            while (true){
-                try {
-                    Message message1 = (Message) ois.readObject();
-                    list.add(message1);
-                }   catch (IOException e) {
-                    if (!list.isEmpty()) {
-                        System.out.println("är inte tom");
-                        remove = true;
-                    }
-                    break;
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            if(remove){
-                int hashCode = message.hashCode();
-
-                for(int i = 0; i < list.size(); i++){
-                    if(list.get(i).hashCode() == hashCode){
-                        System.out.println("hittat meddelande: " + message.getTextMessage());
-                        Message manageMessage = list.get(i);
-
-                        User sender = manageMessage.getSender();
-
-                        ArrayList<User> receivers = manageMessage.getReceivers();
-
-                        receivers.remove(user);
-
-                        String text = manageMessage.getTextMessage();
-                        ImageIcon imageIcon = manageMessage.getImageIcon();
-
-                        Message modified = new Message(sender, receivers, text, imageIcon);
-
-                        list.remove(manageMessage);
-                        list.add(modified);
-                        newList.add(modified);
-                        break;
-
-                    }
-                }
-            }
-
-
-
-        }
 
         public synchronized void readOfflineMessages() throws FileNotFoundException {
             ArrayList<Message> list = new ArrayList<>();
@@ -641,17 +577,17 @@ public class ServerController{
 
             writeOnlineUsersToFile(userList);
 
-            ArrayList<String> newList;
-            newList = getOnlineUsers();
+            ArrayList<String> newUserList;
+            newUserList = getOnlineUsers();
 
             try {
-                oos.writeObject(newList);
+                oos.writeObject(newUserList);
                 oos.flush();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
-            return newList.size();
+            return newUserList.size();
 
         }
 

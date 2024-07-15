@@ -558,9 +558,6 @@ public class ClientController {
                                 }
                             }
 
-                          //  Message readMessage = new Message(user, "Message has been read by active user", message);
-                          //  oos.writeObject(readMessage);
-
                         } else if(obj instanceof ArrayList<?>){
                             Message message1 = new Message(null, "Safe close");
                             oos.writeObject(message1);
