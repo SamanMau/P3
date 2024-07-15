@@ -482,7 +482,7 @@ public class ClientController {
     }
 
     private class MonitorMessage extends Thread{
-        private static ArrayList<String> onlineUsers;
+        private ArrayList<String> onlineUsers;
         private Socket socket;
         private boolean isRunning;
 
