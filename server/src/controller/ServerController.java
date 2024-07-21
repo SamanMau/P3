@@ -160,6 +160,7 @@ public class ServerController{
                         boolean created = userManager.checkIfExists(user.getUserName());
                         if(!created){
                             Message message = new Message(user, "Can't log in");
+                            message.setServerReceivedTime(getCurrentTime());
                             oos.writeObject(message);
                         } else {
                             String name = user.getUserName();
@@ -201,6 +202,7 @@ public class ServerController{
 
         public synchronized void handleMessage(Message message){
             String textMessage = message.getTextMessage();
+            message.setServerReceivedTime(getCurrentTime());
 
 
             if((textMessage != null) && textMessage.contains("Log out request")){
@@ -211,8 +213,14 @@ public class ServerController{
                 try {
                     client.remove(user);
                     updateUserList();
-                    oos.writeObject(new Message(user, "Accepted"));
+                    Message message2 = new Message(user, "Accepted");
+
+                    message2.setServerReceivedTime(getCurrentTime());
+
+                    oos.writeObject(message2);
+
                     Message message1 = (Message) ois.readObject();
+                    message1.setServerReceivedTime(getCurrentTime());
 
 
                     if(message1.getTextMessage().equals("Safe close")){
@@ -372,6 +380,7 @@ public class ServerController{
                     while (true){
                         try {
                             Message messageRead = (Message) ois.readObject();
+                            messageRead.setServerReceivedTime(getCurrentTime());
                             messageList.add(messageRead);
                         } catch (EOFException | ClassNotFoundException e) {
                             break;
@@ -442,6 +451,7 @@ public class ServerController{
             while (true){
                     try {
                         Message message = (Message) ois.readObject();
+                        message.setServerReceivedTime(getCurrentTime());
                         list.add(message);
                     }   catch (IOException e) {
                         if (!list.isEmpty()) {
