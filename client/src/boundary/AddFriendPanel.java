@@ -48,6 +48,8 @@ public class AddFriendPanel extends JPanel {
             this.add(button);
         }
 
+        this.repaint();
+
         this.save = new JButton("Save changes");
         save.setBackground(Color.WHITE);
         save.setBounds(260, 20, 120, 20);
