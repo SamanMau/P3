@@ -30,7 +30,6 @@ public class AddFriendPanel extends JPanel {
             button.setBounds(90, i * 40, 150, 20);
             button.setBackground(Color.WHITE);
 
-
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -43,7 +42,6 @@ public class AddFriendPanel extends JPanel {
             this.add(button);
         }
 
-        repaint();
     }
 
     public void setUp(){
