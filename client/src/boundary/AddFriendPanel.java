@@ -47,13 +47,6 @@ public class AddFriendPanel extends JPanel {
     }
 
     public void setUp(){
-        onlineUsers = new ArrayList<>();
-        addFriendFrame.onlineUsersRequest();
-
-        onlineUsers = addFriendFrame.getOnlineUsers();
-
-        displayOnlineUsers();
-        
         this.save = new JButton("Save changes");
         save.setBackground(Color.WHITE);
         save.setBounds(260, 20, 120, 20);
@@ -67,6 +60,13 @@ public class AddFriendPanel extends JPanel {
         });
 
         this.add(save);
+
+        onlineUsers = new ArrayList<>();
+        addFriendFrame.onlineUsersRequest();
+
+        onlineUsers = addFriendFrame.getOnlineUsers();
+
+        displayOnlineUsers();
     }
 
 }
