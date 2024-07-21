@@ -226,6 +226,20 @@ public class ServerController{
                     throw new RuntimeException(e);
                 }
 
+            } else if(textMessage.equals("Online user list request")){
+                ArrayList<String> onlineList = getOnlineUsers();
+                User user = message.getSender();
+                Client client = Client.getClient(user);
+
+                if(client != null){
+                    ObjectOutputStream oos = client.getOos();
+                    try {
+                        oos.writeObject(onlineList);
+                        oos.flush();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
 
             else{

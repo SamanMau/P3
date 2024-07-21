@@ -229,7 +229,10 @@ public class ClientController {
         }
 
         return allFriends;
+    }
 
+    public ArrayList<String> getOnlineUsers(){
+        return monitorMessage.getOnlineUsers();
     }
 
     public synchronized void readContacts(){
@@ -307,9 +310,15 @@ public class ClientController {
         }
     }
 
-    public ArrayList<String> getOnlineUsers(){
+    public void onlineUsersRequest(){
+        Message message = new Message(user, "Online user list request");
+        try {
+            oos.writeObject(message);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-        return monitorMessage.getOnlineUsers();
+    //    return monitorMessage.getOnlineUsers();
     }
 
     public String getReceiverTime(){

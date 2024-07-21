@@ -25,6 +25,8 @@ public class AddFriendPanel extends JPanel {
 
     public void setUp(){
         onlineUsers = new ArrayList<>();
+        addFriendFrame.onlineUsersRequest();
+
         onlineUsers = addFriendFrame.getOnlineUsers();
 
         for(int i = 0; i < onlineUsers.size(); i++){

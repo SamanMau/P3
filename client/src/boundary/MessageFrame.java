@@ -40,9 +40,15 @@ public class MessageFrame extends JFrame{
         addFriendFrame = new AddFriendFrame(this);
     }
 
+    public void onlineUsersRequest(){
+        controller.onlineUsersRequest();
+    }
+
     public ArrayList<String> getOnlineUsers(){
         return controller.getOnlineUsers();
     }
+
+
 
     public void openFileManager(){
         controller.openFileManager();

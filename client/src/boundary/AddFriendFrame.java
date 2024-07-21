@@ -15,8 +15,8 @@ public class AddFriendFrame extends JFrame {
         this.setVisible(true);
     }
 
-    public ArrayList<String> getOnlineUsers(){
-        return messageFrame.getOnlineUsers();
+    public void onlineUsersRequest(){
+        messageFrame.onlineUsersRequest();
     }
 
     public void updateContacts() {
@@ -33,5 +33,9 @@ public class AddFriendFrame extends JFrame {
 
     public void clearFriends() {
         messageFrame.clearFriends();
+    }
+
+    public ArrayList<String> getOnlineUsers(){
+        return messageFrame.getOnlineUsers();
     }
 }
