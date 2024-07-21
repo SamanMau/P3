@@ -23,12 +23,7 @@ public class AddFriendPanel extends JPanel {
         setUp();
     }
 
-    public void setUp(){
-        onlineUsers = new ArrayList<>();
-        addFriendFrame.onlineUsersRequest();
-
-        onlineUsers = addFriendFrame.getOnlineUsers();
-
+    public void displayOnlineUsers(){
         for(int i = 0; i < onlineUsers.size(); i++){
             JButton button = new JButton(onlineUsers.get(i));
 
@@ -48,8 +43,17 @@ public class AddFriendPanel extends JPanel {
             this.add(button);
         }
 
-        this.repaint();
+        repaint();
+    }
 
+    public void setUp(){
+        onlineUsers = new ArrayList<>();
+        addFriendFrame.onlineUsersRequest();
+
+        onlineUsers = addFriendFrame.getOnlineUsers();
+
+        displayOnlineUsers();
+        
         this.save = new JButton("Save changes");
         save.setBackground(Color.WHITE);
         save.setBounds(260, 20, 120, 20);
