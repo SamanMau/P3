@@ -462,27 +462,6 @@ public class ClientController {
                 openChatFrame(userImage);
             }
 
-            /*
-            if(obj instanceof ImageIcon){
-                ImageIcon userImage = (ImageIcon) obj;
-                openChatFrame(userImage);
-
-                monitorMessage = new MonitorMessage(socket, true);
-                monitorMessage.start();
-
-
-                startFrame.closeInterface();
-                MainClient.main(new String[0]);
-
-            } else {
-                JOptionPane.showMessageDialog(null, "Account does not exist");
-                startFrame.closeInterface();
-                MainClient.main(new String[0]);
-
-            }
-
-             */
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
