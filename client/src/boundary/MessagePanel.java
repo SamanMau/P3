@@ -23,6 +23,14 @@ public class MessagePanel extends JPanel {
 
     private ImageIcon image;
 
+    /*
+    A JTextPane was used to display both text and images.
+    setContentType decides what type of content will be
+    displayed. We use both text and HTML. HTML is used
+    for different text formats.
+    We use a document object because it gives us more
+    control over our textpane.
+     */
     public MessagePanel(MessageFrame messageFrame){
         setLayout(null);
 
@@ -38,11 +46,6 @@ public class MessagePanel extends JPanel {
         createButtons();
         this.add(enterPic);
 
-        /*
-        Likasom JTextArea kan en JTextPane skicka meddelanden i form av String.
-        Men det som är speciellt med JTextPane är att den kan också displaya bilder,
-        det är just därför vi ska använda den.
-         */
         outPutText = new JTextPane();
         outPutText.setContentType("text/html");
         outPutText.setEditable(false);
@@ -54,18 +57,29 @@ public class MessagePanel extends JPanel {
         scroll.setBounds(0, 0, 550, 400);
         this.add(scroll);
 
-        /*
-        Den hämtar styleddocument objektet kopplat till vår textpane.
-        styleddocument låter en ha större kontroll över ens GUI.
-         */
         document = outPutText.getStyledDocument();
-
-
 
         inputText = new JTextField();
         inputText.setBounds(40, 434, 350, 30);
         inputText.setBackground(Color.white);
 
+        manageTextPane();
+
+        this.add(inputText);
+
+        this.setVisible(true);
+    }
+
+    /*
+    The first if statement checks that there are people
+    who will get the specific message. The second if
+    statement checks if the message contains both
+    text and a picture. The first else if
+    statement checks if the message only contains
+    text, and no image. The last if statement
+    checks if only a picture was sent.
+     */
+    public void manageTextPane(){
         inputText.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -99,14 +113,7 @@ public class MessagePanel extends JPanel {
 
             }
         });
-
-        this.add(inputText);
-
-        this.setVisible(true);
     }
-
-
-
 
     public void createButtons(){
         enterPic = new JButton("Send image");
@@ -122,12 +129,10 @@ public class MessagePanel extends JPanel {
     }
 
     /*
-    "textPane.getStyledDocument" hämtar dokument objektet kopplat till vår textPane
-    (outputText). StyledDocument interfacet används för att lagra bland annat text.
-    Den ger en större kotrnoll över ens GUI. "doc.getLength" hämtar storleken
-    på innehållet (text eller bild) som har lagrats i "doc" objektet.
-    "null" har lagts eftersom vi inte vill specifiera någon specifik format på texten,
-    exempelvis "italics".
+    "insertString" is used to display contenct. "doc.getLength" gets the size
+    of the content. The last parameter "null" is used because we do not want
+    to specify any specific format on the text, for instance "italics".
+    "clearContactButtons" removes the chosen friends.
      */
     public void displayText(String message, String username, String receiverTime) {
         ArrayList<String> contacts = messageFrame.getFriends();
@@ -143,8 +148,19 @@ public class MessagePanel extends JPanel {
         }
 
         messageFrame.clearContactButtons();
+       // messageFrame.removeChosenFriend();
     }
 
+
+    /*
+    "Style" is used to specify the format on a picture, "jpg". We create a style
+    and put it in our StyledDocument object. "StyleConstants.setIcon" associates
+    our chosen imageicon to our made style. To display the picture, we use
+    "insertString()" method and send in "style" as last argument.
+    The last insertString method is used to give extra space, if the last
+    parameter in the last "insertString" was "style", then the picture would
+    have been displayed twice.
+     */
     public void displayPictureWithText(ImageIcon imageIcon, String userName, String receiverTime, String message){
         ArrayList<String> contacts = messageFrame.getFriends();
 
@@ -164,17 +180,24 @@ public class MessagePanel extends JPanel {
         }
 
         messageFrame.clearContactButtons();
-
     }
 
-    public void displayImage(File image, String username){
+    /*
+    "ImageIO.read(file)" reads the image from the file. Then, we
+    retrieve the image object from the "oldSize" imageIcon.
+    Then we change the size of the image (changedSize), and
+    use this object to create our imageIcon.
+
+     */
+    public void displayImage(File file, String username){
         ArrayList<String> contacts = messageFrame.getFriends();
 
         if(contacts != null){
             try {
-                ImageIcon oldSize = new ImageIcon(ImageIO.read(image));
-                Image thisImage = oldSize.getImage();
-                Image changedSize = thisImage.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+
+                ImageIcon oldSize = new ImageIcon(ImageIO.read(file));
+                Image image = oldSize.getImage();
+                Image changedSize = image.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
 
                 ImageIcon newSize = new ImageIcon(changedSize);
 
@@ -189,16 +212,6 @@ public class MessagePanel extends JPanel {
 
     }
 
-
-
-
-    /*
-    Style används för att bland annat specifiera format på bilder. I detta fall laddar
-    vi upp "jpg" bilder. Vi skapar en style och lägger in det i vår styledDocument objekt.
-    "StyleConstants.setIcon();" associerar vår imageIcon med en specifik format, i detta fall
-    jpg. doc.insertString(doc.getLength(),  "\n", style); lägger till bilden i GUI:t och gör
-    append, alltså ny rad. vi har null på addStyle("jpg", null) eftersom vi ska skapa en ny stil.
-     */
     public void displayFormattedImage(ImageIcon imageIcon, String userName, String receiverTime) {
 
         try{

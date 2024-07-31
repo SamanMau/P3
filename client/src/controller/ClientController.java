@@ -39,7 +39,7 @@ public class ClientController {
 
     private MonitorMessage monitorMessage;
 
-    private HashMap<String, ArrayList<String>> contactsMap; //var static innan
+    private HashMap<String, ArrayList<String>> contactsMap;
 
     private Socket socket;
 
@@ -311,7 +311,7 @@ public class ClientController {
     }
 
     public void onlineUsersRequest(){
-        Message message = new Message(user, "Online user list request");
+        Message message = new Message(user, "Online user list request 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER");
         try {
             oos.writeObject(message);
         } catch (IOException e) {
@@ -428,7 +428,7 @@ public class ClientController {
 
 
     public synchronized void logOut(){
-        Message logOut = new Message(user, "Log out request | " + user);
+        Message logOut = new Message(user, "Log out request 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER");
         try {
             oos.writeObject(logOut);
 
@@ -516,7 +516,7 @@ public class ClientController {
                                 if(name.equals(userName)){
                                     String text = message.getTextMessage();
 
-                                    if(text.equals("Accepted")){
+                                    if(text.equals("Accepted 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER")){
                                         saveContacts();
                                         socket.close();
                                         break;
@@ -561,13 +561,12 @@ public class ClientController {
                                         message.setUserReceiverTime(formattedTime);
 
                                         messageFrame.displayPictureWithText(message.getImageIcon(), message.getSender().getUserName(), message.getUserReceiverTime(), textContent);
-
                                     }
                                 }
                             }
 
                         } else if(obj instanceof ArrayList<?>){
-                            Message message1 = new Message(null, "Safe close");
+                            Message message1 = new Message(null, "Safe close 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER");
                             oos.writeObject(message1);
                             onlineUsers = (ArrayList<String>) obj;
                         }
@@ -585,6 +584,5 @@ public class ClientController {
         }
 
     }
-
 
 }

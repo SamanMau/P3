@@ -37,7 +37,8 @@ public class ServerController{
             newList = new ArrayList<>();
 
 
-        } catch (IOException e){
+        }
+        catch (IOException e){
         }
     }
 
@@ -54,9 +55,10 @@ public class ServerController{
 
 
     /*
-    En DateTimeFormatter skapas med ett datum mönster. Vi har en try catch för att
-    se om det blir error eller inte, om det är error, innebär det att användaren
-    skrev in fel datum mönster.
+    "DateTimeFormatter" is used to create a date with a specific pattern.
+    We try parsing the sent time "fromTimeText" in the same pattern as
+    "timeFormatter". If both were successful, return true, else, false.
+    False indicates that a incorrect format was typed as input by the user.
      */
     public boolean checkDateValidity(String fromTimeText, String toTimeText, String pattern) {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(pattern);
@@ -72,9 +74,13 @@ public class ServerController{
     }
 
     /*
-    DateTimeFormatter formaterar ett mönstrer för datum. LocalDate används för att
-    omvandla vår sträng till en LocalDate objekt så att vi kan hämta året, månaden,
-    och dagen individuellt.
+    This method is used to display every log from our text file from a specified
+    time. We create a pattern, "formatDate" and then we create LocalDateTime
+    objects by parsing our parameters, "fromTimeText" and "toTimeText".
+
+    We read every single log from our file "loggTrafik", for each log, we check if
+    that log falls within the range of "fromDate" and "toDate". If that is the case,
+    we add that log to our "logList".
      */
     public ArrayList<String> getTraficLogInterval(String fromTimeText, String toTimeText) {
         ArrayList<String> logList = new ArrayList<>();
@@ -105,6 +111,8 @@ public class ServerController{
                         String text = log + "   " + time;
                         logList.add(text);
                     }
+
+
                 } catch (ArrayIndexOutOfBoundsException e){
                 }
 
@@ -126,10 +134,10 @@ public class ServerController{
         return null;
     }
 
-    private class ClientConnection extends Thread{ /*Kommer att hantera klient förfrågan. Den inre
-    klassen finns eftersom vi vill hantera flera klienter samtidigt, och det hade varit
-    ineffektivt att hantera detta i den yttre klassen. */
-        
+    /*
+     This class represents a single client, represented by a thread.
+     */
+    private class ClientConnection extends Thread{
         private Socket clientSocket;
         private ObjectOutputStream oos;
         private ObjectInputStream ois;
@@ -139,6 +147,11 @@ public class ServerController{
             start();
         }
 
+        /*
+        If imageIcon is not null, it means that the user is new,
+        and should be registered. If imageIcon is null, it means
+        that the user already exists.
+         */
         @Override
         public void run(){
             try{
@@ -179,6 +192,9 @@ public class ServerController{
                     readOfflineMessages();
 
 
+                    /*
+                    The if statement "user1 != null" solved an unknown weird problem.
+                     */
                     while (true){
                         Object obj = ois.readObject();
 
@@ -202,10 +218,14 @@ public class ServerController{
 
         public synchronized void handleMessage(Message message){
             String textMessage = message.getTextMessage();
+
             message.setServerReceivedTime(getCurrentTime());
 
 
-            if((textMessage != null) && textMessage.contains("Log out request")){
+            /*
+            This if statement handles the situation where a user wants to log out.
+             */
+            if((textMessage != null) && textMessage.contains("Log out request 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER")){
                 User user = message.getSender();
                 logTrafic(user.getUserName() + " wants to log out", getCurrentTime());
 
@@ -213,7 +233,7 @@ public class ServerController{
                 try {
                     client.remove(user);
                     updateUserList();
-                    Message message2 = new Message(user, "Accepted");
+                    Message message2 = new Message(user, "Accepted 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER");
 
                     message2.setServerReceivedTime(getCurrentTime());
 
@@ -223,7 +243,7 @@ public class ServerController{
                     message1.setServerReceivedTime(getCurrentTime());
 
 
-                    if(message1.getTextMessage().equals("Safe close")){
+                    if(message1.getTextMessage().equals("Safe close 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER")){
                         clientSocket.close();
                         logTrafic(user.getUserName() + " has disconnected" , getCurrentTime());
                     }
@@ -234,7 +254,13 @@ public class ServerController{
                     throw new RuntimeException(e);
                 }
 
-            } else if(textMessage.equals("Online user list request")){
+            }
+
+            /*
+            This else if statement handles the situation where a user wants
+            to see which users are online.
+             */
+            else if(textMessage.equals("Online user list request 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER")){
                 ArrayList<String> onlineList = getOnlineUsers();
                 User user = message.getSender();
                 Client client = Client.getClient(user);
@@ -250,6 +276,9 @@ public class ServerController{
                 }
             }
 
+            /*
+            Handles normal message cases between users. This is responsible for sending new messages
+             */
             else{
                 ArrayList<User> receivers = message.getReceivers();
 
@@ -309,9 +338,6 @@ public class ServerController{
                     }
 
                 }
-
-                String formattedTime = getCurrentTime();
-                message.setServerReceivedTime(formattedTime);
 
                 StringBuilder text = new StringBuilder();
 
@@ -437,6 +463,10 @@ public class ServerController{
 
         }
 
+        /*
+        This method reads and forwards the messages to other methods with more logic behind them.
+        Has a connection with the method manageOfflineMessages
+         */
 
         public synchronized void readOfflineMessages() throws FileNotFoundException {
             ArrayList<Message> list = new ArrayList<>();
@@ -469,6 +499,10 @@ public class ServerController{
         meddelande, så hämtar vi dess arraylist av receivers. För varje
         user objekt i receiver listan, måste vi kontrollera om det user objektet
         finns aktiv i vår hashmap.
+
+        Handles all unsent-messages and if a user is online the message will be sent to that user.
+        The method also tries to get connections between server and client to see whether the user can receive the message at that time
+        This method has a connection with removeUnsentMessage
          */
         public synchronized void manageOfflineMessages(ArrayList<Message> list){
             ArrayList<Message> messageList = list;
@@ -476,10 +510,12 @@ public class ServerController{
             HashMap<User,Client> clients = Client.getHashMap();
 
             for(int i = 0; i < messageList.size(); i++){
+
                 Message currentMessage = messageList.get(i);
                 ArrayList<User> receivers = currentMessage.getReceivers();
 
                 if(receivers != null){
+
                     for(int j = 0; j < receivers.size(); j++){
                         User user = receivers.get(j);
 
@@ -503,15 +539,25 @@ public class ServerController{
             }
         }
 
+        /*
+        Removes users from the sender list of a message so that once the user has received a message it won't receive it again
+         */
+
         public synchronized void removeUnsentMessage(Message message, User user, ArrayList<Message> list){
+
             for(int i = 0; i < list.size(); i++){
                 Message checkMessage = list.get(i);
 
                 if(checkMessage.equals(message)){
+
                     User sender = checkMessage.getSender();
+
                     ArrayList<User> receivers = checkMessage.getReceivers();
+
                     receivers.remove(user);
+
                     String text = checkMessage.getTextMessage();
+
                     ImageIcon imageIcon = checkMessage.getImageIcon();
 
                     Message modififed = new Message(sender, receivers, text, imageIcon);
@@ -525,6 +571,10 @@ public class ServerController{
 
             clearOldFile();
         }
+
+        /*
+        Clears and recreates file to make sure no duplicates are created
+         */
 
         public synchronized void clearOldFile(){
             try {
@@ -549,6 +599,9 @@ public class ServerController{
             }
         }
 
+        /*
+        Uses the users name to log in
+         */
         public synchronized void logInUser(String name){
             User user = userManager.readUserFromFile(name);
 
@@ -561,36 +614,18 @@ public class ServerController{
             }
         }
 
+
+
+        /*
+        Registers a user
+         */
         public synchronized void registerUser(User user){
             userManager.addUser(user);
         }
 
         /*
-        "clients.keySet()" returnerar alla keys som finns i
-        en hashmap.
+        Updates so that new users are added to the user list of already registered users
          */
-        /*
-        public synchronized int updateUserList(){
-            ArrayList<String> userList = new ArrayList<>();
-            HashMap<User,Client> clients = Client.getHashMap();
-
-            for(User user : clients.keySet()){
-                userList.add(user.getUserName());
-            }
-
-            try {
-                oos.writeObject(userList);
-                oos.flush();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            return userList.size();
-
-        }
-
-         */
-
         public synchronized int updateUserList(){
             ArrayList<String> userList = new ArrayList<>();
             HashMap<User,Client> clients = Client.getHashMap();
@@ -615,6 +650,10 @@ public class ServerController{
 
         }
 
+        /*
+        This reads all users currently online in the program
+         */
+
         public ArrayList<String> getOnlineUsers(){
             ArrayList<String> online = new ArrayList<>();
             try {
@@ -638,6 +677,9 @@ public class ServerController{
             return online;
         }
 
+        /*
+        This saves all online users to a file
+         */
         public void writeOnlineUsersToFile(ArrayList<String> onlineUsers){
             try {
                 FileWriter fw = new FileWriter("server/src/onlineUsers.txt");
@@ -652,10 +694,7 @@ public class ServerController{
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
         }
-
-
     }
 
 }
