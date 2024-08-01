@@ -548,7 +548,6 @@ public class ServerController{
         Removes users from the sender list of a message so that once the user has received a message it won't receive it again
          */
         public synchronized void removeUnsentMessage(Message message, User user, ArrayList<Message> list){
-
             for(int i = 0; i < list.size(); i++){
                 Message checkMessage = list.get(i);
 
@@ -570,6 +569,17 @@ public class ServerController{
                         newList.add(modififed);
                         break;
                     }
+                }
+            }
+
+            /*This second loop ensures that messages that still are waiting to be read
+            are not deleted when our program reaches "clearOldFile".
+             */
+            for(int i = 0; i < list.size(); i++){
+                Message message1 = list.get(i);
+
+                if(!(message1.equals(message))){
+                    newList.add(message1);
                 }
             }
 

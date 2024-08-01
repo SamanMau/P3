@@ -48,8 +48,6 @@ public class MessageFrame extends JFrame{
         return controller.getOnlineUsers();
     }
 
-
-
     public void openFileManager(){
         controller.openFileManager();
     }
