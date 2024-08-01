@@ -16,7 +16,6 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 public class ServerController{
     private ServerSocket serverSocket;
 
@@ -101,12 +100,14 @@ public class ServerController{
 
                 try {
                     String[] splitRow = row.split(" : ");
-                    String log = splitRow[0];
+                    String log = splitRow[0]; //contains the event itself.
 
-                    String time = splitRow[1];
+                    String time = splitRow[1]; //contains the date the event happened.
 
+                    //We parse the time from the event to our specified format.
                     LocalDateTime logDate = LocalDateTime.parse(time, formatDate);
 
+                    //Checks if the date is within our range.
                     if(!logDate.isBefore(fromDate) && !logDate.isAfter(toDate)){
                         String text = log + "   " + time;
                         logList.add(text);
@@ -170,8 +171,8 @@ public class ServerController{
 
 
                     } else {
-                        boolean created = userManager.checkIfExists(user.getUserName());
-                        if(!created){
+                        boolean exists = userManager.checkIfExists(user.getUserName());
+                        if(!exists){
                             Message message = new Message(user, "Can't log in");
                             message.setServerReceivedTime(getCurrentTime());
                             oos.writeObject(message);
@@ -232,7 +233,8 @@ public class ServerController{
 
                 try {
                     client.remove(user);
-                    updateUserList();
+                    int amountActive = updateUserList();
+
                     Message message2 = new Message(user, "Accepted 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER");
 
                     message2.setServerReceivedTime(getCurrentTime());
@@ -242,10 +244,12 @@ public class ServerController{
                     Message message1 = (Message) ois.readObject();
                     message1.setServerReceivedTime(getCurrentTime());
 
-
                     if(message1.getTextMessage().equals("Safe close 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER")){
                         clientSocket.close();
                         logTrafic(user.getUserName() + " has disconnected" , getCurrentTime());
+
+                        logTrafic("The online user list has been updated. " + amountActive + " people active", getCurrentTime());
+
                     }
 
                 } catch (IOException e) {
@@ -359,20 +363,23 @@ public class ServerController{
         }
 
         public String getCurrentTime(){
-            LocalDateTime currentTime = LocalDateTime.now(); //hämtar nuvarande datumet
+            LocalDateTime currentTime = LocalDateTime.now(); //Returns the current date.
 
 
-            //"ofPattern" används för att skapa en specifik tidsformat.
+            //"ofPattern" is used to create a specific time format, in this case "yyyy-MM-dd HH:mm"
             DateTimeFormatter formatCurrentTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-                 /*Vi formaterar den nuvarande tiden "currentTime" genom att använda mönstret vi skapade i
-                 objektet formatCurrentTime.
-                */
+            /*
+            We format the current time (currentTime" by using the pattern we created in "formatCurrentTime".
+             */
             String formattedTime = currentTime.format(formatCurrentTime);
 
             return formattedTime;
         }
 
+        /*
+        Logs trafic.
+         */
         public synchronized void logTrafic(String message, String time) {
             ArrayList<String> logList = new ArrayList<>();
 
@@ -388,11 +395,11 @@ public class ServerController{
         }
 
         /*
-        "if(messageFile.length() > 0) används för att kontrollera att filen inte är tom. Om
-        arrayen är tom och man läser från den, så får man error. Om arrayen nu är tom, så
-        läggs meddelande objektet bara till i arrayen, därefter skriver man meddelande
-        objekten från arrayen till filen igen. Man överskriver de gamla meddelanden
-         filen varje gång ett nytt meddelande läggs till.
+        if(messageFile.length() > 0) is used to check that the file is not empty.
+        If the array is empty and we try reading from it, errors will be thrown.
+        If the array is not empty, the message objects will be put in the array.
+        Then, we write the message objects from the array to the file again.
+        We overwrite the old messages from the file.
          */
         public synchronized void addUnsentMessageToFile(Message message) {
             ArrayList<Message> messageList = new ArrayList<>();
@@ -403,6 +410,7 @@ public class ServerController{
                 try{
                     ObjectInputStream ois = new ObjectInputStream(new FileInputStream(messageFile));
 
+                    //Reads the message objects from the file and puts it in the array "messageList".
                     while (true){
                         try {
                             Message messageRead = (Message) ois.readObject();
@@ -422,7 +430,7 @@ public class ServerController{
 
             ArrayList<User> offlineUsers = message.getReceivers();
 
-            ArrayList<User> filtered = filterArray(offlineUsers);
+            ArrayList<User> filtered = getOfflineReceivers(offlineUsers);
 
             User sender = message.getSender();
             String text = message.getTextMessage();
@@ -447,7 +455,9 @@ public class ServerController{
             }
         }
 
-        public synchronized ArrayList<User> filterArray(ArrayList<User> receivers){
+
+       // Returns an array of offline users
+        public synchronized ArrayList<User> getOfflineReceivers(ArrayList<User> receivers){
             ArrayList<User> filtered = new ArrayList<>();
 
             for(int i = 0; i < receivers.size(); i++){
@@ -464,10 +474,10 @@ public class ServerController{
         }
 
         /*
-        This method reads and forwards the messages to other methods with more logic behind them.
-        Has a connection with the method manageOfflineMessages
+        This method puts unsent message objects in an array and forwards this array
+        to other methods, such as "manageOfflineMessages()", which handles these
+        messages more precisely.
          */
-
         public synchronized void readOfflineMessages() throws FileNotFoundException {
             ArrayList<Message> list = new ArrayList<>();
 
@@ -495,14 +505,9 @@ public class ServerController{
         }
 
         /*
-        messageList är alla oskciakde meddelanden. För varje oskickat
-        meddelande, så hämtar vi dess arraylist av receivers. För varje
-        user objekt i receiver listan, måste vi kontrollera om det user objektet
-        finns aktiv i vår hashmap.
-
-        Handles all unsent-messages and if a user is online the message will be sent to that user.
-        The method also tries to get connections between server and client to see whether the user can receive the message at that time
-        This method has a connection with removeUnsentMessage
+        "messageList" contains every unsent message. For each message, we get their respective
+        arraylist of receivers. For each user object in the receivers array, we check if that
+        user is online or not. If he is online, we send him the message.
          */
         public synchronized void manageOfflineMessages(ArrayList<Message> list){
             ArrayList<Message> messageList = list;
@@ -542,7 +547,6 @@ public class ServerController{
         /*
         Removes users from the sender list of a message so that once the user has received a message it won't receive it again
          */
-
         public synchronized void removeUnsentMessage(Message message, User user, ArrayList<Message> list){
 
             for(int i = 0; i < list.size(); i++){
@@ -575,7 +579,6 @@ public class ServerController{
         /*
         Clears and recreates file to make sure no duplicates are created
          */
-
         public synchronized void clearOldFile(){
             try {
 
@@ -614,8 +617,6 @@ public class ServerController{
             }
         }
 
-
-
         /*
         Registers a user
          */
@@ -624,7 +625,7 @@ public class ServerController{
         }
 
         /*
-        Updates so that new users are added to the user list of already registered users
+        Returns the number of active clients.
          */
         public synchronized int updateUserList(){
             ArrayList<String> userList = new ArrayList<>();
@@ -651,9 +652,8 @@ public class ServerController{
         }
 
         /*
-        This reads all users currently online in the program
+        Returns an arraylist which contains the name of every active client.
          */
-
         public ArrayList<String> getOnlineUsers(){
             ArrayList<String> online = new ArrayList<>();
             try {
