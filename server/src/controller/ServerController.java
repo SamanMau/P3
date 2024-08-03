@@ -222,63 +222,66 @@ public class ServerController{
 
             message.setServerReceivedTime(getCurrentTime());
 
+                /*
+                 This if statement handles the situation where a user wants to log out.
+                 */
+                if((textMessage != null) && textMessage.contains("Log out request 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER")){
+                    User user = message.getSender();
+                    logTrafic(user.getUserName() + " wants to log out", getCurrentTime());
 
-            /*
-            This if statement handles the situation where a user wants to log out.
-             */
-            if((textMessage != null) && textMessage.contains("Log out request 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER")){
-                User user = message.getSender();
-                logTrafic(user.getUserName() + " wants to log out", getCurrentTime());
 
-
-                try {
-                    client.remove(user);
-                    int amountActive = updateUserList();
-
-                    Message message2 = new Message(user, "Accepted 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER");
-
-                    message2.setServerReceivedTime(getCurrentTime());
-
-                    oos.writeObject(message2);
-
-                    Message message1 = (Message) ois.readObject();
-                    message1.setServerReceivedTime(getCurrentTime());
-
-                    if(message1.getTextMessage().equals("Safe close 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER")){
-                        clientSocket.close();
-                        logTrafic(user.getUserName() + " has disconnected" , getCurrentTime());
-
-                        logTrafic("The online user list has been updated. " + amountActive + " people active", getCurrentTime());
-
-                    }
-
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-
-            /*
-            This else if statement handles the situation where a user wants
-            to see which users are online.
-             */
-            else if(textMessage.equals("Online user list request 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER")){
-                ArrayList<String> onlineList = getOnlineUsers();
-                User user = message.getSender();
-                Client client = Client.getClient(user);
-
-                if(client != null){
-                    ObjectOutputStream oos = client.getOos();
                     try {
-                        oos.writeObject(onlineList);
-                        oos.flush();
+                        client.remove(user);
+                        int amountActive = updateUserList();
+
+                        Message message2 = new Message(user, "Accepted 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER");
+
+                        message2.setServerReceivedTime(getCurrentTime());
+
+                        oos.writeObject(message2);
+
+                        Message message1 = (Message) ois.readObject();
+                        message1.setServerReceivedTime(getCurrentTime());
+
+                        if(message1.getTextMessage().equals("Safe close 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER")){
+                            clientSocket.close();
+                            logTrafic(user.getUserName() + " has disconnected" , getCurrentTime());
+
+                            logTrafic("The online user list has been updated. " + amountActive + " people active", getCurrentTime());
+
+                        }
+
                     } catch (IOException e) {
                         throw new RuntimeException(e);
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }
+
+                /*
+                This else if statement handles the situation where a user wants
+                 to see which users are online.
+                 */
+                else if(textMessage != null && textMessage.equals("Online user list request 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER")){
+                    ArrayList<String> onlineList = getOnlineUsers();
+                    User user = message.getSender();
+                    Client client = Client.getClient(user);
+
+                    if(client != null){
+                        ObjectOutputStream oos = client.getOos();
+                        try {
+                            oos.writeObject(onlineList);
+                            oos.flush();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
-            }
+
+
+
+
 
             /*
             Handles normal message cases between users. This is responsible for sending new messages
