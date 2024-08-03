@@ -61,7 +61,7 @@ public class TimePanel extends JPanel {
                 boolean valid = mainframe.checkDateValidity(fromTimeText, toTimeText, "yyyy-MM-dd HH:mm");
 
                 if(!valid){
-                    JOptionPane.showMessageDialog(null, "Date is either invalid or you added unnecessary space");
+                    JOptionPane.showMessageDialog(null, "Date is either in invalid format or you added unnecessary space");
                 } else {
                    mainframe.displayTraficLog(fromTimeText, toTimeText);
                 }
