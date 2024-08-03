@@ -83,13 +83,13 @@ public class MessagePanel extends JPanel {
         inputText.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ArrayList<String> contacts = messageFrame.getFriends();
+                ArrayList<String> messageReceivers = messageFrame.getFriends();
                 String message = inputText.getText();
 
-                if(contacts != null && !(contacts.isEmpty())){
+                if(messageReceivers != null && !(messageReceivers.isEmpty())){
 
                     if((message != null) && (!message.isEmpty()) && image != null){
-                        messageFrame.managePictureWithText(image, contacts, message);
+                        messageFrame.managePictureWithText(image, messageReceivers, message);
                         displayPictureWithText(image, messageFrame.getUserName(), messageFrame.getReceiverTime(), message);
                         inputText.setText("");
 
@@ -99,17 +99,17 @@ public class MessagePanel extends JPanel {
                         String name = messageFrame.getUserName();
                         displayText(message, name, messageFrame.getReceiverTime());
                         inputText.setText("");
-                        messageFrame.manageMessage(message, contacts);
+                        messageFrame.manageMessage(message, messageReceivers);
                     }
 
                     else if(image != null){
-                        messageFrame.managePicture(image, contacts);
+                        messageFrame.managePicture(image, messageReceivers);
                         displayFormattedImage(image, messageFrame.getUserName(), messageFrame.getReceiverTime());
                         image = null;
                     }
                 }
 
-                messageFrame.removeChosenFriend();
+                messageFrame.removeChosenFriends();
 
             }
         });
@@ -129,7 +129,7 @@ public class MessagePanel extends JPanel {
     }
 
     /*
-    "insertString" is used to display contenct. "doc.getLength" gets the size
+    "insertString" is used to display content. "doc.getLength" gets the size
     of the content. The last parameter "null" is used because we do not want
     to specify any specific format on the text, for instance "italics".
     "clearContactButtons" removes the chosen friends.
@@ -148,7 +148,7 @@ public class MessagePanel extends JPanel {
         }
 
         messageFrame.clearContactButtons();
-       // messageFrame.removeChosenFriend();
+      //  messageFrame.clearFriends();
     }
 
 
@@ -187,7 +187,6 @@ public class MessagePanel extends JPanel {
     retrieve the image object from the "oldSize" imageIcon.
     Then we change the size of the image (changedSize), and
     use this object to create our imageIcon.
-
      */
     public void displayImage(File file, String username){
         ArrayList<String> contacts = messageFrame.getFriends();

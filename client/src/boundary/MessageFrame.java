@@ -13,12 +13,12 @@ public class MessageFrame extends JFrame{
 
     private AddFriendFrame addFriendFrame;
 
-    private ArrayList<String> friends;
+    private ArrayList<String> messageReceivers;
 
     public MessageFrame(ClientController controller, ImageIcon pictureFile){
         super("Chat");
         this.controller = controller;
-        this.friends = new ArrayList<>();
+        this.messageReceivers = new ArrayList<>();
         this.setLayout(null);
 
         this.setSize(680, 580);
@@ -64,23 +64,31 @@ public class MessageFrame extends JFrame{
         controller.updateContacts();
     }
 
-    public void addFriendToList(String friend) {
-        controller.addFriendToList(friend);
+    public void addNewFriendToContacts(String friend) {
+        controller.addNewFriendToContacts(friend);
     }
 
     public void displayContacts(ArrayList<String> list) {
         contactPanel.displayContacts(list);
     }
 
-    public void sendMessageToFriend(String name){
-        if(!friends.contains(name)){
-            friends.add(name);
+    /*
+    "messageReceivers" is an arraylist which contains the
+    clients that are supposed to get a message.
+     */
+    public void sendMessageToFriend(String user){
+        if(!messageReceivers.contains(user)){
+            messageReceivers.add(user);
         }
 
     }
 
+    /*
+    This get method is called by "manageTextPane" in messagePanel
+    when a message is supposed to be sent.
+     */
     public ArrayList<String> getFriends(){
-        return friends;
+        return messageReceivers;
     }
 
     public void manageMessage(String message, ArrayList<String> contacts){
@@ -91,8 +99,11 @@ public class MessageFrame extends JFrame{
         return controller.getReceiverTime();
     }
 
-    public void removeChosenFriend(){
-        friends = new ArrayList<>();
+    /*
+    Clears the arraylist of message receivers.
+     */
+    public void removeChosenFriends(){
+        messageReceivers = new ArrayList<>();
     }
 
     public void logOut(){
@@ -105,12 +116,12 @@ public class MessageFrame extends JFrame{
         controller.manageImage(image, contacts);
     }
 
-    public void displayImage(ImageIcon imageIcon, String userName, String receiverTime) {
+    public synchronized void displayImage(ImageIcon imageIcon, String userName, String receiverTime) {
         messagePanel.displayFormattedImage(imageIcon, userName, receiverTime);
 
     }
 
-    public void displayText(String text, String sender, String receiverTime){
+    public synchronized void displayText(String text, String sender, String receiverTime){
         messagePanel.displayText(text, sender, receiverTime);
     }
 
@@ -118,12 +129,12 @@ public class MessageFrame extends JFrame{
         controller.managePictureWithText(image, contacts, message);
     }
 
-    public void displayPictureWithText(ImageIcon imageIcon, String userName, String receiverTime, String message){
+    public synchronized void displayPictureWithText(ImageIcon imageIcon, String userName, String receiverTime, String message){
         messagePanel.displayPictureWithText(imageIcon, userName, receiverTime, message);
     }
 
     public void clearFriends() {
-        friends = new ArrayList<>();
+        messageReceivers = new ArrayList<>();
     }
 
     public void clearContactButtons() {

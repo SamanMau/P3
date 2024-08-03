@@ -5,13 +5,13 @@ Einar: Benzema, Einar, Haval
 NyPers: Greken
 Fredo: Greken, Benzema
 Haval: Benzema, Einar, Nines
-Test20: Greken, Adde
-Test21: Greken, Test20
-Test22: Test23, Greken
+Test20: Greken, Adde, Test100, Benzema
+Test21: Greken, Test20, Test100, Benzema
+Test22: Test23, Greken, Test100
 Test23: Test22, Greken
 Abidas: Greken
 Benzema: Benzema, Greken, Capio, Test20, Test100, Adde
-Test100: Benzema, Fredo, Greken
+Test100: Greken, Capio, Adde
 ShoBror: Benzema, SistaGG, ShoBror
 Frida: Emma
 SistaGG: Nines, ShoBror
@@ -19,6 +19,6 @@ ElRaton: ElRaton, Greken
 YasinByn: Greken
 Adde: Greken, Capio, Benzema
 Habb: Habibi
-SAMAN: Greken, Adde, Capio
-Nines: Greken, Capio, Nines
+SAMAN: Greken, Adde, Capio, Fredo, Test100
+Nines: Greken, Capio, Nines, Emma
 Emma: Frida

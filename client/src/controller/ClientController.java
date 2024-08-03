@@ -60,20 +60,37 @@ public class ClientController {
 
     }
 
+    /*
+    This method creates an object of "MessageFrame"
+    which is the chat frame itself, where clients
+    can send messages. For each connection, we
+    also need to read the current clients
+    contacts.
+     */
     public void openChatFrame(ImageIcon picture){
         messageFrame = new MessageFrame(this, picture);
         readContacts();
     }
 
+    /*
+    Same as the method above, only difference is that we dont
+    need to read any contacts.
+     */
     public void openChatFrameForRegister(ImageIcon pictureFile){
         messageFrame = new MessageFrame(this, pictureFile);
     }
 
-    public void saveContacts(){
+    /*
+    This method saves each clients contacts to a file, we put
+    "append" as false because we want to overwrite the content
+    in our file instead of putting new content at the end
+    of the file. This method is called when a user logs out.
+     */
+    public synchronized void saveContacts(){
         HashMap<String, ArrayList<String>> currentContacts = getEveryContact();
 
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("client/src/contacts.txt", false)); //true
+            BufferedWriter writer = new BufferedWriter(new FileWriter("client/src/contacts.txt", false));
 
             for(String person : currentContacts.keySet()){
 
@@ -84,6 +101,7 @@ public class ClientController {
                 for(int i = 0; i < friendContacts.size(); i++){
                     if(i + 1 == friendContacts.size()){
                         writer.write(friendContacts.get(i));
+
                     } else {
                         writer.write(friendContacts.get(i));
                         writer.write(", ");
@@ -102,84 +120,102 @@ public class ClientController {
         }
     }
 
+    /*
+    This method is called when a clients adds a new friend.
+    If a client has existing friends, we add the new friends
+    to the existing list, else, we create a new element in
+    our hashmap.
+
+    The second for each loop checks that there are no
+    duplicate contacts in a single list. For instance,
+    "Benzema" can't have two friends of the exact same
+    "Greken".
+     */
     public void updateContacts(){
         HashMap<String, ArrayList<String>> currentContacts = getEveryContact();
 
         ArrayList<String> newFriends = contactsMap.get(userName);
 
-        if(currentContacts.containsKey(userName)){
-            ArrayList<String> existingFriends = currentContacts.get(userName);
+        if(newFriends != null){
+            if(currentContacts.containsKey(userName)){
+                ArrayList<String> existingFriends = currentContacts.get(userName);
 
-            for(int i = 0; i < newFriends.size(); i++){
-                existingFriends.add(newFriends.get(i));
-            }
-
-          //  currentContacts.put(userName, existingFriends);
-
-        } else {
-            currentContacts.put(userName, newFriends);
-        }
-
-        for(String pp : currentContacts.keySet()){
-
-            ArrayList<String> friendContacts = currentContacts.get(pp);
-
-            for(int i = 0; i < friendContacts.size(); i++){
-                String friend = friendContacts.get(i);
-
-                for(int x = i + 1; x < friendContacts.size(); x++){
-                    if(friend.equals(friendContacts.get(x))){
-                        friendContacts.remove(x);
-
-                        x--; //minskar x eftersom arrayen har minskats.
-                    }
+                for(int i = 0; i < newFriends.size(); i++){
+                    existingFriends.add(newFriends.get(i));
                 }
 
+            } else {
+                currentContacts.put(userName, newFriends);
             }
 
-        }
+            /*
+            We check if the current friend (i) is equal to
+            the upcoming friend (x = i + 1) which would indicate
+            that there are duplicates of friends.
+             */
+            for(String friendOwner : currentContacts.keySet()){
 
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("client/src/contacts.txt", false)); //true
-
-            for(String person : currentContacts.keySet()){
-
-                writer.write(person + ": ");
-
-                ArrayList<String> friendContacts = currentContacts.get(person);
+                ArrayList<String> friendContacts = currentContacts.get(friendOwner);
 
                 for(int i = 0; i < friendContacts.size(); i++){
-                    if(i + 1 == friendContacts.size()){
-                        writer.write(friendContacts.get(i));
-                    } else {
-                        writer.write(friendContacts.get(i));
-                        writer.write(", ");
+                    String friend = friendContacts.get(i);
 
+                    for(int x = i + 1; x < friendContacts.size(); x++){
+
+                        if(friend.equals(friendContacts.get(x))){
+                            friendContacts.remove(x);
+
+                            x--; // x is reduced because the array is getting reduced.
+                        }
                     }
-                }
 
-                writer.newLine();
+                }
 
             }
 
-            writer.close();
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter("client/src/contacts.txt", false)); //true
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+                for(String person : currentContacts.keySet()){
+
+                    writer.write(person + ": ");
+
+                    ArrayList<String> friendContacts = currentContacts.get(person);
+
+                    for(int i = 0; i < friendContacts.size(); i++){
+                        if(i + 1 == friendContacts.size()){
+                            writer.write(friendContacts.get(i));
+                        } else {
+                            writer.write(friendContacts.get(i));
+                            writer.write(", ");
+
+                        }
+                    }
+
+                    writer.newLine();
+
+                }
+
+                writer.close();
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            readContacts();
+
+            clearContactList(); //solved an unknown error.
         }
 
-        readContacts();
 
-        clearContactList();
 
     }
 
     /*
-    Den första if satsen kontrollerar om en person redan
-    har en lista eller inte. Detta hjälper till att förhindra att
-    alldeles för många element skapas.
+    The first if statement checks if the current user already
+    has a list of friends.
     */
-    public synchronized void addFriendToList(String friend){
+    public synchronized void addNewFriendToContacts(String friend){
         if(!contactsMap.containsKey(userName)){
             contactsMap.put(userName, new ArrayList<>());
         }
@@ -191,6 +227,11 @@ public class ClientController {
         contactsMap = new HashMap<>();
     }
 
+    /*
+     row.split(":") splits a line in two parts, the part
+     before ":" and the part after ":", this creates an array.
+     trim(); removes unnecessary white space.
+     */
     public HashMap<String, ArrayList<String>> getEveryContact(){
         HashMap<String, ArrayList<String>> allFriends = new HashMap<>();
 
@@ -235,6 +276,9 @@ public class ClientController {
         return monitorMessage.getOnlineUsers();
     }
 
+    /*
+    Reads every contact and displays the contactlist of the current user.
+     */
     public synchronized void readContacts(){
 
         try {
@@ -278,20 +322,17 @@ public class ClientController {
     }
 
     /*
-    JFileChooser är en klass som används för att öppna och spara en fil lokalt på datorn.
-    Metoden "showOpenDialog" öppnar filen .vi har ingen parent component, därför sätter vi null.
-    showOpenDialog returnerar en int. Om man väljer en fil, returnerar den 0. Om man inte
-    väljer något, returneras 1.
+    JFileChooser is a class which is used to open and save files on a computer.
+    The method "showSaveDialog()" opens the file manager. showSaveDialog() returns
+    an int. If a file was chosen, the number 0 is returned, else, 1 is returned.
      */
     public synchronized void openFileManager(){
         file = new JFileChooser();
         int action = file.showSaveDialog(null);
 
-
-      //  Hämtar den valda filen och dess absoluta sökväg, alltså den sökvägen som finns
-      //  lokalt på ens dator.
-
         if(action == 0){
+
+            //gets the chosen file and its absolute path.
             File chosenFile = new File(file.getSelectedFile().getAbsolutePath());
             String name = chosenFile.getName();
 
@@ -310,6 +351,11 @@ public class ClientController {
         }
     }
 
+
+    /*
+    This method sends a request to the server to return
+    the list of online users.
+     */
     public void onlineUsersRequest(){
         Message message = new Message(user, "Online user list request 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER");
         try {
@@ -317,11 +363,12 @@ public class ClientController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-    //    return monitorMessage.getOnlineUsers();
     }
 
-    public String getReceiverTime(){
+    /*
+    Returns the current time.
+     */
+    public synchronized String getReceiverTime(){
         LocalDateTime currentTime = LocalDateTime.now();
 
         //"ofPattern" används för att skapa en specifik tidsformat.
@@ -340,15 +387,9 @@ public class ClientController {
         file = new JFileChooser();
         int action = file.showSaveDialog(null);
 
-
-        //  Hämtar den valda filen och dess absoluta sökväg, alltså den sökvägen som finns
-        //  lokalt på ens dator.
-
         if(action == 0){
             File chosenFile = new File(file.getSelectedFile().getAbsolutePath());
             String name = chosenFile.getAbsolutePath();
-        //    String name = chosenFile.getName();
-
 
             try{
                 if(!(name.endsWith("jpg"))){
@@ -369,11 +410,14 @@ public class ClientController {
         return null;
     }
 
+    /*
+    Method called when a user wants to send an image.
+     */
     public synchronized void manageImage(ImageIcon imageIcon, ArrayList<String> contacts) {
         ArrayList<User> receivers = new ArrayList<>();
 
-        for(String contact : contacts){
-            User user1 = new User(contact, null);
+        for(String username : contacts){
+            User user1 = new User(username, null);
             receivers.add(user1);
         }
 
@@ -388,11 +432,15 @@ public class ClientController {
 
     }
 
+    /*
+    Method called when a user wants to send an image
+    combined with text content.
+     */
     public synchronized void managePictureWithText(ImageIcon imageIcon, ArrayList<String> contacts, String text){
         ArrayList<User> receivers = new ArrayList<>();
 
-        for(String contact : contacts){
-            User user1 = new User(contact, null);
+        for(String username : contacts){
+            User user1 = new User(username, null);
             receivers.add(user1);
         }
 
@@ -406,6 +454,9 @@ public class ClientController {
 
     }
 
+    /*
+    Returns the username of the current user.
+     */
     public synchronized String getUserName(){
         return this.userName;
     }
@@ -469,7 +520,6 @@ public class ClientController {
         }
     }
 
-
     public synchronized void manageMessage(String text, ArrayList<String> contacts){
         messageFrame.clearFriends();
 
@@ -489,6 +539,9 @@ public class ClientController {
 
     }
 
+    /*
+    This is a thread which monitors messages.
+     */
     private class MonitorMessage extends Thread{
         private static ArrayList<String> onlineUsers;
         private Socket socket;
@@ -510,10 +563,14 @@ public class ClientController {
                             String textContent = message.getTextMessage();
                             ImageIcon imageIcon = message.getImageIcon();
 
+                            /*
+                            This if statement would indicate that a text message
+                            with no image was sent.
+                             */
                             if (textContent != null && imageIcon == null) {
-                                String name = message.getSender().getUserName();
+                                String sender_name = message.getSender().getUserName();
 
-                                if(name.equals(userName)){
+                                if(sender_name.equals(userName)){
                                     String text = message.getTextMessage();
 
                                     if(text.equals("Accepted 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER")){
@@ -527,6 +584,10 @@ public class ClientController {
                                     String user = getUserName();
                                     ArrayList<User> recievers = message.getReceivers();
 
+                                    /*
+                                    Checks if the current user is one of the receivers
+                                    of a message. If true, then display the message.
+                                     */
                                     for(User receiver : recievers){
                                         if(user.equals(receiver.getUserName())){
                                             String formattedTime = getReceiverTime();
@@ -537,11 +598,13 @@ public class ClientController {
                                     }
                                 }
 
+                                /*
+                                This else if statement would indicate that a message with
+                                only a picture was sent, without text content.
+                                 */
                             } else if((textContent == null) && message.getImageIcon() != null) {
                                 String user = getUserName();
                                 ArrayList<User> recievers = message.getReceivers();
-
-                              //  message.getImageMessage();
 
                                 for(User receiver : recievers){
                                     if(user.equals(receiver.getUserName())){
@@ -551,6 +614,11 @@ public class ClientController {
                                         messageFrame.displayImage(message.getImageIcon(), message.getSender().getUserName(), message.getUserReceiverTime());
                                     }
                                 }
+
+                                /*
+                                This else if statement would indicate that a message
+                                was sent which included both text content and a picture.
+                                 */
                             } else if(textContent != null && imageIcon != null){
                                 String user = getUserName();
                                 ArrayList<User> recievers = message.getReceivers();
@@ -565,6 +633,10 @@ public class ClientController {
                                 }
                             }
 
+                            /*
+                            If the read object was an arraylist, it means that the user
+                            requested a list of the current online users.
+                             */
                         } else if(obj instanceof ArrayList<?>){
                             Message message1 = new Message(null, "Safe close 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER");
                             oos.writeObject(message1);

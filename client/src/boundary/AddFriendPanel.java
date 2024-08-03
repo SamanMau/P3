@@ -34,8 +34,8 @@ public class AddFriendPanel extends JPanel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     String text = button.getText();
-                    addFriendFrame.addFriendToList(text);
-                    addFriendFrame.sendMessageToFriend(text);
+                    addFriendFrame.addNewFriendToContacts(text); //adds a friend as new contact.
+                    addFriendFrame.sendMessageToOnlineUser(text); // sends message to online user.
                 }
             });
 
