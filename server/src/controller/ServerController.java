@@ -330,7 +330,6 @@ public class ServerController{
                     }
 
                     else {
-                       // addUnsentMessageToFile(message);
                         canBreak++;
 
 
@@ -438,8 +437,6 @@ public class ServerController{
 
             Message modified = new Message(sender, filtered, text, imageIcon);
 
-
-          //  messageList.add(message);
             messageList.add(modified);
 
             try{
@@ -690,7 +687,7 @@ public class ServerController{
         /*
         This saves all online users to a file
          */
-        public void writeOnlineUsersToFile(ArrayList<String> onlineUsers){
+        public synchronized void writeOnlineUsersToFile(ArrayList<String> onlineUsers){
             try {
                 FileWriter fw = new FileWriter("server/src/onlineUsers.txt");
                 BufferedWriter writer = new BufferedWriter(fw);
