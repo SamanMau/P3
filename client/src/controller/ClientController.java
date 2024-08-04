@@ -57,7 +57,6 @@ public class ClientController {
 
         startFrame = new StartFrame(this);
 
-
     }
 
     /*
@@ -137,7 +136,9 @@ public class ClientController {
         ArrayList<String> newFriends = contactsMap.get(userName);
 
         if(newFriends != null){
+
             if(currentContacts.containsKey(userName)){
+
                 ArrayList<String> existingFriends = currentContacts.get(userName);
 
                 for(int i = 0; i < newFriends.size(); i++){
@@ -151,7 +152,7 @@ public class ClientController {
             /*
             We check if the current friend (i) is equal to
             the upcoming friend (x = i + 1) which would indicate
-            that there are duplicates of friends.
+            that there are duplicates of the same person.
              */
             for(String friendOwner : currentContacts.keySet()){
 
@@ -550,6 +551,7 @@ public class ClientController {
         public MonitorMessage(Socket socket, boolean isRunning){
             this.socket = socket;
             this.isRunning = true;
+
         }
 
         @Override
@@ -570,7 +572,7 @@ public class ClientController {
                             if (textContent != null && imageIcon == null) {
                                 String sender_name = message.getSender().getUserName();
 
-                                if(sender_name.equals(userName)){
+                                if(sender_name.equals(userName)) {
                                     String text = message.getTextMessage();
 
                                     if(text.equals("Accepted 323fwed142erg32494903490fg425667h767468327:)78898AdEEeE342SHEKEER")){

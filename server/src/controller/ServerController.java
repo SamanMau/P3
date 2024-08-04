@@ -279,10 +279,6 @@ public class ServerController{
                     }
                 }
 
-
-
-
-
             /*
             Handles normal message cases between users. This is responsible for sending new messages
              */
