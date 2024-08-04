@@ -527,7 +527,7 @@ public class ServerController{
                             try {
                                 oos.writeObject(currentMessage);
 
-                                removeUnsentMessage(currentMessage, user, messageList);
+                                modifyUnsentMessage(currentMessage, user, messageList);
 
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -543,7 +543,7 @@ public class ServerController{
         /*
         Removes users from the sender list of a message so that once the user has received a message it won't receive it again
          */
-        public synchronized void removeUnsentMessage(Message message, User user, ArrayList<Message> list){
+        public synchronized void modifyUnsentMessage(Message message, User user, ArrayList<Message> list){
             for(int i = 0; i < list.size(); i++){
                 Message checkMessage = list.get(i);
 
